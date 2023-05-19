@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CargoController;
+use App\Http\Controllers\JornadaLaboralDiariaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +19,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::get('pacientes',[JornadaLaboralDiariaController::class,'index']);
+Route::get('cargos',[CargoController::class,'index']);
+Route::get('cargos/{id_cargo}',[CargoController::class,'show']);
