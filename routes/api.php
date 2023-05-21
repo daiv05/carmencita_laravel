@@ -22,3 +22,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('pacientes',[JornadaLaboralDiariaController::class,'index']);
 Route::get('cargos',[CargoController::class,'index']);
 Route::get('cargos/{id_cargo}',[CargoController::class,'show']);
+Route::post('cargos',[CargoController::class,'store']);
