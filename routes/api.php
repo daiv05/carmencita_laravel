@@ -23,3 +23,4 @@ Route::get('pacientes',[JornadaLaboralDiariaController::class,'index']);
 Route::get('cargos',[CargoController::class,'index']);
 Route::get('cargos/{id_cargo}',[CargoController::class,'show']);
 Route::post('cargos',[CargoController::class,'store']);
+Route::put('cargos/{id_cargo}',[CargoController::class,'update']);
