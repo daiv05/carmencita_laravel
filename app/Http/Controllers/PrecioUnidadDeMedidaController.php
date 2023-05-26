@@ -29,10 +29,10 @@ class PrecioUnidadDeMedidaController extends Controller
             'codigo_barra_producto' => 'required|string|max:10',
             'id_unidad_de_medida' => 'required|integer',
             'cantidad_producto' => 'required|integer',
-            'precio_unidad_medida_producto' => 'required|decimal',
+            'precio_unidad_medida_producto' => 'required|numeric',
         ];
         // Se crea una instancia del validador, para validar los datos ingresados utilizando las reglas definidas
-        $validator = \Validator::make($request->all(), $rules);
+        $validator = \Validator::make($request->input(), $rules);
         // Si el validador falla, se retorna un mensaje de error
         if ($validator->fails()){
             return response()->json([
@@ -43,7 +43,7 @@ class PrecioUnidadDeMedidaController extends Controller
         // Se valida que los datos ingresados sean correctos, según las reglas definidas
         if ($request->validate($rules)){
             // Se crea el precio de unidad de medida con los datos ingresados
-            $precioUnidadDeMedida = PrecioUnidadDeMedida::create($request->all());
+            $precioUnidadDeMedida = PrecioUnidadDeMedida::create($request->input());
             // Se valida que el precio de unidad de medida se haya creado correctamente
             if (isset($precioUnidadDeMedida)){
                 return response()->json([
@@ -96,10 +96,10 @@ class PrecioUnidadDeMedidaController extends Controller
             'codigo_barra_producto' => 'required|string|max:10',
             'id_unidad_de_medida' => 'required|integer',
             'cantidad_producto' => 'required|integer',
-            'precio_unidad_medida_producto' => 'required|decimal',
+            'precio_unidad_medida_producto' => 'required|numeric',
         ];
         // Se crea una instancia del validador, para validar los datos ingresados utilizando las reglas definidas
-        $validator = \Validator::make($request->all(), $rules);
+        $validator = \Validator::make($request->input(), $rules);
         // Si el validador falla, se retorna un mensaje de error
         if ($validator->fails()){
             return response()->json([
@@ -110,7 +110,7 @@ class PrecioUnidadDeMedidaController extends Controller
         // Se valida que los datos ingresados sean correctos, según las reglas definidas
         if ($request->validate($rules)){
             // Se actualiza el precio de unidad de medida con los datos ingresados
-            $precioUnidadDeMedida->update($request->all());
+            $precioUnidadDeMedida->update($request->input());
             // Se valida que el precio de unidad de medida se haya actualizado correctamente
             if (isset($precioUnidadDeMedida)){
                 return response()->json([
@@ -132,10 +132,10 @@ class PrecioUnidadDeMedidaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(PrecioUnidadDeMedida $precioUnidadDeMedida)
+    public function destroy(PrecioUnidadDeMedida $id_precio_unidad_de_medida)
     {
         // Se elimina el precio de unidad de medida
-        $precioUnidadDeMedida->delete();
+        $id_precio_unidad_de_medida->delete();
         return response()->json([
             'respuesta' => true,
             'mensaje' => 'Precio de unidad de medida eliminado correctamente',

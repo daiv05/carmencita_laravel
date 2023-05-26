@@ -29,10 +29,10 @@ Route::post('cargos',[CargoController::class,'store']);
 
 //Rutas para productos
 Route::get('productos',[ProductoController::class,'index']);
-Route::get('productos/{id_producto}',[ProductoController::class,'show']);
+Route::get('productos/{codigo_barra_producto}',[ProductoController::class,'show']);
 Route::post('productos',[ProductoController::class,'store']);
-Route::put('productos/{id_producto}',[ProductoController::class,'update']);
-Route::delete('productos/{id_producto}',[ProductoController::class,'destroy']);
+Route::put('productos/{codigo_barra_producto}',[ProductoController::class,'update']);
+Route::delete('productos/{codigo_barra_producto}',[ProductoController::class,'destroy']);
 
 //Rutas para unidades de medida
 Route::get('unidades_de_medida',[UnidadDeMedidaController::class,'index']);
