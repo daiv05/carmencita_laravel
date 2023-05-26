@@ -31,6 +31,7 @@ class ActualizarCargoRequest extends FormRequest
             ],
             "descripcion_cargo"=>"required|string",
             "salario_cargo"=>"required|numeric",
+            "id_jornada_laboral_diaria"=>"required",
         ];
     }
 }
