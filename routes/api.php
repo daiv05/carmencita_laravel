@@ -20,6 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::get('jornadas_laborales',[JornadaLaboralDiariaController::class,'index']);
+Route::get('jornadas_laborales/{id_jornada_laboral}',[JornadaLaboralDiariaController::class,'show']);
 Route::get('cargos',[CargoController::class,'index']);
 Route::get('cargos/{id_cargo}',[CargoController::class,'show']);
 Route::post('cargos',[CargoController::class,'store']);

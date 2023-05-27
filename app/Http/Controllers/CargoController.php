@@ -57,12 +57,12 @@ class CargoController extends Controller
             return response()->json([
                 'respuesta' => true,
                 'cargo' => $cargo
-            ]);
+            ],200);
         }
         else{
             return response()->json([
                 'respuesta' => false
-            ],200);
+            ],400);
         }
     }
 

@@ -27,9 +27,22 @@ class JornadaLaboralDiariaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id_jornada_laboral)
     {
-        //
+        $jornadaLaboral = JornadaLaboralDiaria::find($id_jornada_laboral);
+        if(isset($jornadaLaboral)){
+            return response()->json([
+                'repuesta'=>true,
+                'jornada' => $jornadaLaboral,
+            ]);
+        }
+        else{
+            return response()->json(
+                [
+                    'respuesta'=>false,
+                ],400
+            );
+        }
     }
 
     /**
