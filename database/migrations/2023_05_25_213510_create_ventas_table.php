@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('UnidadDeMedida', function (Blueprint $table) {
-            $table->increments('id_unidad_de_medida');
-            $table->string('nombre_unidad_de_medida', 60);
+        Schema::create('Venta', function (Blueprint $table) {
+            $table->id('id_venta');
+            $table->date('fecha_venta');
+            $table->decimal('total_venta', 8, 2);
+            $table->decimal('total_iva', 8, 2);
+            $table->string('nombre_cliente_venta', 30)->nullable();
         });
     }
 
@@ -22,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('UnidadDeMedida');
+        Schema::dropIfExists('Venta');
     }
 };

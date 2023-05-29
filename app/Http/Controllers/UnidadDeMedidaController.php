@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\UnidadDeMedida;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 
 class UnidadDeMedidaController extends Controller
 {
@@ -23,9 +25,9 @@ class UnidadDeMedidaController extends Controller
     {
         // Se definen las reglas de validación
         $rules = [
-            'nombre_unidad_de_medida' => 'required|string|max:60'
+            'nombre' => 'required|string|max:60'
         ];
-        $validador = \Validator::make($request->input(), $rules);
+        $validador = Validator::make($request->all(), $rules);
         // Se valida que la variable $validador no haya fallado
         if ($validador->fails()){
             return response()->json([
@@ -34,7 +36,7 @@ class UnidadDeMedidaController extends Controller
             ], 400);
         }
         // Se crea la unidad de medida con los datos ingresados
-        $unidadDeMedida = UnidadDeMedida::create($request->input());
+        $unidadDeMedida = UnidadDeMedida::create($request->all());
         // Se valida que la unidad de medida se haya creado correctamente
         if (isset($unidadDeMedida)){
             return response()->json([
@@ -84,10 +86,10 @@ class UnidadDeMedidaController extends Controller
     {
         // Se definen las reglas de validación, igual que en el método store
         $rules = [
-            'nombre_unidad_de_medida' => 'required|string|max:60'
+            'nombre' => 'required|string|max:60'
         ];
         // Se crea una variable $validador para almacenar el resultado de la validación
-        $validador = \Validator::make($request->input(), $rules);
+        $validador = Validator::make($request->all(), $rules);
         // Se valida que la variable $validador no haya fallado
         if ($validador->fails()){
             return response()->json([
@@ -96,7 +98,7 @@ class UnidadDeMedidaController extends Controller
             ], 400);
         }
         // Se actualiza la unidad de medida con los datos ingresados
-        $unidadDeMedida->update($request->input());
+        $unidadDeMedida->update($request->all());
         // Se valida que la unidad de medida se haya actualizado correctamente
         if (isset($unidadDeMedida)){
             return response()->json([
@@ -109,10 +111,10 @@ class UnidadDeMedidaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(UnidadDeMedida $id_unidad_de_medida)
+    public function destroy(UnidadDeMedida $unidadDeMedida)
     {
         // Se elimina la unidad de medida
-        $id_unidad_de_medida->delete();
+        $unidadDeMedida->delete();
         return response()->json([
             'respuesta' => true,
             'mensaje' => 'Unidad de medida eliminada correctamente',

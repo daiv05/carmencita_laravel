@@ -5,24 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PrecioUnidadDeMedida extends Model
+class DetalleVenta extends Model
 {
     use HasFactory;
 
-    protected $table = 'PrecioUnidadDeMedida';
+
+    protected $table = 'DetalleVenta';
 
 
-    protected $primaryKey = 'id_precio_unidad_de_medida';
+    protected $primaryKey = 'id_detalle_venta';
 
 
     public $timestamps = false;
 
 
     protected $fillable = [
+        'id_venta',
         'codigo_barra_producto',
-        'id_unidad_de_medida',
         'cantidad_producto',
-        'precio_unidad_medida_producto',
+        'subtotal_detalle_venta',
     ];
 
     public function producto()
@@ -30,8 +31,8 @@ class PrecioUnidadDeMedida extends Model
         return $this->belongsTo(Producto::class, 'codigo_barra_producto', 'codigo_barra_producto');
     }
 
-    public function unidadDeMedida()
+    public function venta()
     {
-        return $this->belongsTo(UnidadDeMedida::class, 'id_unidad_de_medida', 'id_unidad_de_medida');
+        return $this->belongsTo(Venta::class, 'id_venta', 'id_venta');
     }
 }
