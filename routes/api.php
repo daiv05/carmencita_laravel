@@ -9,6 +9,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\DetalleVentaController;
 use App\Http\Controllers\VentaController;
 use App\Http\Controllers\CreditoFiscalController;
+use App\Http\Controllers\DetalleCreditoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -59,5 +60,7 @@ Route::resource('ventas',VentaController::class);
 //Rutas para CreditoFiscal
 Route::resource('credito_fiscals',CreditoFiscalController::class);
 
+//Rutas para DetalleCreditoFiscal
+Route::resource('detalle_creditos',DetalleCreditoController::class);
 
 

@@ -70,7 +70,7 @@ class DetalleCreditoController extends Controller
             return response()->json([
                 'respuesta' => true,
                 'mensaje' => 'Detalle de credito fiscal encontrado',
-                'datos' => $detalleCredito
+                'datos' => $detalleCredito->load('creditoFiscal', 'producto')
             ], 200);
         } else {
             return response()->json([
