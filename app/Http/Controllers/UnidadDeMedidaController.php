@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\UnidadDeMedida;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 
 class UnidadDeMedidaController extends Controller
 {
@@ -25,7 +27,7 @@ class UnidadDeMedidaController extends Controller
         $rules = [
             'nombre' => 'required|string|max:60'
         ];
-        $validador = \Validator::make($request->all(), $rules);
+        $validador = Validator::make($request->all(), $rules);
         // Se valida que la variable $validador no haya fallado
         if ($validador->fails()){
             return response()->json([
@@ -87,7 +89,7 @@ class UnidadDeMedidaController extends Controller
             'nombre' => 'required|string|max:60'
         ];
         // Se crea una variable $validador para almacenar el resultado de la validación
-        $validador = \Validator::make($request->all(), $rules);
+        $validador = Validator::make($request->all(), $rules);
         // Se valida que la variable $validador no haya fallado
         if ($validador->fails()){
             return response()->json([

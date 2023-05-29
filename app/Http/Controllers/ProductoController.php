@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Producto;
+use Error;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 
 class ProductoController extends Controller
 {
@@ -29,14 +32,14 @@ class ProductoController extends Controller
 
         // Se definen las reglas de validación para los campos del formulario
         $rules = [
-            'codigo_barra_producto' => 'required|unique:productos|string|max:10', // El código de barras debe ser único
+            'codigo_barra_producto' => 'required|unique:producto|string|max:10', // El código de barras debe ser único
             'nombre_producto' => 'required|string|max:50',
             'cantidad_producto_disponible' => 'required|integer',
-            'precio_unitario' => 'required|decimal',
+            'precio_unitario' => 'required|decimal:0,2',
             'esta_disponible' => 'required|boolean',
         ];
         // Se crea una instancia del validador, para validar los datos ingresados utilizando las reglas definidas
-        $validator = \Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules);
         // Si el validador falla, se retorna un mensaje de error
         if ($validator->fails()){
             return response()->json([
@@ -75,10 +78,9 @@ class ProductoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Producto $codigo_barra_producto)
+    public function show(Producto $producto)
     {
-        // Se crea una instancia del producto con el código de barras ingresado
-        $producto = Producto::find($codigo_barra_producto);
+        error_log($producto);
         // Se valida que el producto exista
         if(isset($producto)){
             // Si el producto existe, se retorna el producto en formato JSON
@@ -94,6 +96,7 @@ class ProductoController extends Controller
                 'mensaje' => 'Error al obtener el producto',
             ], 400);
         }
+
     }
 
     /**
@@ -103,14 +106,14 @@ class ProductoController extends Controller
     {
         // Se definen las reglas de validación para los campos a actualizar igual que en el método store
         $rules = [
-            'codigo_barra_producto' => 'required|unique:productos|string|max:10', // El código de barras debe ser único
-            'nombre_producto' => 'required|string|max:50',
-            'cantidad_producto_disponible' => 'required|integer',
-            'precio_unitario' => 'required|decimal',
-            'esta_disponible' => 'required|boolean',
+            'codigo_barra_producto' => 'unique:producto|string|max:10', // El código de barras debe ser único
+            'nombre_producto' => 'string|max:50',
+            'cantidad_producto_disponible' => 'integer',
+            'precio_unitario' => 'decimal:0,2',
+            'esta_disponible' => 'boolean',
         ];
         // Se crea una instancia del validador, para validar los datos ingresados utilizando las reglas definidas
-        $validator = \Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules);
         // Se valida que la variable $validator no tenga errores al validar los datos ingresados
         if ($validator->fails()){
             return response()->json([

@@ -7,6 +7,9 @@ namespace App\Http\Controllers;
 use App\Models\PrecioUnidadDeMedida;
 //use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
+
 
 class PrecioUnidadDeMedidaController extends Controller
 {
@@ -29,10 +32,10 @@ class PrecioUnidadDeMedidaController extends Controller
             'codigo_barra_producto' => 'required|string|max:10',
             'id_unidad_de_medida' => 'required|integer',
             'cantidad_producto' => 'required|integer',
-            'precio_unidad_medida_producto' => 'required|decimal',
+            'precio_unidad_medida_producto' => 'required|decimal:0,2',
         ];
         // Se crea una instancia del validador, para validar los datos ingresados utilizando las reglas definidas
-        $validator = \Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules);
         // Si el validador falla, se retorna un mensaje de error
         if ($validator->fails()){
             return response()->json([
@@ -96,10 +99,10 @@ class PrecioUnidadDeMedidaController extends Controller
             'codigo_barra_producto' => 'required|string|max:10',
             'id_unidad_de_medida' => 'required|integer',
             'cantidad_producto' => 'required|integer',
-            'precio_unidad_medida_producto' => 'required|decimal',
+            'precio_unidad_medida_producto' => 'required|decimal:0,2',
         ];
         // Se crea una instancia del validador, para validar los datos ingresados utilizando las reglas definidas
-        $validator = \Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules);
         // Si el validador falla, se retorna un mensaje de error
         if ($validator->fails()){
             return response()->json([

@@ -8,4 +8,29 @@ use Illuminate\Database\Eloquent\Model;
 class Venta extends Model
 {
     use HasFactory;
+
+
+    protected $table = 'Venta';
+
+
+    protected $primaryKey = 'id_venta';
+
+
+    public $timestamps = false;
+
+
+    protected $fillable = [
+        'fecha_venta',
+        'total_venta',
+        'total_iva',
+    ];
+
+    public function detalleVenta()
+    {
+        return $this->hasMany(DetalleVenta::class, 'id_venta', 'id_venta');
+    }
+
+    
+
+
 }

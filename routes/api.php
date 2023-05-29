@@ -5,6 +5,10 @@ use App\Http\Controllers\JornadaLaboralDiariaController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\UnidadDeMedidaController;
 use App\Http\Controllers\PrecioUnidadDeMedidaController;
+use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\DetalleVentaController;
+use App\Http\Controllers\VentaController;
+use App\Http\Controllers\CreditoFiscalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,29 +26,38 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('pacientes',[JornadaLaboralDiariaController::class,'index']);
-Route::get('cargos',[CargoController::class,'index']);
-Route::get('cargos/{id_cargo}',[CargoController::class,'show']);
-Route::post('cargos',[CargoController::class,'store']);
+
+//Rutas para cargos
+Route::resource('cargos',CargoController::class);
 
 //Rutas para productos
-Route::get('productos',[ProductoController::class,'index']);
-Route::get('productos/{id_producto}',[ProductoController::class,'show']);
-Route::post('productos',[ProductoController::class,'store']);
-Route::put('productos/{id_producto}',[ProductoController::class,'update']);
-Route::delete('productos/{id_producto}',[ProductoController::class,'destroy']);
+Route::resource('productos',ProductoController::class);
 
 //Rutas para unidades de medida
-Route::get('unidades_de_medida',[UnidadDeMedidaController::class,'index']);
-Route::get('unidades_de_medida/{id_unidad_de_medida}',[UnidadDeMedidaController::class,'show']);
-Route::post('unidades_de_medida',[UnidadDeMedidaController::class,'store']);
-Route::put('unidades_de_medida/{id_unidad_de_medida}',[UnidadDeMedidaController::class,'update']);
-Route::delete('unidades_de_medida/{id_unidad_de_medida}',[UnidadDeMedidaController::class,'destroy']);
+Route::resource('unidades_de_medida',UnidadDeMedidaController::class);
 
 //Rutas para precios de unidades de medida
-Route::get('precios_unidades_de_medida',[PrecioUnidadDeMedidaController::class,'index']);
-Route::get('precios_unidades_de_medida/{id_precio_unidad_de_medida}',[PrecioUnidadDeMedidaController::class,'show']);
-Route::post('precios_unidades_de_medida',[PrecioUnidadDeMedidaController::class,'store']);
-Route::put('precios_unidades_de_medida/{id_precio_unidad_de_medida}',[PrecioUnidadDeMedidaController::class,'update']);
-Route::delete('precios_unidades_de_medida/{id_precio_unidad_de_medida}',[PrecioUnidadDeMedidaController::class,'destroy']);
+Route::resource('precios_unidades_de_medida',PrecioUnidadDeMedidaController::class);
+
+//Rutas para jornadas laborales diarias
+Route::resource('jornadas_laborales_diarias',JornadaLaboralDiariaController::class);
+
+//Rutas para cargos
+Route::resource('cargos',CargoController::class);
+
+
+// ------------------------ RUTAS DAVID ------------------------
+//Rutas para Cliente
+Route::resource('clientes',ClienteController::class);
+
+//Rutas para DetalleVenta
+Route::resource('detalle_ventas',DetalleVentaController::class);
+
+//Rutas para Venta
+Route::resource('ventas',VentaController::class);
+
+//Rutas para CreditoFiscal
+Route::resource('credito_fiscals',CreditoFiscalController::class);
+
+
 
