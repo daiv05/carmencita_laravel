@@ -16,11 +16,7 @@ class ProductoController extends Controller
     public function index()
     {
         // Se retornan todos los productos, sin ningún filtro en forma de JSON
-        return Producto::all(); 
-
-        // Esta es otra forma de hacerlo
-        //$productos = Producto::all();
-        //return response()->json($productos);
+        return Producto::all();
         
     }
 
@@ -80,12 +76,13 @@ class ProductoController extends Controller
      */
     public function show(Producto $producto)
     {
-        error_log($producto);
+        //error_log($producto);
         // Se valida que el producto exista
         if(isset($producto)){
             // Si el producto existe, se retorna el producto en formato JSON
             return response()->json([
                 'respuesta' => true,
+                'mensaje' => 'Producto obtenido correctamente',
                 'producto' => $producto
             ], 200);
         }
@@ -122,12 +119,30 @@ class ProductoController extends Controller
             ], 400);
         }
         // Si los datos ingresados son correctos, se actualiza el producto
-        else{
+       if ($request->validate($rules)){
+            // Se actualiza el producto con los datos ingresados
             $producto->update($request->all());
+            // Se valida que el producto se haya actualizado correctamente
+            if (isset($producto)){
+                return response()->json([
+                    'respuesta' => true,
+                    'mensaje' => 'Producto actualizado correctamente',
+                ], 200);
+            }
+            // Si el producto no se actualizó correctamente, se retorna un mensaje de error
+            else{
+                return response()->json([
+                    'respuesta' => false,
+                    'mensaje' => 'Error al actualizar el producto',
+                ], 400);
+            }
+        }
+        // Si los datos ingresados no son correctos, se retorna un mensaje de error
+        else{
             return response()->json([
-                'respuesta' => true,
-                'mensaje' => 'Producto actualizado correctamente',
-            ], 200);
+                'respuesta' => false,
+                'mensaje' => 'Error en los datos ingresados',
+            ], 400);
         }
 
 
@@ -138,12 +153,21 @@ class ProductoController extends Controller
      */
     public function destroy(Producto $producto)
     {
-        // Se elimina el producto
-        $producto->delete();
-        // Se retorna un mensaje de éxito
-        return response()->json([
-            'respuesta' => true,
-            'mensaje' => 'Producto eliminado correctamente',
-        ], 200);
+        // Se valida que el producto exista
+        if (isset($producto)){
+            // Si el producto existe, se elimina el producto
+            $producto->delete();
+            return response()->json([
+                'respuesta' => true,
+                'mensaje' => 'Producto eliminado correctamente',
+            ], 200);
+        }
+        // Si el producto no se eliminó correctamente, se retorna un mensaje de error
+        else{
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Error al eliminar el producto',
+            ], 400);
+        }
     }
 }
