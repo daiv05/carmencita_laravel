@@ -119,9 +119,75 @@ class EmpleadoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Empleado $empleado)
+    public function update(Request $request,Empleado $empleado)
     {
-        //
+        try{
+            //$empleado = Empleado::find($empleado)
+            if(!$empleado){
+                return response()->json([
+                    'message'=> 'Empleado no encontrado'
+                ], 404);
+            }
+
+            $validator = \Validator::make($request->all(),[
+                //'name' => 'required|string|max:255',
+                'primer_nombre' => 'required|string|max:32',
+                'primer_apellido' => 'required|string|max:32',
+                'id_nacionalidad' => 'required',
+                'id_sexo' => 'required',
+                'id_cargo' => 'required',
+                'dui_empleado' => 'required|unique:empleado',
+                'id_estado_familiar' => 'required',
+                'fecha_nacimiento' => 'required',
+                'domicilio' => 'required',
+                'residencia' => 'required',
+                'telefono' => 'required',
+                'profesion_oficio' => 'required'
+            ]);
+
+            if($validator->fails()){
+                return response()->json([
+                    'status'=> false,
+                    'message'=> $validator->errors()->all(),
+                    'Hola' => 'hola',
+                ]);
+            }
+
+            $empleado->primer_nombre = $request->primer_nombre;//,
+            if($request->segundo_nombre)
+            {      
+                $empleado->segundo_nombre = $request->segundo_nombre;
+            }
+            if($request->segundo_apellido)
+            {
+                $empleado->segundo_apellido= $request->segundo_apellido; 
+            }
+
+            $empleado->primer_apellido= $request->primer_apellido;
+            $empleado->id_sexo = $request->id_sexo;
+            $empleado->fecha_nacimiento= $request->fecha_nacimiento;
+            $empleado->id_estado_familiar= $request->id_estado_familiar;
+            $empleado->profesion_oficio= $request->profesion_oficio;
+            $empleado->domicilio= $request->domicilio;
+            $empleado->residencia= $request->residencia;
+            $empleado->id_nacionalidad= $request->id_nacionalidad;
+            $empleado->dui_empleado= $request->dui_empleado;
+            $empleado->id_cargo= $request->id_cargo;
+            $empleado->telefono= $request->telefono;
+            //$empleado->esta_activo= true;
+            $empleado->update();
+            return response()->json([
+                'message' => "actualizado",
+                'empleado'=>$empleado
+            ],200);
+
+
+        }catch(\Exception $e){
+            return response()->json([
+                'message' => "Algo salió mal."
+            ],500);
+        }
+
     }
 
     /**
