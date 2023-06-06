@@ -33,3 +33,4 @@ Route::post('empleado',[EmpleadoController::class,'store']);
 Route::post('cargos',[CargoController::class,'store']);
 Route::get('empleado/{empleado}',[EmpleadoController::class,'show']);
 Route::put('empleado_update/{empleado}', [EmpleadoController::class, 'update']);
+Route::put('empleado_activo/{empleado}',[EmpleadoController::class,'updateEstado']);

@@ -200,6 +200,26 @@ class EmpleadoController extends Controller
 
     }
 
+    public function updateEstado(Empleado $empleado)
+    {
+        if($empleado->esta_activo)
+        {
+            $empleado->esta_activo = false;
+        }
+        else
+        {
+            $empleado->esta_activo = true;
+        }
+
+        $empleado->update();
+
+        return response()->json([
+            'status'=>true,
+            'empleado_activo'=>$empleado->esta_activo,
+        ]);
+        
+    }
+
     /**
      * Remove the specified resource from storage.
      */
