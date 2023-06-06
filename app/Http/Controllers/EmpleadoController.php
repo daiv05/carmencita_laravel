@@ -6,6 +6,7 @@ use App\Models\Empleado;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class EmpleadoController extends Controller
 {
@@ -114,6 +115,7 @@ class EmpleadoController extends Controller
     public function show(Empleado $empleado)
     {
         //
+        return $empleado;
     }
 
     /**
@@ -136,7 +138,10 @@ class EmpleadoController extends Controller
                 'id_nacionalidad' => 'required',
                 'id_sexo' => 'required',
                 'id_cargo' => 'required',
-                'dui_empleado' => 'required|unique:empleado',
+                'dui_empleado' => [
+                    'required',
+                    Rule::unique('empleado')->ignore($empleado, 'id_empleado')
+                ],
                 'id_estado_familiar' => 'required',
                 'fecha_nacimiento' => 'required',
                 'domicilio' => 'required',
@@ -176,10 +181,15 @@ class EmpleadoController extends Controller
             $empleado->telefono= $request->telefono;
             //$empleado->esta_activo= true;
             $empleado->update();
-            return response()->json([
-                'message' => "actualizado",
+            /*return response()->json([
+                'message' => "Actualizado",
                 'empleado'=>$empleado
-            ],200);
+            ],200);*/
+            return response()->json([
+                'status'=>true,
+                'message'=>$validator->errors()->all(),
+                'empleado'=>$empleado
+            ]);
 
 
         }catch(\Exception $e){

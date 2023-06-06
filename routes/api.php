@@ -31,4 +31,5 @@ Route::get('estado_familiar',[EstadoFamiliarController::class,'index']);
 Route::get('nacionalidades',[NacionalidadController::class,'index']);
 Route::post('empleado',[EmpleadoController::class,'store']);
 Route::post('cargos',[CargoController::class,'store']);
+Route::get('empleado/{empleado}',[EmpleadoController::class,'show']);
 Route::put('empleado_update/{empleado}', [EmpleadoController::class, 'update']);
