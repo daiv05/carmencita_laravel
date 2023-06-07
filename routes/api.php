@@ -44,7 +44,7 @@ Route::resource('unidades_de_medida',UnidadDeMedidaController::class);
 
 //Rutas para precios de unidades de medida
 Route::resource('precios_unidades_de_medida',PrecioUnidadDeMedidaController::class);
-
+Route::post('precios_lista_unidades_de_medida',[PrecioUnidadDeMedidaController::class,"storeList"]);
 //Rutas para jornadas laborales diarias
 Route::resource('jornadas_laborales_diarias',JornadaLaboralDiariaController::class);
 

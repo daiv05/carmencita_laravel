@@ -17,6 +17,9 @@ class ProductoController extends Controller
     public function index()
     {
         // Se retornan todos los productos, sin ningún filtro en forma de JSON
+        $rules = [
+            "codigo_barra_producto" => 'required|string',
+        ];
         return Producto::all();
         
     }
@@ -34,7 +37,7 @@ class ProductoController extends Controller
             'cantidad_producto_disponible' => 'required|integer',
             'precio_unitario' => 'required|decimal:0,2',
             'esta_disponible' => 'required|boolean',
-            'foto'=>'required|image'
+            'foto'=>'image'
         ];
         // Se crea una instancia del validador, para validar los datos ingresados utilizando las reglas definidas
         $validator = Validator::make($request->all(), $rules);
@@ -56,14 +59,20 @@ class ProductoController extends Controller
             $producto->esta_disponible = $request->esta_disponible;
             //$producto = Producto::create($request->all());
             //guardamos la foto y obtenemos la ruta en donde se guardo
-            $ruta = $request->foto->store("public/productos");
-            $producto->foto = $ruta;
+            if($request->foto){
+                $ruta = $request->foto->store("public/productos");
+                $producto->foto = $ruta;
+            }
+            else{
+                $producto->foto = "";
+            }
             $producto->save();
             // Se valida que el producto se haya creado correctamente
             if (isset($producto)){
                 return response()->json([
                     'respuesta' => true,
                     'mensaje' => 'Producto creado correctamente',
+                    'foto' => $request->foto
                 ], 201);
             }
             // Si el producto no se creó correctamente, se retorna un mensaje de error

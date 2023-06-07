@@ -23,6 +23,39 @@ class PrecioUnidadDeMedidaController extends Controller
     }
 
     /**
+     * Store a newly list of unidad de medidas
+     */
+    public function storeList(Request $request){
+        $rules = ["codigo_barra_producto" => 'required|string',
+                  "lista_precios_unidades"=>'required|array'];
+        $validator = Validator::make($request->all(),$rules);
+        if($validator->fails()){
+            return response()->json([
+                "respuesta"=>"false",
+                "mensaje"=>"datos incompletos",
+            ],412);
+        }else{
+            $listaPreciosUnidades = $request->lista_precios_unidades;
+            $codigoDeBarra = $request->codigo_barra_producto;
+            foreach($listaPreciosUnidades as $precioUnidadProducto){
+
+                $precioUnidadDeMedida = new PrecioUnidadDeMedida();
+
+                $precioUnidadDeMedida->codigo_barra_producto = $codigoDeBarra;
+                $precioUnidadDeMedida->id_unidad_de_medida = $precioUnidadProducto["idUnidadMedida"];
+                $precioUnidadDeMedida->cantidad_producto = $precioUnidadProducto["cantidad"];
+                $precioUnidadDeMedida->precio_unidad_medida_producto = $precioUnidadProducto["precio"];
+
+                $precioUnidadDeMedida->save();
+            }
+            return response()->json([
+                'resultado'=>true,
+                'mensaje'=>'Se guardaron los datos con exito'
+            ],200);
+        }
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
