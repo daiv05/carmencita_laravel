@@ -27,6 +27,7 @@ class Producto extends Model
         'foto'
     ];
 
+
     public function detalleCredito()
     {
         return $this->hasMany(DetalleCredito::class, 'codigo_barra_producto', 'codigo_barra_producto');

@@ -6,6 +6,7 @@ use App\Models\Producto;
 use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 
 class ProductoController extends Controller
@@ -33,7 +34,7 @@ class ProductoController extends Controller
             'cantidad_producto_disponible' => 'required|integer',
             'precio_unitario' => 'required|decimal:0,2',
             'esta_disponible' => 'required|boolean',
-            'foto'=>'required'
+            'foto'=>'required|image'
         ];
         // Se crea una instancia del validador, para validar los datos ingresados utilizando las reglas definidas
         $validator = Validator::make($request->all(), $rules);
@@ -47,7 +48,17 @@ class ProductoController extends Controller
         // Se valida que los datos ingresados sean correctos
         if ($request->validate($rules)){
             // Se crea el producto con los datos ingresados
-            $producto = Producto::create($request->all());
+            $producto = new Producto();
+            $producto->codigo_barra_producto = $request->codigo_barra_producto;
+            $producto->nombre_producto = $request->nombre_producto;
+            $producto->cantidad_producto_disponible = $request->cantidad_producto_disponible;
+            $producto->precio_unitario = $request->precio_unitario;
+            $producto->esta_disponible = $request->esta_disponible;
+            //$producto = Producto::create($request->all());
+            //guardamos la foto y obtenemos la ruta en donde se guardo
+            $ruta = $request->foto->store("public/productos");
+            $producto->foto = $ruta;
+            $producto->save();
             // Se valida que el producto se haya creado correctamente
             if (isset($producto)){
                 return response()->json([
@@ -95,6 +106,10 @@ class ProductoController extends Controller
             ], 400);
         }
 
+    }
+
+    public function foto(Producto $producto){
+        return response()->download(public_path(Storage::url($producto->foto)),$producto->nombre_producto);
     }
 
     /**
