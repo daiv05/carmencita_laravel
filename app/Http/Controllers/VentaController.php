@@ -47,6 +47,7 @@ class VentaController extends Controller
                 return response()->json([
                     'respuesta' => true,
                     'mensaje' => 'Venta creada correctamente',
+                    'datos' => $venta,
                 ], 201);
             }
             else{

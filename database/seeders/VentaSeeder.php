@@ -18,11 +18,13 @@ class VentaSeeder extends Seeder
                 'fecha_venta' => '2021-01-01',
                 'total_venta' => 10.00,
                 'total_iva' => 1.00,
+                'nombre_cliente_venta' => 'Cliente 1'
             ],
             [
                 'fecha_venta' => '2021-01-02',
                 'total_venta' => 20.00,
                 'total_iva' => 2.00,
+                'nombre_cliente_venta' => 'Cliente 2'
             ],
             [
                 'fecha_venta' => '2021-01-03',
@@ -38,6 +40,7 @@ class VentaSeeder extends Seeder
                 'fecha_venta' => '2021-01-05',
                 'total_venta' => 50.00,
                 'total_iva' => 5.00,
+                'nombre_cliente_venta' => 'Cliente 5'
             ],
         ];
 

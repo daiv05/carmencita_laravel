@@ -63,4 +63,7 @@ Route::resource('credito_fiscals',CreditoFiscalController::class);
 //Rutas para DetalleCreditoFiscal
 Route::resource('detalle_creditos',DetalleCreditoController::class);
 
+//Ruta para buscar Producto por Nombre
+Route::get('productos/buscar/{nombre_producto}',[ProductoController::class,'getProductoPorNombre']);
+
 

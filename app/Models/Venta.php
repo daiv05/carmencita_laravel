@@ -23,6 +23,7 @@ class Venta extends Model
         'fecha_venta',
         'total_venta',
         'total_iva',
+        'nombre_cliente_venta',
     ];
 
     public function detalleVenta()

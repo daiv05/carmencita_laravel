@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Producto;
 use Error;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -145,5 +146,27 @@ class ProductoController extends Controller
             'respuesta' => true,
             'mensaje' => 'Producto eliminado correctamente',
         ], 200);
+    }
+
+    // Obtener Producto por nombre
+    public function getProductoPorNombre($nombre_producto)
+    {
+        // Buscar el producto por nombre
+        $producto = Producto::where('nombre_producto', $nombre_producto)->get();
+        // Se valida que el producto no este vacio
+        if(!($producto->isEmpty())){
+            // Si el producto existe, se retorna el producto en formato JSON
+            return response()->json([
+                'respuesta' => true,
+                'producto' => $producto
+            ], 200);
+        }
+        // Si no se encuentra el producto, se retorna un mensaje de error
+        else{
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Error al obtener el producto',
+            ], 400);
+        }
     }
 }
