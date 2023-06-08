@@ -12,6 +12,17 @@ class EstadoFamiliarSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $estados = [
+            [
+                'nombre_estado_familiar' => 'soltero(a)',
+            ],
+            [
+                'nombre_estado_familiar' => 'casado(a)'
+            ]
+            ];
+
+        foreach ($estados as $estado) {
+            \App\Models\EstadoFamiliar::create($estado);
+        }
     }
 }

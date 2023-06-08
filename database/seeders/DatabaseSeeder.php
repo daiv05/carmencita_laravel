@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\CreditoFiscal;
+use App\Models\JornadaLaboralDiaria;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -30,5 +31,13 @@ class DatabaseSeeder extends Seeder
         $this->call(DetalleVentaSeeder::class);
         $this->call(CreditoFiscalSeeder::class);
         $this->call(DetalleCreditoSeeder::class);
+        $this->call(SexoSeeder::class);
+
+        $this->call(EstadoFamiliarSeeder::class);
+        $this->call(NacionalidadSeeder::class);
+        
+        $this->call(JornadaLaboralDiariaSeeder::class);
+        $this->call(CargoSeeder::class);
+
     }
 }

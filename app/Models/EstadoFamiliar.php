@@ -10,5 +10,10 @@ class EstadoFamiliar extends Model
     use HasFactory;
 
     protected $table = 'EstadoFamiliar';
+    protected $primaryKey = 'id_estado_familiar';
+
+    protected $fillable = [
+        'nombre_estado_familiar'
+    ];
 
 }

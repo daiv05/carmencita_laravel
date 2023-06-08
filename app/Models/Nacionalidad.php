@@ -9,4 +9,9 @@ class Nacionalidad extends Model
 {
     use HasFactory;
     protected $table = 'Nacionalidad';
+    protected $primaryKey = 'id_nacionalidad';
+
+    protected $fillable = [
+        'nombre_nacionalidad',
+    ];
 }

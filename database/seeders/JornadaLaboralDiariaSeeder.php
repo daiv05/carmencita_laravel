@@ -5,24 +5,22 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class SexoSeeder extends Seeder
+class JornadaLaboralDiariaSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        $sexos = [
+        $jornadas = [
             [
-                'nombre_sexo' => "Masculino"
+                'hora_inicio' =>'08:00:00',
+                'hora_fin'=>'18:00:00',
             ],
-            [
-                'nombre_sexo' => "Femenino"
-            ]
         ];
 
-        foreach ($sexos as $sexo) {
-            \App\Models\Sexo::create($sexo);
+        foreach ($jornadas as $jornada) {
+            \App\Models\JornadaLaboralDiaria::create($jornada);
         }
     }
 }
