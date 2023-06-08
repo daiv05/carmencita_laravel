@@ -66,4 +66,7 @@ Route::resource('detalle_creditos',DetalleCreditoController::class);
 //Ruta para buscar Producto por Nombre
 Route::get('productos/buscar/{nombre_producto}',[ProductoController::class,'getProductoPorNombre']);
 
+//Ruta para obtener todos los nombres de los productos
+Route::get('productos/nombres/lista',[ProductoController::class,'getNombresProductos']);
+
 

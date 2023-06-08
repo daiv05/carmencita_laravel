@@ -169,4 +169,31 @@ class ProductoController extends Controller
             ], 400);
         }
     }
+
+    //Obtener todos los nombres de los productos
+    public function getNombresProductos()
+    {
+        // Se obtienen todos los productos
+        $productos = Producto::all();
+        // Se valida que la lista de productos no este vacia
+        if(!($productos->isEmpty())){
+            // Se crea una lista con los nombres de los productos
+            $nombres_productos = array();
+            foreach ($productos as $producto){
+                array_push($nombres_productos, $producto->nombre_producto);
+            }
+            // Se retorna la lista de nombres de productos en formato JSON
+            return response()->json([
+                'respuesta' => true,
+                'nombres_productos' => $nombres_productos
+            ], 200);
+        }
+        // Si no se encuentra el producto, se retorna un mensaje de error
+        else{
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Error al obtener los nombres de los productos',
+            ], 400);
+        }
+    }
 }

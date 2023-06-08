@@ -32,7 +32,7 @@ class VentaController extends Controller
             'fecha_venta' => 'required|date',
             'total_venta' => 'required|decimal:0,2',
             'total_iva' => 'required|decimal:0,2',
-            'nombre_cliente_venta' => 'string|max:30',
+            'nombre_cliente_venta' => 'nullable|string|max:30',
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()){
@@ -47,7 +47,7 @@ class VentaController extends Controller
                 return response()->json([
                     'respuesta' => true,
                     'mensaje' => 'Venta creada correctamente',
-                    'datos' => $venta,
+                    'datos' => $venta->id_venta,
                 ], 201);
             }
             else{
