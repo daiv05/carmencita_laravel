@@ -34,7 +34,7 @@ class ProductoController extends Controller
             'cantidad_producto_disponible' => 'required|integer',
             'precio_unitario' => 'required|decimal:0,2',
             'esta_disponible' => 'required|boolean',
-            'foto'=>'required|image'
+            'foto'=>'image'
         ];
         // Se crea una instancia del validador, para validar los datos ingresados utilizando las reglas definidas
         $validator = Validator::make($request->all(), $rules);
@@ -124,7 +124,7 @@ class ProductoController extends Controller
             'cantidad_producto_disponible' => 'required|integer',
             'precio_unitario' => 'required|decimal:0,2',
             'esta_disponible' => 'required|boolean',
-            'foto'=>'required'
+            'foto'=>'image'
         ];
         // Se crea una instancia del validador, para validar los datos ingresados utilizando las reglas definidas
         $validator = Validator::make($request->all(), $rules);
