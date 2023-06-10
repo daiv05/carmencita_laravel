@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Producto;
 use Error;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
@@ -193,6 +194,55 @@ class ProductoController extends Controller
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => 'Error al eliminar el producto',
+            ], 400);
+        }
+    }
+
+    // Obtener Producto por nombre
+    public function getProductoPorNombre($nombre_producto)
+    {
+        // Buscar el producto por nombre
+        $producto = Producto::where('nombre_producto', $nombre_producto)->get();
+        // Se valida que el producto no este vacio
+        if(!($producto->isEmpty())){
+            // Si el producto existe, se retorna el producto en formato JSON
+            return response()->json([
+                'respuesta' => true,
+                'producto' => $producto
+            ], 200);
+        }
+        // Si no se encuentra el producto, se retorna un mensaje de error
+        else{
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Error al obtener el producto',
+            ], 400);
+        }
+    }
+
+    //Obtener todos los nombres de los productos
+    public function getNombresProductos()
+    {
+        // Se obtienen todos los productos
+        $productos = Producto::all();
+        // Se valida que la lista de productos no este vacia
+        if(!($productos->isEmpty())){
+            // Se crea una lista con los nombres de los productos
+            $nombres_productos = array();
+            foreach ($productos as $producto){
+                array_push($nombres_productos, $producto->nombre_producto);
+            }
+            // Se retorna la lista de nombres de productos en formato JSON
+            return response()->json([
+                'respuesta' => true,
+                'nombres_productos' => $nombres_productos
+            ], 200);
+        }
+        // Si no se encuentra el producto, se retorna un mensaje de error
+        else{
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Error al obtener los nombres de los productos',
             ], 400);
         }
     }

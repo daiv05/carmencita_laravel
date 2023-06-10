@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('DetalleCredito', function (Blueprint $table) {
             $table->id('id_detalle_credito');
-            $table->string('codigo_barra_producto',10);
+            $table->string('codigo_barra_producto',15);
             $table->unsignedBigInteger('id_creditofiscal');
             $table->integer('cantidad_producto_credito');
             $table->decimal('subtotal_detalle_credito', 8, 2);

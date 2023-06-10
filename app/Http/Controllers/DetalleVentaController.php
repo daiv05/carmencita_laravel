@@ -29,7 +29,7 @@ class DetalleVentaController extends Controller
         //
         $rules = [
             'id_venta' => 'required|integer',
-            'codigo_barra_producto' => 'required|string|max:10',
+            'codigo_barra_producto' => 'required|string|max:15',
             'cantidad_producto' => 'required|integer',
             'subtotal_detalle_venta' => 'required|decimal:0,2',
         ];
@@ -90,7 +90,7 @@ class DetalleVentaController extends Controller
         //
         $rules = [
             'id_venta' => 'integer',
-            'codigo_barra_producto' => 'string|max:10',
+            'codigo_barra_producto' => 'string|max:15',
             'cantidad_producto' => 'integer',
             'subtotal_detalle_venta' => 'decimal:0,2',
         ];
