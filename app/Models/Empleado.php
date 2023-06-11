@@ -30,6 +30,20 @@ class Empleado extends Model
         'esta_activo'
     ];
 
+    public function nacionalidad(){
+        return $this->belongsTo(Nacionalidad::class,"id_nacionalidad","id_nacionalidad");
+    }
     
-
+    public function estadoFamiliar(){
+        return $this->belongsTo(EstadoFamiliar::class,"id_estado_familiar","id_estado_familiar");
+    }
+    public function sexo(){
+        return $this->belongsTo(Sexo::class,"id_sexo","id_sexo");
+    }
+    public function cargo(){
+        return $this->belongsTo(Cargo::class,"id_cargo","id_cargo");
+    }
+    public function user(){
+        return $this->belongsTo(User::class,"id_empleado","id_empleado");
+    }
 }

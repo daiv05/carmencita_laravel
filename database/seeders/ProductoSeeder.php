@@ -22,6 +22,7 @@ class ProductoSeeder extends Seeder
                 'cantidad_producto_disponible' => 100,
                 'precio_unitario' => 1.10,
                 'esta_disponible' => true,
+                'foto'=>""
             ],
             [
                 'codigo_barra_producto' => '7411001800903',
@@ -29,6 +30,7 @@ class ProductoSeeder extends Seeder
                 'cantidad_producto_disponible' => 100,
                 'precio_unitario' => 2.25,
                 'esta_disponible' => true,
+                'foto'=>"",
             ],
             [
                 'codigo_barra_producto' => '7411001802341',
@@ -36,6 +38,7 @@ class ProductoSeeder extends Seeder
                 'cantidad_producto_disponible' => 100,
                 'precio_unitario' => 1.25,
                 'esta_disponible' => true,
+                'foto'=>"",
             ],
             [
                 'codigo_barra_producto' => '7413100033053',
@@ -43,6 +46,7 @@ class ProductoSeeder extends Seeder
                 'cantidad_producto_disponible' => 100,
                 'precio_unitario' => 2.25,
                 'esta_disponible' => true,
+                'foto'=>"",
             ],
 
             //Otros fake
@@ -52,6 +56,7 @@ class ProductoSeeder extends Seeder
                 'cantidad_producto_disponible' => 100,
                 'precio_unitario' => 1.50,
                 'esta_disponible' => true,
+                'foto'=>"",
             ],
             [
                 'codigo_barra_producto' => '1234567890128',
@@ -59,6 +64,7 @@ class ProductoSeeder extends Seeder
                 'cantidad_producto_disponible' => 100,
                 'precio_unitario' => 1.50,
                 'esta_disponible' => true,
+                'foto'=>"",
             ],
             [
                 'codigo_barra_producto' => '1234567890129',
@@ -66,6 +72,7 @@ class ProductoSeeder extends Seeder
                 'cantidad_producto_disponible' => 100,
                 'precio_unitario' => 1.50,
                 'esta_disponible' => true,
+                'foto'=>"",
             ],
             [
                 'codigo_barra_producto' => '1234567890130',
@@ -73,6 +80,7 @@ class ProductoSeeder extends Seeder
                 'cantidad_producto_disponible' => 100,
                 'precio_unitario' => 1.50,
                 'esta_disponible' => true,
+                'foto'=>"",
             ],
             [
                 'codigo_barra_producto' => '1234567890131',
@@ -80,6 +88,7 @@ class ProductoSeeder extends Seeder
                 'cantidad_producto_disponible' => 100,
                 'precio_unitario' => 1.50,
                 'esta_disponible' => true,
+                'foto'=>"",
             ],
         ];
 

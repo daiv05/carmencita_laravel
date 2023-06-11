@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use PhpParser\Node\Expr\Empty_;
+use App\Http\Resources\Empleado as EmpleadoResource;
 
 class EmpleadoController extends Controller
 {
@@ -17,6 +19,36 @@ class EmpleadoController extends Controller
     {
         //
         return Empleado::all();
+    }
+
+    /*
+        obtener el listado de empleados
+    */
+    public function listaEmpleados(){
+        $listaEmpleados = Empleado::with(
+            ["Nacionalidad" => function($query){
+                $query->select("id_nacionalidad","nombre_nacionalidad");
+            }]
+        )->with([
+            "EstadoFamiliar" => function($query){
+                $query->select("id_estado_familiar","nombre_estado_familiar");
+            }
+        ])
+        ->with([
+            "Sexo" => function($query){
+                $query->select("id_sexo","nombre_sexo");
+            }
+        ])
+        ->with([
+            "Cargo"=>function($query){
+                $query->select("id_cargo","nombre_cargo");
+            }
+        ])
+        ->with(["User"=>function($query){
+            $query->select("id_empleado","name");
+        }])->get();
+        //$listaEmpleadoUsuario = User::with("Empleado")->get();
+        return new EmpleadoResource($listaEmpleados);
     }
 
     /**
