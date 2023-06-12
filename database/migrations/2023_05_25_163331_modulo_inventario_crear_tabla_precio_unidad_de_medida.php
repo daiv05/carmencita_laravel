@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('PrecioUnidadDeMedida', function (Blueprint $table) {
             $table->increments('id_precio_unidad_de_medida');
-            $table->string('codigo_barra_producto', 10);
+            $table->string('codigo_barra_producto', 13);
             $table->unsignedInteger('id_unidad_de_medida');
             $table->integer('cantidad_producto');
             $table->decimal('precio_unidad_medida_producto');

@@ -15,6 +15,8 @@ use App\Http\Controllers\VentaController;
 use App\Http\Controllers\CreditoFiscalController;
 use App\Models\Producto;
 use App\Http\Controllers\DetalleCreditoController;
+use App\Http\Controllers\MunicipioController;
+use App\Http\Controllers\DepartamentoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -101,4 +103,23 @@ Route::resource('detalle_creditos',DetalleCreditoController::class);
 Route::get('productos/buscar/{nombre_producto}',[ProductoController::class,'getProductoPorNombre']);
 
 //Ruta para obtener todos los nombres de los productos
+
 Route::get('productos/nombres/lista',[ProductoController::class,'getNombresProductos']);
+
+Route::get('productos/nombres/lista',[ProductoController::class,'getNombresProductos']);
+
+//Ruta para obtener un producto con sus precio de unidad de medida
+Route::get('productos/precios/{nombre_producto}',[ProductoController::class,'getProductoConUnidadMedida']);
+
+//Ruta para obtener todos los identificadores de los clientes
+Route::get('clientes/identificador/lista',[ClienteController::class,'getListaClientesIdentificadores']);
+
+//Rutas para Municipio
+Route::resource('municipios',MunicipioController::class);
+
+//Rutas para Departamento
+Route::resource('departamentos',DepartamentoController::class);
+
+//Ruta para obtener el departamento segun el nombre
+Route::get('departamentos/buscar/{nombre_departamento}',[DepartamentoController::class,'getDepartamentoPorNombre']);
+
