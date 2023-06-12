@@ -5,6 +5,8 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\CreditoFiscal;
+use App\Models\Municipio;
+use App\Models\UnidadDeMedida;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -24,8 +26,12 @@ class DatabaseSeeder extends Seeder
         
         // PARA LLAMAR A LOS SEEDERS, EN ORDEN DEPENDIENTE DE LAS FOREIGN KEYS
 
+        $this->call(UnidadDeMedidaSeeder::class);
+        $this->call(DepartamentoSeeder::class);
+        $this->call(MunicipioSeeder::class);
         $this->call(ClienteSeeder::class);
         $this->call(ProductoSeeder::class);
+        $this->call(PrecioUnidadDeMedidaSeeder::class);
         $this->call(VentaSeeder::class);
         $this->call(DetalleVentaSeeder::class);
         $this->call(CreditoFiscalSeeder::class);

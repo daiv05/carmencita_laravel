@@ -20,17 +20,23 @@ class Cliente extends Model
 
 
     protected $fillable = [
+        'distintivo_cliente',
         'nombre_cliente',
-        'apellido_cliente',
-        'departamento_cliente',
         'direccion_cliente',
         'dui_cliente',
         'nit_cliente',
         'nrc_cliente',
+        'id_municipio',
+        'distintivo_cliente'
     ];
 
     public function creditoFiscal()
     {
         return $this->hasMany(CreditoFiscal::class, 'id_cliente', 'id_cliente');
+    }
+
+    public function municipio()
+    {
+        return $this->belongsTo(Municipio::class, 'id_municipio', 'id_municipio');
     }
 }
