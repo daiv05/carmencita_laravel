@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\DetalleVenta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Venta;
+use App\Models\Producto;
+use Illuminate\Support\Facades\Log;
 
 class DetalleVentaController extends Controller
 {
@@ -44,13 +47,52 @@ class DetalleVentaController extends Controller
         }
 
         if ($request->validate($rules)) {
+
+
+            //Validamos si existe la venta
+            $venta = Venta::find($request->id_venta);
+            if (!isset($venta)) {
+                error_log('Venta no encontrada');
+                return response()->json([
+                    'respuesta' => false,
+                    'mensaje' => 'No existe la venta',
+                ], 400);
+            }
+
+
+            //Validamos si existe el producto y luego si hay stock
+            $producto = Producto::find($request->codigo_barra_producto);
+            if (!isset($producto)) {
+                error_log('Producto no encontrado');
+                return response()->json([
+                    'respuesta' => false,
+                    'mensaje' => 'No existe el producto: '. $request->codigo_barra_producto,
+                ], 400);
+            }
+            if ($producto->cantidad_producto_disponible < $request->cantidad_producto) {
+                return response()->json([
+                    'respuesta' => false,
+                    'mensaje' => 'No hay stock suficiente para: '. $producto->nombre_producto,
+                ], 400);
+            }
+
+
             $detalleVenta = DetalleVenta::create($request->all());
             if (isset($detalleVenta)) {
+                error_log('Detalle creado correctamente');
+                // Actualizar stock del producto
+                $producto->cantidad_producto_disponible = $producto->cantidad_producto_disponible - $detalleVenta->cantidad_producto;
+                $producto->update(['cantidad_producto_disponible' => $producto->cantidad_producto_disponible]);
+                //Log::info('Stock actualizado: '. $request->cantidad_producto);
                 return response()->json([
                     'respuesta' => true,
                     'mensaje' => 'Detalle de venta creado correctamente',
                 ], 201);
             } else {
+                error_log('Error al crear el detalle de venta');
+                // En caso de error, eliminar el registro de venta creado
+                $venta = Venta::find($request->id_venta);
+                $venta->delete();
                 return response()->json([
                     'respuesta' => false,
                     'mensaje' => 'Error al crear el detalle de venta',
@@ -89,10 +131,10 @@ class DetalleVentaController extends Controller
     {
         //
         $rules = [
-            'id_venta' => 'integer',
-            'codigo_barra_producto' => 'string|max:15',
-            'cantidad_producto' => 'integer',
-            'subtotal_detalle_venta' => 'decimal:0,2',
+            'id_venta' => 'nullable|integer',
+            'codigo_barra_producto' => 'nullable|string|max:15',
+            'cantidad_producto' => 'nullable|integer',
+            'subtotal_detalle_venta' => 'nullable|decimal:0,2',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -130,6 +172,10 @@ class DetalleVentaController extends Controller
         //
         if (isset($detalleVenta)) {
             $detalleVenta->delete();
+            // Actualizar stock del producto
+            $producto = Producto::find($detalleVenta->codigo_barra_producto);
+            $producto->cantidad_producto_disponible = $producto->cantidad_producto_disponible + $detalleVenta->cantidad_producto;
+            $producto->update(['cantidad_producto_disponible' => $producto->cantidad_producto_disponible]);
             return response()->json([
                 'respuesta' => true,
                 'mensaje' => 'Detalle de venta eliminado correctamente',

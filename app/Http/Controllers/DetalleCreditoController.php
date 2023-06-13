@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\DetalleCredito;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\CreditoFiscal;
+use App\Models\Producto;
 
 class DetalleCreditoController extends Controller
 {
@@ -28,7 +30,7 @@ class DetalleCreditoController extends Controller
     {
         //
         $rules = [
-            'codigo_barra_producto' => 'required|string|max:10',
+            'codigo_barra_producto' => 'required|string|max:13',
             'id_creditofiscal' => 'required|integer',
             'cantidad_producto_credito' => 'required|integer',
             'subtotal_detalle_credito' => 'required|decimal:0,2'
@@ -44,8 +46,38 @@ class DetalleCreditoController extends Controller
         }
 
         if ($request->validate($rules)) {
+
+            //Validamos si existe el credito fiscal
+            $creditoFiscal = CreditoFiscal::find($request->id_creditofiscal);
+            if (!isset($creditoFiscal)) {
+                return response()->json([
+                    'respuesta' => false,
+                    'mensaje' => 'No existe el credito fiscal'
+                ], 400);
+            }
+
+            //Validamos si existe el producto y luego verificamos si tiene stock
+            $producto = Producto::find($request->codigo_barra_producto);
+            if (!isset($producto)) {
+                return response()->json([
+                    'respuesta' => false,
+                    'mensaje' => 'No existe el producto'
+                ], 400);
+            }
+            
+            if ($producto->cantidad_producto_disponible < $request->cantidad_producto_credito) {
+                return response()->json([
+                    'respuesta' => false,
+                    'mensaje' => 'No hay stock suficiente para: '. $producto->nombre_producto,
+                ], 400);
+            }
+
+
             $detalleCredito = DetalleCredito::create($request->all());
             if (isset($detalleCredito)) {
+                // Actualizar stock del producto
+                $producto->cantidad_producto_disponible = $producto->cantidad_producto_disponible - $request->cantidad_producto;
+                $producto->update(['cantidad_producto_disponible' => $producto->cantidad_producto_disponible]);
                 return response()->json([
                     'respuesta' => true,
                     'mensaje' => 'Detalle de credito fiscal creado correctamente'
@@ -87,7 +119,7 @@ class DetalleCreditoController extends Controller
     {
         //
         $rules = [
-            'codigo_barra_producto' => 'string|max:10',
+            'codigo_barra_producto' => 'string|max:13',
             'id_creditofiscal' => 'integer',
             'cantidad_producto_credito' => 'integer',
             'subtotal_detalle_credito' => 'decimal:0,2'
@@ -126,6 +158,10 @@ class DetalleCreditoController extends Controller
         //
         if (isset($detalleCredito)) {
             $detalleCredito->delete();
+            // Actualizar stock del producto
+            $producto = Producto::find($detalleCredito->codigo_barra_producto);
+            $producto->cantidad_producto_disponible = $producto->cantidad_producto_disponible + $detalleCredito->cantidad_producto;
+            $producto->update(['cantidad_producto_disponible' => $producto->cantidad_producto_disponible]);
             return response()->json([
                 'respuesta' => true,
                 'mensaje' => 'Detalle de credito fiscal eliminado correctamente'

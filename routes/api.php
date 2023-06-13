@@ -10,6 +10,8 @@ use App\Http\Controllers\DetalleVentaController;
 use App\Http\Controllers\VentaController;
 use App\Http\Controllers\CreditoFiscalController;
 use App\Http\Controllers\DetalleCreditoController;
+use App\Http\Controllers\MunicipioController;
+use App\Http\Controllers\DepartamentoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VentasCFController;
@@ -78,3 +80,20 @@ Route::post('ventasCF/buscar',[VentasCFController::class,'buscarVentaCF']);
 Route::delete('ventasCF/{id_venta}',[VentasCFController::class,'eliminarVentaCF']);
 //Ruta para obtener una venta especifica y sus detalles
 Route::get('ventasCF_detalle/{id_venta}',[VentasCFController::class,'obtenerVentaAndDetalle']);
+//Ruta para obtener un producto con sus precio de unidad de medida
+Route::get('productos/precios/{nombre_producto}',[ProductoController::class,'getProductoConUnidadMedida']);
+
+//Ruta para obtener todos los identificadores de los clientes
+Route::get('clientes/identificador/lista',[ClienteController::class,'getListaClientesIdentificadores']);
+
+//Rutas para Municipio
+Route::resource('municipios',MunicipioController::class);
+
+//Rutas para Departamento
+Route::resource('departamentos',DepartamentoController::class);
+
+//Ruta para obtener el departamento segun el nombre
+Route::get('departamentos/buscar/{nombre_departamento}',[DepartamentoController::class,'getDepartamentoPorNombre']);
+
+
+

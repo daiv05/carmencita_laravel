@@ -33,7 +33,7 @@ class ProductoController extends Controller
 
         // Se definen las reglas de validación para los campos del formulario
         $rules = [
-            'codigo_barra_producto' => 'required|unique:producto|string|max:10', // El código de barras debe ser único
+            'codigo_barra_producto' => 'required|unique:producto|string|max:13', // El código de barras debe ser único
             'nombre_producto' => 'required|string|max:50',
             'cantidad_producto_disponible' => 'required|integer',
             'precio_unitario' => 'required|decimal:0,2',
@@ -81,7 +81,7 @@ class ProductoController extends Controller
      */
     public function show(Producto $producto)
     {
-        error_log($producto);
+        //error_log($producto);
         // Se valida que el producto exista
         if(isset($producto)){
             // Si el producto existe, se retorna el producto en formato JSON
@@ -107,11 +107,11 @@ class ProductoController extends Controller
     {
         // Se definen las reglas de validación para los campos a actualizar igual que en el método store
         $rules = [
-            'codigo_barra_producto' => 'unique:producto|string|max:10', // El código de barras debe ser único
-            'nombre_producto' => 'string|max:50',
-            'cantidad_producto_disponible' => 'integer',
-            'precio_unitario' => 'decimal:0,2',
-            'esta_disponible' => 'boolean',
+            'codigo_barra_producto' => 'nullable|unique:producto|string|max:13', // El código de barras debe ser único
+            'nombre_producto' => 'nullable|string|max:50',
+            'cantidad_producto_disponible' => 'nullable|integer',
+            'precio_unitario' => 'nullable|decimal:0,2',
+            'esta_disponible' => 'nullable|boolean',
         ];
         // Se crea una instancia del validador, para validar los datos ingresados utilizando las reglas definidas
         $validator = Validator::make($request->all(), $rules);
@@ -158,7 +158,7 @@ class ProductoController extends Controller
             // Si el producto existe, se retorna el producto en formato JSON
             return response()->json([
                 'respuesta' => true,
-                'producto' => $producto
+                'producto' => $producto->load('precioUnidadDeMedida')
             ], 200);
         }
         // Si no se encuentra el producto, se retorna un mensaje de error
@@ -193,6 +193,28 @@ class ProductoController extends Controller
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => 'Error al obtener los nombres de los productos',
+            ], 400);
+        }
+    }
+
+    // Obtener Producto por código de barras, junto a todos sus detalles
+    public function getProductoConUnidadMedida($codigo_barra_producto)
+    {
+        // Buscar el producto por código de barras
+        $producto = Producto::where('codigo_barra_producto', $codigo_barra_producto)->get();
+        // Se valida que el producto no este vacio
+        if(!($producto->isEmpty())){
+            // Si el producto existe, se retorna el producto en formato JSON
+            return response()->json([
+                'respuesta' => true,
+                'producto' => $producto->load('precioUnidadDeMedida')
+            ], 200);
+        }
+        // Si no se encuentra el producto, se retorna un mensaje de error
+        else{
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Error al obtener el producto',
             ], 400);
         }
     }

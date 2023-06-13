@@ -23,7 +23,9 @@ return new class extends Migration
                 ->on('Producto');
             $table->foreign('id_creditofiscal')
                 ->references('id_creditofiscal')
-                ->on('CreditoFiscal');
+                ->on('CreditoFiscal')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 
