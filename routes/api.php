@@ -70,7 +70,11 @@ Route::get('productos/buscar/{nombre_producto}',[ProductoController::class,'getP
 //Ruta para obtener todos los nombres de los productos
 Route::get('productos/nombres/lista',[ProductoController::class,'getNombresProductos']);
 
+//Ruta para obtener las ventas y listarlas
 Route::get('ventasCF',[VentasCFController::class,'index']);
+//Ruta para buscar una venta especifica
 Route::post('ventasCF/buscar',[VentasCFController::class,'buscarVentaCF']);
+//Ruta para eliminar una venta especifica
 Route::delete('ventasCF/{id_venta}',[VentasCFController::class,'eliminarVentaCF']);
+//Ruta para obtener una venta especifica y sus detalles
 Route::get('ventasCF_detalle/{id_venta}',[VentasCFController::class,'obtenerVentaAndDetalle']);
