@@ -123,9 +123,8 @@ class PrecioUnidadDeMedidaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id) 
     {
-<<<<<<< HEAD
         // Buscar el precio de unidad de medida por el ID en la base de datos
         $precioUnidadDeMedida = PrecioUnidadDeMedida::find($id);
 
@@ -143,7 +142,6 @@ class PrecioUnidadDeMedidaController extends Controller
             $validator = Validator::make($request->all(), $rules);
             // Si la validación falla, retornar un mensaje de error
             if ($validator->fails()) {
-=======
         // Se defininen las reglas de validación
         $rules = [
             'codigo_barra_producto' => 'required|string|max:13',
@@ -173,7 +171,6 @@ class PrecioUnidadDeMedidaController extends Controller
             }
             // Si el precio de unidad de medida no se actualizó correctamente, se retorna un mensaje de error
             else{
->>>>>>> d7f327fd8858bfb5071dc3c279a296f8564cadcc
                 return response()->json([
                     'respuesta' => false,
                     'mensaje' => $validator->errors()->all()
@@ -206,7 +203,8 @@ class PrecioUnidadDeMedidaController extends Controller
             ], 400);
         }
     }
-
+ }
+}
 
     /**
      * Remove the specified resource from storage.
@@ -231,6 +229,21 @@ class PrecioUnidadDeMedidaController extends Controller
                 'mensaje' => 'Error al eliminar el precio de unidad de medida',
             ], 400);
         }
+    }
+
+    public function obtenerListaPreciosPorCodigoDeBarra($codigoDeBarra){
+        $listaPreciosUnidades = PrecioUnidadDeMedida::where("codigo_barra_producto","=",$codigoDeBarra)
+        ->with([
+            "UnidadDeMedida"=>function($query){
+                $query->select("id_unidad_de_medida","nombre_unidad_de_medida");
+            }
+        ])
+        ->get();
+
+        return response()->json([
+            "respuesta"=>true,
+            "lista_precios_extra"=>$listaPreciosUnidades
+        ]);
     }
 
 }
