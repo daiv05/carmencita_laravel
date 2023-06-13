@@ -12,6 +12,7 @@ use App\Http\Controllers\CreditoFiscalController;
 use App\Http\Controllers\DetalleCreditoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\VentasCFController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,4 +70,7 @@ Route::get('productos/buscar/{nombre_producto}',[ProductoController::class,'getP
 //Ruta para obtener todos los nombres de los productos
 Route::get('productos/nombres/lista',[ProductoController::class,'getNombresProductos']);
 
-
+Route::get('ventasCF',[VentasCFController::class,'index']);
+Route::post('ventasCF/buscar',[VentasCFController::class,'buscarVentaCF']);
+Route::delete('ventasCF/{id_venta}',[VentasCFController::class,'eliminarVentaCF']);
+Route::get('ventasCF_detalle/{id_venta}',[VentasCFController::class,'obtenerVentaAndDetalle']);
