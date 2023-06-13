@@ -187,4 +187,27 @@ class ProductoController extends Controller
             ], 400);
         }
     }
+
+    //Método para actualizar el estado de un producto
+    public function updateEstado(Producto $producto)
+    {
+        //$producto = Producto::find($producto->codigo_barra_producto);
+
+        if($producto->esta_disponible)
+        {
+            $producto->esta_disponible = false;
+        }
+        else
+        {
+            $producto->esta_disponible = true;
+        }
+
+        $producto->update();
+
+        return response()->json([
+            'status'=>true,
+            'empleado_activo'=>$producto->esta_disponible,
+        ]);        
+        
+    }
 }
