@@ -18,7 +18,9 @@ return new class extends Migration
 
             $table->foreign('id_departamento')
                 ->references('id_departamento')
-                ->on('Departamento');
+                ->on('Departamento')
+                ->onDelete('restrict')
+                ->onUpdate('cascade');
         });
     }
 

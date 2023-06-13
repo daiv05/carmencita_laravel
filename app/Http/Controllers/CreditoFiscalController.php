@@ -49,6 +49,7 @@ class CreditoFiscalController extends Controller
                 return response()->json([
                     'respuesta' => true,
                     'mensaje' => 'Credito fiscal creado correctamente',
+                    'datos' => $creditoFiscal->id_creditofiscal,
                 ], 201);
             } else {
                 return response()->json([
