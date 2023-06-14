@@ -17,6 +17,7 @@ use App\Models\Producto;
 use App\Http\Controllers\DetalleCreditoController;
 use App\Http\Controllers\MunicipioController;
 use App\Http\Controllers\DepartamentoController;
+use Database\Seeders\ProductoSeeder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -65,8 +66,9 @@ Route::resource('cargos',CargoController::class);
 
 //Rutas para productos
 Route::resource('productos',ProductoController::class);
+//Route::put("productos/{producto}",[ProductoController::class,'update']);
 //Ruta para descargar imagen
-Route::get('productos/{producto}/foto',function (Producto $producto){
+Route::get("productos/{producto}/foto",function (Producto $producto){
     return response()->download(public_path(Storage::url($producto->foto)),$producto->nombre_producto);
 });
 
@@ -78,6 +80,7 @@ Route::resource('precios_unidades_de_medida',PrecioUnidadDeMedidaController::cla
 Route::post('precios_lista_unidades_de_medida',[PrecioUnidadDeMedidaController::class,"storeList"]);
 Route::get('precios_lista_unidades_de_medida');
 Route::get('precio_lista_unidades/{codigo_de_barra}',[PrecioUnidadDeMedidaController::class,"obtenerListaPreciosPorCodigoDeBarra"]);
+Route::put('precio_lista_unidades/{codigo_de_barra}',[PrecioUnidadDeMedidaController::class,"updateList"]);
 //Rutas para jornadas laborales diarias
 Route::resource('jornadas_laborales_diarias',JornadaLaboralDiariaController::class);
 
@@ -123,4 +126,3 @@ Route::resource('departamentos',DepartamentoController::class);
 
 //Ruta para obtener el departamento segun el nombre
 Route::get('departamentos/buscar/{nombre_departamento}',[DepartamentoController::class,'getDepartamentoPorNombre']);
-

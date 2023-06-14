@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 //use App\Models\Producto;
 //use App\Models\UnidadDeMedida;
 use App\Models\PrecioUnidadDeMedida;
+use Illuminate\Auth\Events\Validated;
 //use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -55,6 +56,48 @@ class PrecioUnidadDeMedidaController extends Controller
         }
     }
 
+    public function updateList(Request $request,$codigo_de_barra){
+        $rules = [
+            "lista_precios_unidades" => "array",
+            "codigo_barra_actualizado"=> "string|required",
+        ];
+        $validator = Validator::make($request->all(),$rules);
+        if(!$validator->fails()){
+            $codigoBarraProductoAntiguo = $codigo_de_barra;
+            $codigoBarraProducto = $request->codigo_barra_actualizado;
+            $listaPreciosUnidades = $request->lista_precios_unidades;
+            PrecioUnidadDeMedida::where("codigo_barra_producto",$codigoBarraProductoAntiguo)->delete();
+            foreach($listaPreciosUnidades as $precioUnidadProducto){
+
+                $precioUnidadDeMedida = new PrecioUnidadDeMedida();
+
+                $precioUnidadDeMedida->codigo_barra_producto = $codigoBarraProducto;
+                $precioUnidadDeMedida->id_unidad_de_medida = $precioUnidadProducto["idUnidadMedida"];
+                $precioUnidadDeMedida->cantidad_producto = $precioUnidadProducto["cantidad"];
+                $precioUnidadDeMedida->precio_unidad_medida_producto = $precioUnidadProducto["precio"];
+
+                $precioUnidadDeMedida->save();
+            }
+            return response()->json([
+                'resultado'=>true,
+                'mensaje'=>'Se actualizaron los datos con exito'
+            ],200);
+        }
+        else{
+            return response()->json(
+                [
+                    "resultado" => false,
+                    "mensaje"=> $validator->errors()->all()
+                ]
+            );
+        }
+        return response()->json(
+            [
+                "resultado"=>true,
+                "mensaje" => "si funciona"
+            ]
+        );
+    }
     /**
      * Store a newly created resource in storage.
      */
