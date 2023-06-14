@@ -17,6 +17,7 @@ return new class extends Migration
             $table->decimal('total_venta', 8, 2);
             $table->decimal('total_iva', 8, 2);
             $table->string('nombre_cliente_venta', 30)->nullable();
+            $table->boolean('estado_venta')->default(true);
         });
     }
 
