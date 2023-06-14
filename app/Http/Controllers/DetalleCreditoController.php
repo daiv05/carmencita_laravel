@@ -173,4 +173,85 @@ class DetalleCreditoController extends Controller
             ], 400);
         }
     }
+
+    public function register_detalle_credito(Request $request, int $id_credito)
+    {
+        //
+        $rules = [
+            'codigo_barra_producto' => 'required|string|max:13',
+            'id_creditofiscal' => 'required|integer',
+            'cantidad_producto_credito' => 'required|integer',
+            'subtotal_detalle_credito' => 'required|decimal:0,2'
+        ];
+
+        for ($i = 0; $i < count($request->detalles); $i++) {
+            $validator = Validator::make($request->detalles[$i], $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'respuesta' => false,
+                    'mensaje' => $validator->errors()->all(),
+                ], 400);
+            }
+            //Validamos si existe la venta
+            $credito = CreditoFiscal::find($id_credito);
+            error_log($credito);
+            if (!isset($credito)) {
+                error_log('Credito no encontrado');
+                return response()->json([
+                    'respuesta' => false,
+                    'mensaje' => 'No existe el Credito Fiscal',
+                ], 400);
+            }
+            //Validamos si existe el producto y luego si hay stock
+            $producto = Producto::find($request->detalles[$i]['codigo_barra_producto']);
+            if (!isset($producto)) {
+                error_log('Producto no encontrado');
+                return response()->json([
+                    'respuesta' => false,
+                    'mensaje' => 'No existe el producto',
+                ], 400);
+            } else {
+                if ($producto->cantidad_producto_disponible < $request->detalles[$i]['cantidad_producto_credito']) {
+                    error_log('No hay stock suficiente');
+                    return response()->json([
+                        'respuesta' => false,
+                        'mensaje' => 'Stock insuficiente: ' . $producto->nombre_producto. ' (' . $producto->cantidad_producto_disponible . ') Unidades disponibles',
+                    ], 400);
+                }
+            }
+
+            //Crear detalle de credito con id de credito del request
+            $detalle = DetalleCredito::create([
+                'id_creditofiscal' => $id_credito,
+                'codigo_barra_producto' => $request->detalles[$i]['codigo_barra_producto'],
+                'cantidad_producto_credito' => $request->detalles[$i]['cantidad_producto_credito'],
+                'subtotal_detalle_credito' => $request->detalles[$i]['subtotal_detalle_credito'],
+            ]);
+            $detalle->save();
+
+            error_log("el detalle de credito es: \n");
+            error_log($detalle);
+
+            if (isset($detalle)) {
+                error_log('Detalle creado correctamente');
+                // Actualizar stock del producto
+                $producto->cantidad_producto_disponible = $producto->cantidad_producto_disponible - $detalle->cantidad_producto_credito;
+                $producto->update(['cantidad_producto_disponible' => $producto->cantidad_producto_disponible]);
+                //Log::info('Stock actualizado: '. $request->cantidad_producto);
+            } else {
+                error_log('Error al crear el detalle de credito');
+                // En caso de error, eliminar el registro de credito creado
+                $credito->delete();
+                return response()->json([
+                    'respuesta' => false,
+                    'mensaje' => 'Error al crear el detalle de credito',
+                ], 400);
+            }
+        }
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Detalle de credito creado correctamente',
+        ], 201);
+    }
 }
