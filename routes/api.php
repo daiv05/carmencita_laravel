@@ -12,6 +12,7 @@ use App\Http\Controllers\CreditoFiscalController;
 use App\Http\Controllers\DetalleCreditoController;
 use App\Http\Controllers\MunicipioController;
 use App\Http\Controllers\DepartamentoController;
+use App\Models\CreditoFiscal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VentasCFController;
@@ -95,5 +96,9 @@ Route::resource('departamentos',DepartamentoController::class);
 //Ruta para obtener el departamento segun el nombre
 Route::get('departamentos/buscar/{nombre_departamento}',[DepartamentoController::class,'getDepartamentoPorNombre']);
 
+//Ruta para registrar una Venta con DetalleVenta junto
+Route::post('ventas/registrar',[VentaController::class,'register_venta_detalle']);
 
+//Ruta para registrar un Credito con DetalleCredito junto
+Route::post('creditos/registrar',[CreditoFiscalController::class,'register_credito_detalle']);
 
