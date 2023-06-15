@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ActualizarProductoRequest;
 use App\Models\Producto;
 use Error;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 
 class ProductoController extends Controller
@@ -17,6 +20,9 @@ class ProductoController extends Controller
     public function index()
     {
         // Se retornan todos los productos, sin ningún filtro en forma de JSON
+        $rules = [
+            "codigo_barra_producto" => 'required|string',
+        ];
         return Producto::all();
         
     }
@@ -29,7 +35,7 @@ class ProductoController extends Controller
 
         // Se definen las reglas de validación para los campos del formulario
         $rules = [
-            'codigo_barra_producto' => 'required|unique:producto|string|max:10', // El código de barras debe ser único
+            'codigo_barra_producto' => 'required|unique:producto|string|max:13', // El código de barras debe ser único
             'nombre_producto' => 'required|string|max:50',
             'cantidad_producto_disponible' => 'required|integer',
             'precio_unitario' => 'required|decimal:0,2',
@@ -56,14 +62,20 @@ class ProductoController extends Controller
             $producto->esta_disponible = $request->esta_disponible;
             //$producto = Producto::create($request->all());
             //guardamos la foto y obtenemos la ruta en donde se guardo
-            $ruta = $request->foto->store("public/productos");
-            $producto->foto = $ruta;
+            if($request->foto){
+                $ruta = $request->foto->store("public/productos");
+                $producto->foto = $ruta;
+            }
+            else{
+                $producto->foto = "";
+            }
             $producto->save();
             // Se valida que el producto se haya creado correctamente
             if (isset($producto)){
                 return response()->json([
                     'respuesta' => true,
                     'mensaje' => 'Producto creado correctamente',
+                    'foto' => $request->foto
                 ], 201);
             }
             // Si el producto no se creó correctamente, se retorna un mensaje de error
@@ -118,17 +130,38 @@ class ProductoController extends Controller
     public function update(Request $request, Producto $producto)
     {
         // Se definen las reglas de validación para los campos a actualizar igual que en el método store
-        $rules = [
-            'codigo_barra_producto' => 'required|unique:producto|string|max:10', // El código de barras debe ser único
+      /*  $rules = [
+            'codigo_barra_producto' => [
+                'string',
+                'max:10',
+                Rule::unique('Producto','codigo_barra_producto')->ignore($this->route("codigo_barra_producto"),'codigo_barra_producto'),
+            ], // El código de barras debe ser único
             'nombre_producto' => 'required|string|max:50',
             'cantidad_producto_disponible' => 'required|integer',
             'precio_unitario' => 'required|decimal:0,2',
             'esta_disponible' => 'required|boolean',
             'foto'=>'image'
+
         ];
+
+        ];*/
+
         // Se crea una instancia del validador, para validar los datos ingresados utilizando las reglas definidas
-        $validator = Validator::make($request->all(), $rules);
+        //$validator = Validator::make($request->all(), $rules);
         // Se valida que la variable $validator no tenga errores al validar los datos ingresados
+        $controlFoto = 0;
+        $validator = Validator::make($request->all(),[
+            'codigo_barra_producto' => [
+                'string',
+                'max:10',
+                Rule::unique('Producto')->ignore($producto,'codigo_barra_producto'),
+            ], // El código de barras debe ser único
+            'nombre_producto' => 'required|string|max:50',
+            'cantidad_producto_disponible' => 'required|integer',
+            'precio_unitario' => 'required|decimal:0,2',
+            'esta_disponible' => 'required|boolean',
+            'foto'=>'image'
+        ]);
         if ($validator->fails()){
             return response()->json([
                 'respuesta' => false,
@@ -136,14 +169,33 @@ class ProductoController extends Controller
             ], 400);
         }
         // Si los datos ingresados son correctos, se actualiza el producto
-       if ($request->validate($rules)){
+       else{
             // Se actualiza el producto con los datos ingresados
-            $producto->update($request->all());
+            $producto->codigo_barra_producto = $request->codigo_barra_producto;
+            $producto->nombre_producto = $request->nombre_producto;
+            $producto->cantidad_producto_disponible = $request->cantidad_producto_disponible;
+            $producto->precio_unitario = $request->precio_unitario;
+            $producto->esta_disponible= $request->esta_disponible;
+
+            if($request->foto){
+                if($producto->foto == ""){
+                    $ruta = $request->foto->store("public/productos");
+                    $producto->foto = $ruta;
+                }
+                else if($producto->foto!=""){
+                    Storage::delete($producto->foto);
+                    $ruta = $request->foto->store("public/productos");
+                    $producto->foto = $ruta;
+                }
+            }
+            $producto->save();
+                        //$producto->update($request->all());
             // Se valida que el producto se haya actualizado correctamente
             if (isset($producto)){
                 return response()->json([
                     'respuesta' => true,
                     'mensaje' => 'Producto actualizado correctamente',
+                    "guardo_foto" => $controlFoto
                 ], 200);
             }
             // Si el producto no se actualizó correctamente, se retorna un mensaje de error
@@ -153,17 +205,10 @@ class ProductoController extends Controller
                     'mensaje' => 'Error al actualizar el producto',
                 ], 400);
             }
-        }
-        // Si los datos ingresados no son correctos, se retorna un mensaje de error
-        else{
-            return response()->json([
-                'respuesta' => false,
-                'mensaje' => 'Error en los datos ingresados',
-            ], 400);
-        }
+            }
+                // Si los datos ingresados no son correctos, se retorna un mensaje de error
 
-
-    }
+        }
 
     /**
      * Remove the specified resource from storage.
@@ -188,6 +233,7 @@ class ProductoController extends Controller
         }
     }
 
+
     //Método para actualizar el estado de un producto
     public function updateEstado(Producto $producto)
     {
@@ -209,5 +255,77 @@ class ProductoController extends Controller
             'empleado_activo'=>$producto->esta_disponible,
         ]);        
         
+    }
+
+    // Obtener Producto por nombre
+    function getProductoPorNombre($nombre_producto)
+    {
+        // Buscar el producto por nombre
+        $producto = Producto::where('nombre_producto', $nombre_producto)->get();
+        // Se valida que el producto no este vacio
+        if(!($producto->isEmpty())){
+            // Si el producto existe, se retorna el producto en formato JSON
+            return response()->json([
+                'respuesta' => true,
+                'producto' => $producto->load('precioUnidadDeMedida')
+            ], 200);
+        }
+        // Si no se encuentra el producto, se retorna un mensaje de error
+        else{
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Error al obtener el producto',
+            ], 400);
+        }
+    }
+
+    //Obtener todos los nombres de los productos
+    public function getNombresProductos()
+    {
+        // Se obtienen todos los productos
+        $productos = Producto::all();
+        // Se valida que la lista de productos no este vacia
+        if(!($productos->isEmpty())){
+            // Se crea una lista con los nombres de los productos
+            $nombres_productos = array();
+            foreach ($productos as $producto){
+                array_push($nombres_productos, $producto->nombre_producto);
+            }
+            // Se retorna la lista de nombres de productos en formato JSON
+            return response()->json([
+                'respuesta' => true,
+                'nombres_productos' => $nombres_productos
+            ], 200);
+        }
+        // Si no se encuentra el producto, se retorna un mensaje de error
+        else{
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Error al obtener los nombres de los productos',
+            ], 400);
+        }
+    }
+
+    // Obtener Producto por código de barras, junto a todos sus detalles
+    public function getProductoConUnidadMedida($codigo_barra_producto)
+    {
+        // Buscar el producto por código de barras
+        $producto = Producto::where('codigo_barra_producto', $codigo_barra_producto)->get();
+        // Se valida que el producto no este vacio
+        if(!($producto->isEmpty())){
+            // Si el producto existe, se retorna el producto en formato JSON
+            return response()->json([
+                'respuesta' => true,
+                'producto' => $producto->load('precioUnidadDeMedida')
+            ], 200);
+        }
+        // Si no se encuentra el producto, se retorna un mensaje de error
+        else{
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Error al obtener el producto',
+            ], 400);
+        }
+
     }
 }

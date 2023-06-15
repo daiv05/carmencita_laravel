@@ -28,7 +28,7 @@ class DetalleCreditoController extends Controller
     {
         //
         $rules = [
-            'codigo_barra_producto' => 'required|string|max:10',
+            'codigo_barra_producto' => 'required|string|max:13',
             'id_creditofiscal' => 'required|integer',
             'cantidad_producto_credito' => 'required|integer',
             'subtotal_detalle_credito' => 'required|decimal:0,2'
@@ -70,7 +70,7 @@ class DetalleCreditoController extends Controller
             return response()->json([
                 'respuesta' => true,
                 'mensaje' => 'Detalle de credito fiscal encontrado',
-                'datos' => $detalleCredito
+                'datos' => $detalleCredito->load('creditoFiscal', 'producto')
             ], 200);
         } else {
             return response()->json([
@@ -87,7 +87,7 @@ class DetalleCreditoController extends Controller
     {
         //
         $rules = [
-            'codigo_barra_producto' => 'string|max:10',
+            'codigo_barra_producto' => 'string|max:13',
             'id_creditofiscal' => 'integer',
             'cantidad_producto_credito' => 'integer',
             'subtotal_detalle_credito' => 'decimal:0,2'

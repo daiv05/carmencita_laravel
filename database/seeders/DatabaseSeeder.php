@@ -3,6 +3,14 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\CreditoFiscal;
+<<<<<<< HEAD
+use App\Models\JornadaLaboralDiaria;
+=======
+use App\Models\Municipio;
+use App\Models\UnidadDeMedida;
+>>>>>>> d7f327fd8858bfb5071dc3c279a296f8564cadcc
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -18,5 +26,27 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+
+        
+        // PARA LLAMAR A LOS SEEDERS, EN ORDEN DEPENDIENTE DE LAS FOREIGN KEYS
+
+        $this->call(UnidadDeMedidaSeeder::class);
+        $this->call(DepartamentoSeeder::class);
+        $this->call(MunicipioSeeder::class);
+        $this->call(ClienteSeeder::class);
+        $this->call(ProductoSeeder::class);
+        $this->call(PrecioUnidadDeMedidaSeeder::class);
+        $this->call(VentaSeeder::class);
+        $this->call(DetalleVentaSeeder::class);
+        $this->call(CreditoFiscalSeeder::class);
+        $this->call(DetalleCreditoSeeder::class);
+        $this->call(SexoSeeder::class);
+
+        $this->call(EstadoFamiliarSeeder::class);
+        $this->call(NacionalidadSeeder::class);
+        
+        $this->call(JornadaLaboralDiariaSeeder::class);
+        $this->call(CargoSeeder::class);
+
     }
 }

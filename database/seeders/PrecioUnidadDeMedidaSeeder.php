@@ -13,6 +13,7 @@ class PrecioUnidadDeMedidaSeeder extends Seeder
      */
     public function run(): void
     {
+
         // Crear registros de precios de unidades de medida
         PrecioUnidadDeMedida::create([
             'codigo_barra_producto' => '750894641833',
@@ -48,5 +49,45 @@ class PrecioUnidadDeMedidaSeeder extends Seeder
             'cantidad_producto' => 20,
             'precio_unidad_medida_producto' => 39.00
         ]);
+
+        //
+
+        $precio_unidad_de_medida = [
+            [
+                'precio_unidad_medida_producto' => 3.00,
+                'id_unidad_de_medida' => 1,
+                'codigo_barra_producto' => "750894641833",
+                'cantidad_producto' => 3,
+            ],
+            [
+                'precio_unidad_medida_producto' => 17.00,
+                'id_unidad_de_medida' => 2,
+                'codigo_barra_producto' => "750894641833",
+                'cantidad_producto' => 18,
+            ],
+            [
+                'precio_unidad_medida_producto' => 10.90,
+                'id_unidad_de_medida' => 2,
+                'codigo_barra_producto' => "7411001800903",
+                'cantidad_producto' => 6,
+            ],
+            [
+                'precio_unidad_medida_producto' => 12.80,
+                'id_unidad_de_medida' => 2,
+                'codigo_barra_producto' => "7411001802341",
+                'cantidad_producto' => 12,
+            ],
+            [
+                'precio_unidad_medida_producto' => 39.00,
+                'id_unidad_de_medida' => 2,
+                'codigo_barra_producto' => "7413100033053",
+                'cantidad_producto' => 20,
+            ]
+        ];
+
+        foreach ($precio_unidad_de_medida as $precio) {
+            PrecioUnidadDeMedida::create($precio);
+        }
+
     }
 }

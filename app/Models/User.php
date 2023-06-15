@@ -18,6 +18,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'id_empleado',
         'name',
         'email',
         'password',
@@ -42,4 +43,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function empleado(){
+        return $this->belongsTo("Empleado","id_empleado","id_empleado");
+    }
 }

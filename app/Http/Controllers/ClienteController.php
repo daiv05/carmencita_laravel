@@ -17,7 +17,7 @@ class ClienteController extends Controller
         return response()->json([
             'respuesta' => true,
             'mensaje' => 'Lista de clientes',
-            'datos' => Cliente::all(),
+            'datos' => Cliente::with('municipio')->get(),
         ], 200);
     }
 
@@ -28,12 +28,12 @@ class ClienteController extends Controller
     {
         $rules = [
             'nombre_cliente' => 'required|string|max:50',
-            'apellido_cliente' => 'required|string|max:50',
-            'departamento_cliente' => 'required|string|max:50',
             'direccion_cliente' => 'required|string|max:50',
-            'dui_cliente' => 'string|max:10',
-            'nit_cliente' => 'string|max:20',
+            'dui_cliente' => 'nullable|string|max:10',
+            'nit_cliente' => 'nullable|string|max:20',
             'nrc_cliente' => 'required|string|max:20',
+            'id_municipio' => 'required|integer',
+            'distintivo_cliente' => 'required|string|max:50',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -73,7 +73,7 @@ class ClienteController extends Controller
             return response()->json([
                 'respuesta' => true,
                 'mensaje' => 'Cliente encontrado',
-                'datos' => $cliente,
+                'datos' => $cliente->load('municipio'),
             ], 200);
         } else {
             return response()->json([
@@ -91,12 +91,12 @@ class ClienteController extends Controller
         //
         $rules = [
             'nombre_cliente' => 'string|max:50',
-            'apellido_cliente' => 'string|max:50',
-            'departamento_cliente' => 'string|max:50',
+            'municipio_cliente' => 'integer',
             'direccion_cliente' => 'string|max:50',
             'dui_cliente' => 'max:10',
             'nit_cliente' => 'max:20',
             'nrc_cliente' => 'string|max:20',
+            'distintivo_cliente' => 'string|max:50',
         ];
         
         $validator = Validator::make($request->all(), $rules);
@@ -141,6 +141,24 @@ class ClienteController extends Controller
                 'respuesta' => false,
                 'mensaje' => 'Error al eliminar el cliente',
             ]);
+        }
+    }
+
+    //Lista de identificadores de clientes.
+    public function getListaClientesIdentificadores()
+    {
+        $clientes = Cliente::select('id_cliente', 'distintivo_cliente')->get();
+        if (isset($clientes)) {
+            return response()->json([
+                'respuesta' => true,
+                'mensaje' => 'Lista de clientes',
+                'datos' => $clientes,
+            ], 200);
+        } else {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Error al obtener la lista de clientes',
+            ], 400);
         }
     }
 }
