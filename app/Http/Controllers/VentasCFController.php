@@ -61,7 +61,7 @@ class VentasCFController extends Controller
     }
 
     public function obtenerCreditoAndDetalle($id_creditofiscal){
-        $CFSales = CreditoFiscal::with('cliente','municipio.departamento','detallecredito.producto')->findOrFail($id_creditofiscal);
+        $CFSales = CreditoFiscal::with('cliente.municipio','cliente.municipio.departamento','detallecredito.producto')->findOrFail($id_creditofiscal);
         return response()->json($CFSales);
     }
 }
