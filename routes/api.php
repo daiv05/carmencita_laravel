@@ -102,3 +102,11 @@ Route::post('ventas/registrar',[VentaController::class,'register_venta_detalle']
 //Ruta para registrar un Credito con DetalleCredito junto
 Route::post('creditos/registrar',[CreditoFiscalController::class,'register_credito_detalle']);
 
+//Para obtener los creditos fiscales
+Route::get('creditos',[VentasCFController::class,'indexCF']);
+
+//Para buscar un credito fiscal especifico	
+Route::post('creditos/buscar',[VentasCFController::class,'buscarCreditoF']);
+
+//Ruta para obtene un credito fiscal especifico y sus detalles
+Route::get('creditos_detalle/{id_credito}',[VentasCFController::class,'obtenerCreditoAndDetalle']);
