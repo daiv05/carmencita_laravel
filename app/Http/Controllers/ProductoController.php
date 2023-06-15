@@ -328,4 +328,26 @@ class ProductoController extends Controller
         }
 
     }
+
+    // Paginación de productos
+    public function getPaginacionProductos($cantidad_productos)
+    {
+        // Se obtienen todos los productos
+        $productos = Producto::paginate($cantidad_productos);
+        // Se valida que la lista de productos no este vacia
+        if(!($productos->isEmpty())){
+            // Se retorna la lista de productos en formato JSON
+            return response()->json([
+                'respuesta' => true,
+                'productos' => $productos
+            ], 200);
+        }
+        // Si no se encuentra el producto, se retorna un mensaje de error
+        else{
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Error al obtener los productos',
+            ], 400);
+        }
+    }
 }
