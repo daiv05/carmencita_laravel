@@ -161,3 +161,8 @@ Route::post('creditos/buscar',[VentasCFController::class,'buscarCreditoF']);
 //Ruta para obtene un credito fiscal especifico y sus detalles
 Route::get('creditos_detalle/{id_credito}',[VentasCFController::class,'obtenerCreditoAndDetalle']);
 
+//Ruta para actualizar estado de una venta
+Route::put('ventaCF/updateEstado/{ventaCF}',[VentasCFController::class,'updateEstado']);
+
+//Ruta para actualizar estado de credito fiscal
+Route::put('creditos/updateEstado/{CFSales}',[VentasCFController::class,'updateEstadoCredito']);
