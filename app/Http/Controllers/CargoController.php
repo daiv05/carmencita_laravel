@@ -6,7 +6,8 @@ use App\Http\Requests\ActualizarCargoRequest;
 use App\Http\Requests\GuardarCargoRequest;
 use Illuminate\Http\Request;
 use App\Models\Cargo;
-
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 class CargoController extends Controller
 {
     /**
@@ -69,8 +70,42 @@ class CargoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ActualizarCargoRequest $request, string $id)
+    public function update(Request $request, Cargo $cargo)
     {
+        $rules = [
+            "nombre_cargo"=>[
+                "required",
+                "string",
+                Rule::unique('Cargo')->ignore($cargo)
+            ],
+            "descripcion_cargo"=>"required|string",
+            "salario_cargo"=>"required|numeric",
+            "id_jornada_laboral_diaria"=>"required",
+        ];
+        $validator = Validator::make($request->all(),$rules);
+        if($validator->fails()){
+            return response()->json([
+                "respuesta"=>false,
+                "mensaje"=>$validator->errors()->all()
+            ]);
+        }else{
+            if(isset($cargo)){
+                $cargo->update($request->all());
+                return response()->json([
+                    "respuesta"=>true,
+                    "mensaje"=>"Cargo Actualizado correctamente"
+                ]);
+            }
+            else{
+                return response()->json(
+                    [
+                        "respuesta"=>false,
+                        "mensaje" => "El cargo que quiere actualizar no existe"
+                    ]
+                );
+            }
+        }
+        /*
         $cargo = Cargo::find($id);
         if(isset($cargo)){
             if($request->validated()){
@@ -81,9 +116,10 @@ class CargoController extends Controller
                 ],200);
             }
             else{
+                $request->fails();
                 return response()->json([
                     'respuesta' => false,
-                    'mensaje' => 'Error en los datos ingresados',
+                    'mensaje' => $request->errors()->all()
                 ]);
             }
         }
@@ -92,7 +128,7 @@ class CargoController extends Controller
                 'respuesta' => false,
                 'mensaje' => 'El cargo que desea actualizar no existe',
             ]);
-        }
+        }*/
     }
 
     /**

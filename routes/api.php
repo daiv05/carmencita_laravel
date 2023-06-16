@@ -42,9 +42,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('pacientes',[JornadaLaboralDiariaController::class,'index']);
 
-Route::get('cargos',[CargoController::class,'index']);
+//Route::get('cargos',[CargoController::class,'index']);
 
-Route::get('cargos/{id_cargo}',[CargoController::class,'show']);
+//Route::get('cargos/{id_cargo}',[CargoController::class,'show']);
 
 Route::get('sexos',[SexoController::class,'index']);
 
@@ -54,7 +54,7 @@ Route::get('nacionalidades',[NacionalidadController::class,'index']);
 
 Route::post('empleado',[EmpleadoController::class,'store']);
 
-Route::post('cargos',[CargoController::class,'store']);
+//Route::post('cargos',[CargoController::class,'store']);
 
 Route::get('empleado/{empleado}',[EmpleadoController::class,'show']);
 
