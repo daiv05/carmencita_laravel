@@ -17,6 +17,7 @@ return new class extends Migration
             $table->date('fecha_credito');
             $table->decimal('total_credito', 8, 2);
             $table->decimal('total_iva_credito', 8, 2);
+            $table->boolean('estado_credito')->default(true);
 
             $table->foreign('id_cliente')
                 ->references('id_cliente')
@@ -32,5 +33,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('CreditoFiscal');
+
+        Schema::table('CreditoFiscal', function (Blueprint $table) {
+            $table->dropColum(['estado_credito']);
+        });
     }
+    
 };
