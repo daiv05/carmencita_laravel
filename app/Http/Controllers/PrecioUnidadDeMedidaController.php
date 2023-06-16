@@ -176,7 +176,7 @@ class PrecioUnidadDeMedidaController extends Controller
 
             // Se definen las reglas de validación
             $rules = [
-                'codigo_barra_producto' => 'required|string|max:10',
+                'codigo_barra_producto' => 'required|string|max:13',
                 'id_unidad_de_medida' => 'required|integer',
                 'cantidad_producto' => 'required|integer',
                 'precio_unidad_medida_producto' => 'required|decimal:0,2',

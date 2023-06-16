@@ -165,7 +165,7 @@ class ProductoController extends Controller
         $validator = Validator::make($request->all(),[
             'codigo_barra_producto' => [
                 'string',
-                'max:10',
+                'max:13',
                 Rule::unique('Producto')->ignore($producto,'codigo_barra_producto'),
             ], // El código de barras debe ser único
             'nombre_producto' => 'required|string|max:50',
