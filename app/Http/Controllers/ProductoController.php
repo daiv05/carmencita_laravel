@@ -145,6 +145,7 @@ class ProductoController extends Controller
             'precio_unitario' => 'required|decimal:0,2',
             'esta_disponible' => 'required|boolean',
             'foto'=>'image'
+<<<<<<< HEAD
         ];
 
          /*    'foto'=>'required'
@@ -153,6 +154,8 @@ class ProductoController extends Controller
             'cantidad_producto_disponible' => 'nullable|integer',
             'precio_unitario' => 'nullable|decimal:0,2',
             'esta_disponible' => 'nullable|boolean',
+
+        ];
         ];*/
 
         // Se crea una instancia del validador, para validar los datos ingresados utilizando las reglas definidas
@@ -242,8 +245,32 @@ class ProductoController extends Controller
         }
     }
 
+
+    //Método para actualizar el estado de un producto
+    public function updateEstado(Producto $producto)
+    {
+        //$producto = Producto::find($producto->codigo_barra_producto);
+
+        if($producto->esta_disponible)
+        {
+            $producto->esta_disponible = false;
+        }
+        else
+        {
+            $producto->esta_disponible = true;
+        }
+
+        $producto->update();
+
+        return response()->json([
+            'status'=>true,
+            'empleado_activo'=>$producto->esta_disponible,
+        ]);        
+        
+    }
+
     // Obtener Producto por nombre
-    public function getProductoPorNombre($nombre_producto)
+    function getProductoPorNombre($nombre_producto)
     {
         // Buscar el producto por nombre
         $producto = Producto::where('nombre_producto', $nombre_producto)->get();
@@ -309,6 +336,29 @@ class ProductoController extends Controller
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => 'Error al obtener el producto',
+            ], 400);
+        }
+
+    }
+
+    // Paginación de productos
+    public function getPaginacionProductos($cantidad_productos)
+    {
+        // Se obtienen todos los productos
+        $productos = Producto::paginate($cantidad_productos);
+        // Se valida que la lista de productos no este vacia
+        if(!($productos->isEmpty())){
+            // Se retorna la lista de productos en formato JSON
+            return response()->json([
+                'respuesta' => true,
+                'productos' => $productos
+            ], 200);
+        }
+        // Si no se encuentra el producto, se retorna un mensaje de error
+        else{
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Error al obtener los productos',
             ], 400);
         }
     }

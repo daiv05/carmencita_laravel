@@ -74,6 +74,11 @@ Route::resource('productos',ProductoController::class);
 Route::get("productos/{producto}/foto",function (Producto $producto){
     return response()->download(public_path(Storage::url($producto->foto)),$producto->nombre_producto);
 });
+//Ruta para paginacion
+Route::get('productos/paginacion/{cantidad_productos}',[ProductoController::class,'getPaginacionProductos']);
+
+//Ruta para actualizar estado de producto
+Route::put('productos/updateEstado/{producto}',[ProductoController::class,'updateEstado']);
 
 //Rutas para unidades de medida
 Route::resource('unidades_de_medida',UnidadDeMedidaController::class);
