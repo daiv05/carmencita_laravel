@@ -17,18 +17,13 @@ use App\Models\Producto;
 use App\Http\Controllers\DetalleCreditoController;
 use App\Http\Controllers\MunicipioController;
 use App\Http\Controllers\DepartamentoController;
-<<<<<<< HEAD
-use Database\Seeders\ProductoSeeder;
-=======
+
 use App\Models\CreditoFiscal;
->>>>>>> ventas_v1
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-<<<<<<< HEAD
 use Illuminate\Support\Facades\Storage;
-=======
 use App\Http\Controllers\VentasCFController;
->>>>>>> c260dffc8a818eb3c28ad0a50f29351251a91b42
+
 
 /*
 |--------------------------------------------------------------------------
@@ -141,13 +136,11 @@ Route::resource('municipios',MunicipioController::class);
 Route::resource('departamentos',DepartamentoController::class);
 
 //Ruta para obtener el departamento segun el nombre
-<<<<<<< HEAD
-Route::get('departamentos/buscar/{nombre_departamento}',[DepartamentoController::class,'getDepartamentoPorNombre']);
-=======
 Route::get('departamentos/buscar/{nombre_departamento}',[DepartamentoController::class,'getDepartamentoPorNombre']);
 
-<<<<<<< HEAD
-=======
+Route::get('departamentos/buscar/{nombre_departamento}',[DepartamentoController::class,'getDepartamentoPorNombre']);
+
+
 //Ruta para registrar una Venta con DetalleVenta junto
 Route::post('ventas/registrar',[VentaController::class,'register_venta_detalle']);
 
@@ -162,5 +155,4 @@ Route::post('creditos/buscar',[VentasCFController::class,'buscarCreditoF']);
 
 //Ruta para obtene un credito fiscal especifico y sus detalles
 Route::get('creditos_detalle/{id_credito}',[VentasCFController::class,'obtenerCreditoAndDetalle']);
->>>>>>> c260dffc8a818eb3c28ad0a50f29351251a91b42
->>>>>>> ventas_v1
+
