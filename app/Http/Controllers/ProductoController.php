@@ -129,12 +129,20 @@ class ProductoController extends Controller
     {
         // Se definen las reglas de validación para los campos a actualizar igual que en el método store
         $rules = [
+<<<<<<< HEAD
             'codigo_barra_producto' => 'required|unique:producto|string|max:10', // El código de barras debe ser único
             'nombre_producto' => 'required|string|max:50',
             'cantidad_producto_disponible' => 'required|integer',
             'precio_unitario' => 'required|decimal:0,2',
             'esta_disponible' => 'required|boolean',
             'foto'=>'required'
+=======
+            'codigo_barra_producto' => 'nullable|unique:producto|string|max:13', // El código de barras debe ser único
+            'nombre_producto' => 'nullable|string|max:50',
+            'cantidad_producto_disponible' => 'nullable|integer',
+            'precio_unitario' => 'nullable|decimal:0,2',
+            'esta_disponible' => 'nullable|boolean',
+>>>>>>> c260dffc8a818eb3c28ad0a50f29351251a91b42
         ];
         // Se crea una instancia del validador, para validar los datos ingresados utilizando las reglas definidas
         $validator = Validator::make($request->all(), $rules);

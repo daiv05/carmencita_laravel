@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\CreditoFiscal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\DetalleCreditoController;
+use App\Models\Cliente;
 
 class CreditoFiscalController extends Controller
 {
@@ -49,6 +51,7 @@ class CreditoFiscalController extends Controller
                 return response()->json([
                     'respuesta' => true,
                     'mensaje' => 'Credito fiscal creado correctamente',
+                    'datos' => $creditoFiscal->id_creditofiscal,
                 ], 201);
             } else {
                 return response()->json([
@@ -133,6 +136,46 @@ class CreditoFiscalController extends Controller
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => 'Error al eliminar el credito fiscal',
+            ], 400);
+        }
+    }
+
+
+
+    public function register_credito_detalle(Request $request)
+    {
+        $rules = [
+            'id_cliente' => 'required|integer',
+            'fecha_credito' => 'required|date',
+            'total_credito' => 'required|decimal:0,2',
+            'total_iva_credito' => 'required|decimal:0,2',
+        ];
+
+        $validator = Validator::make($request->credito, $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => $validator->errors()->all()
+            ], 400);
+        }
+
+        // Validar que exista el cliente
+        $cliente = Cliente::find($request->credito['id_cliente']);
+        if (!isset($cliente)) {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'El cliente no existe'
+            ], 400);
+        }
+
+        $credito = CreditoFiscal::create($request->credito);
+        if (isset($credito)) {
+            $detalle_credito = new DetalleCreditoController();
+            return $detalle_credito->register_detalle_credito($request, $credito->id_creditofiscal);
+        } else {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Error al crear el credito',
             ], 400);
         }
     }

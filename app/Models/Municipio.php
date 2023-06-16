@@ -28,4 +28,9 @@ class Municipio extends Model
     {
         return $this->belongsTo(Departamento::class, 'id_departamento', 'id_departamento');
     }
+
+    public function creditoFiscal()
+    {
+        return $this->hasMany(CreditoFiscal::class);
+    }
 }
