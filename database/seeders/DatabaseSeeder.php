@@ -5,12 +5,9 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\CreditoFiscal;
-<<<<<<< HEAD
 use App\Models\JornadaLaboralDiaria;
-=======
 use App\Models\Municipio;
 use App\Models\UnidadDeMedida;
->>>>>>> d7f327fd8858bfb5071dc3c279a296f8564cadcc
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
