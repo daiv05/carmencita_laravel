@@ -269,13 +269,6 @@ class ProductoController extends Controller
         $producto = Producto::where('nombre_producto', $nombre_producto)->get();
         // Se valida que el producto no este vacio
         if (!($producto->isEmpty())) {
-            // Validar que el producto este disponible
-            if ($producto->esta_disponible == false) {
-                return response()->json([
-                    'respuesta' => false,
-                    'mensaje' => 'Producto no disponible',
-                ], 400);
-            }
             return response()->json([
                 'respuesta' => true,
                 'producto' => $producto->load('precioUnidadDeMedida')
