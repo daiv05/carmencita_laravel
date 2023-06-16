@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Venta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\DetalleVentaController;
 
 class VentaController extends Controller
 {
@@ -35,22 +36,21 @@ class VentaController extends Controller
             'nombre_cliente_venta' => 'nullable|string|max:30',
         ];
         $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => $validator->errors()->all()
             ], 400);
         }
-        if ($request->validate($rules)){
+        if ($request->validate($rules)) {
             $venta = Venta::create($request->all());
-            if (isset($venta)){
+            if (isset($venta)) {
                 return response()->json([
                     'respuesta' => true,
                     'mensaje' => 'Venta creada correctamente',
                     'datos' => $venta->id_venta,
                 ], 201);
-            }
-            else{
+            } else {
                 return response()->json([
                     'respuesta' => false,
                     'mensaje' => 'Error al crear la venta',
@@ -65,14 +65,13 @@ class VentaController extends Controller
     public function show(Venta $venta)
     {
         //Validar si existe el registro
-        if (isset($venta)){
+        if (isset($venta)) {
             return response()->json([
                 'respuesta' => true,
                 'mensaje' => 'Venta encontrada',
                 'datos' => $venta,
             ], 200);
-        }
-        else{
+        } else {
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => 'Venta no encontrada',
@@ -95,22 +94,21 @@ class VentaController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails()){
+        if ($validator->fails()) {
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => $validator->errors()->all()
             ], 400);
         }
 
-        if ($request->validate($rules)){
+        if ($request->validate($rules)) {
             $venta->update($request->all());
-            if (isset($venta)){
+            if (isset($venta)) {
                 return response()->json([
                     'respuesta' => true,
                     'mensaje' => 'Venta actualizada correctamente',
                 ], 201);
-            }
-            else{
+            } else {
                 return response()->json([
                     'respuesta' => false,
                     'mensaje' => 'Error al actualizar la venta',
@@ -125,17 +123,47 @@ class VentaController extends Controller
     public function destroy(Venta $venta)
     {
         //
-        if (isset($venta)){
+        if (isset($venta)) {
             $venta->delete();
             return response()->json([
                 'respuesta' => true,
                 'mensaje' => 'Venta eliminada correctamente',
             ], 200);
-        }
-        else{
+        } else {
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => 'Error al eliminar la venta',
+            ], 400);
+        }
+    }
+
+
+    public function register_venta_detalle(Request $request)
+    {
+        //
+        $rules = [
+            // fecha_venta en formato dd-mm-aaaa
+            'fecha_venta' => 'required|date',
+            'total_venta' => 'required|decimal:0,2',
+            'total_iva' => 'required|decimal:0,2',
+            'nombre_cliente_venta' => 'nullable|string|max:30',
+        ];
+        $validator = Validator::make($request->venta, $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => $validator->errors()->all()
+            ], 400);
+        }
+
+        $venta = Venta::create($request->venta);
+        if (isset($venta)) {
+            $detalle_venta = new DetalleVentaController();
+            return $detalle_venta->register_detalle_venta($request, $venta->id_venta);
+        } else {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Error al crear la venta',
             ], 400);
         }
     }

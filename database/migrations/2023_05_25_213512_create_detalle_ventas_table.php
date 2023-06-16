@@ -20,10 +20,14 @@ return new class extends Migration
 
             $table->foreign('id_venta')
                 ->references('id_venta')
-                ->on('Venta');
+                ->on('Venta')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->foreign('codigo_barra_producto')
                 ->references('codigo_barra_producto')
-                ->on('Producto');
+                ->on('Producto')
+                ->onDelete('restrict')
+                ->onUpdate('cascade');
         });
     }
 

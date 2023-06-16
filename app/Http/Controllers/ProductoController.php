@@ -136,12 +136,25 @@ class ProductoController extends Controller
                 'max:10',
                 Rule::unique('Producto','codigo_barra_producto')->ignore($this->route("codigo_barra_producto"),'codigo_barra_producto'),
             ], // El código de barras debe ser único
+
+        $rules = [
+            'codigo_barra_producto' => 'required|unique:producto|string|max:10', // El código de barras debe ser único
+
             'nombre_producto' => 'required|string|max:50',
             'cantidad_producto_disponible' => 'required|integer',
             'precio_unitario' => 'required|decimal:0,2',
             'esta_disponible' => 'required|boolean',
             'foto'=>'image'
+        ];
+
+         /*    'foto'=>'required'
+            'codigo_barra_producto' => 'nullable|unique:producto|string|max:13', // El código de barras debe ser único
+            'nombre_producto' => 'nullable|string|max:50',
+            'cantidad_producto_disponible' => 'nullable|integer',
+            'precio_unitario' => 'nullable|decimal:0,2',
+            'esta_disponible' => 'nullable|boolean',
         ];*/
+
         // Se crea una instancia del validador, para validar los datos ingresados utilizando las reglas definidas
         //$validator = Validator::make($request->all(), $rules);
         // Se valida que la variable $validator no tenga errores al validar los datos ingresados

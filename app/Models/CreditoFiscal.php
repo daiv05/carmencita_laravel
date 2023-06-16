@@ -36,5 +36,13 @@ class CreditoFiscal extends Model
         return $this->hasMany(DetalleCredito::class, 'id_creditofiscal', 'id_creditofiscal');
     }
 
+    public function municipio()
+    {
+        return $this->belongsTo(Municipio::class);
+    }
     
+    public function departamento()
+    {
+        return $this->belongsTo(Departamento::class);
+    }
 }

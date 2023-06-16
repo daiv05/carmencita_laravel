@@ -17,10 +17,18 @@ use App\Models\Producto;
 use App\Http\Controllers\DetalleCreditoController;
 use App\Http\Controllers\MunicipioController;
 use App\Http\Controllers\DepartamentoController;
+<<<<<<< HEAD
 use Database\Seeders\ProductoSeeder;
+=======
+use App\Models\CreditoFiscal;
+>>>>>>> ventas_v1
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+<<<<<<< HEAD
 use Illuminate\Support\Facades\Storage;
+=======
+use App\Http\Controllers\VentasCFController;
+>>>>>>> c260dffc8a818eb3c28ad0a50f29351251a91b42
 
 /*
 |--------------------------------------------------------------------------
@@ -112,6 +120,14 @@ Route::get('productos/nombres/lista',[ProductoController::class,'getNombresProdu
 
 Route::get('productos/nombres/lista',[ProductoController::class,'getNombresProductos']);
 
+//Ruta para obtener las ventas y listarlas
+Route::get('ventasCF',[VentasCFController::class,'index']);
+//Ruta para buscar una venta especifica
+Route::post('ventasCF/buscar',[VentasCFController::class,'buscarVentaCF']);
+//Ruta para eliminar una venta especifica
+Route::delete('ventasCF/{id_venta}',[VentasCFController::class,'eliminarVentaCF']);
+//Ruta para obtener una venta especifica y sus detalles
+Route::get('ventasCF_detalle/{id_venta}',[VentasCFController::class,'obtenerVentaAndDetalle']);
 //Ruta para obtener un producto con sus precio de unidad de medida
 Route::get('productos/precios/{nombre_producto}',[ProductoController::class,'getProductoConUnidadMedida']);
 
@@ -125,4 +141,26 @@ Route::resource('municipios',MunicipioController::class);
 Route::resource('departamentos',DepartamentoController::class);
 
 //Ruta para obtener el departamento segun el nombre
+<<<<<<< HEAD
 Route::get('departamentos/buscar/{nombre_departamento}',[DepartamentoController::class,'getDepartamentoPorNombre']);
+=======
+Route::get('departamentos/buscar/{nombre_departamento}',[DepartamentoController::class,'getDepartamentoPorNombre']);
+
+<<<<<<< HEAD
+=======
+//Ruta para registrar una Venta con DetalleVenta junto
+Route::post('ventas/registrar',[VentaController::class,'register_venta_detalle']);
+
+//Ruta para registrar un Credito con DetalleCredito junto
+Route::post('creditos/registrar',[CreditoFiscalController::class,'register_credito_detalle']);
+
+//Para obtener los creditos fiscales
+Route::get('creditos',[VentasCFController::class,'indexCF']);
+
+//Para buscar un credito fiscal especifico	
+Route::post('creditos/buscar',[VentasCFController::class,'buscarCreditoF']);
+
+//Ruta para obtene un credito fiscal especifico y sus detalles
+Route::get('creditos_detalle/{id_credito}',[VentasCFController::class,'obtenerCreditoAndDetalle']);
+>>>>>>> c260dffc8a818eb3c28ad0a50f29351251a91b42
+>>>>>>> ventas_v1

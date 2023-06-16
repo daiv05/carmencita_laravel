@@ -23,7 +23,9 @@ return new class extends Migration
 
             $table->foreign('id_municipio')
                 ->references('id_municipio')
-                ->on('Municipio');
+                ->on('Municipio')
+                ->onDelete('restrict')
+                ->onUpdate('cascade');
         });
     }
 
