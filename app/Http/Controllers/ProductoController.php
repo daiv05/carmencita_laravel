@@ -321,13 +321,6 @@ class ProductoController extends Controller
         // Buscar el producto por código de barras
         $producto = Producto::where('codigo_barra_producto', $codigo_barra_producto)->get();
 
-        // Validar que el producto este disponible
-        if ($producto->esta_disponible == false) {
-            return response()->json([
-                'respuesta' => false,
-                'mensaje' => 'Producto no disponible',
-            ], 400);
-        }
         // Se valida que el producto no este vacio
         if (!($producto->isEmpty())) {
             // Si el producto existe, se retorna el producto en formato JSON
