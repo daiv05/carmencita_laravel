@@ -56,5 +56,5 @@ jobs:
         with:
           app-name: 'carmencita-laravel'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_601FCB066A60459191B066D500320A6D }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_69EDA0352EDE4C5AB5A2F535EFAD89F8 }}
           package: .
