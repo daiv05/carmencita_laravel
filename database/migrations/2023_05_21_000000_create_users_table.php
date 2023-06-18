@@ -21,7 +21,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
 
-            $table->foreign('id_empleado')->references('id_empleado')->on('Empleado')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('id_empleado')->references('id_empleado')->on('empleado')->onDelete('restrict')->onUpdate('cascade');
 
         });
 

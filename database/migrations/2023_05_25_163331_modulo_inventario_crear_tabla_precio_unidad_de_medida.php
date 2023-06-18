@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('PrecioUnidadDeMedida', function (Blueprint $table) {
+        Schema::create('preciounidaddemedida', function (Blueprint $table) {
             $table->increments('id_precio_unidad_de_medida');
             $table->string('codigo_barra_producto', 13);
             $table->unsignedInteger('id_unidad_de_medida');
@@ -20,12 +20,12 @@ return new class extends Migration
             //$table->primary(['codigo_barra_producto', 'id_unidad_de_medida']);
             
             $table->foreign('codigo_barra_producto')->references('codigo_barra_producto')
-            ->on('Producto')
+            ->on('producto')
             ->onUpdate('cascade')
             ->onDelete('restrict');
 
             $table->foreign('id_unidad_de_medida')->references('id_unidad_de_medida')
-            ->on('UnidadDeMedida')
+            ->on('unidaddemedida')
             ->onUpdate('cascade')
             ->onDelete('restrict');
         });
@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('PrecioUnidadDeMedida');
+        Schema::dropIfExists('preciounidaddemedida');
     }
 };

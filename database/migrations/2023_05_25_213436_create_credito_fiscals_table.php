@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('CreditoFiscal', function (Blueprint $table) {
+        Schema::create('creditofiscal', function (Blueprint $table) {
             $table->id('id_creditofiscal');
             $table->bigInteger('id_cliente')->unsigned();
             $table->date('fecha_credito');
@@ -21,7 +21,7 @@ return new class extends Migration
 
             $table->foreign('id_cliente')
                 ->references('id_cliente')
-                ->on('Cliente')
+                ->on('cliente')
                 ->onDelete('restrict')
                 ->onUpdate('cascade');
         });
@@ -32,11 +32,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('CreditoFiscal');
-
-        Schema::table('CreditoFiscal', function (Blueprint $table) {
-            $table->dropColum(['estado_credito']);
-        });
+        Schema::dropIfExists('creditofiscal');
     }
     
 };

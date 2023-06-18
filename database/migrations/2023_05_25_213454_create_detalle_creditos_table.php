@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('DetalleCredito', function (Blueprint $table) {
+        Schema::create('detallecredito', function (Blueprint $table) {
             $table->id('id_detalle_credito');
             $table->string('codigo_barra_producto',15);
             $table->unsignedBigInteger('id_creditofiscal');
@@ -20,10 +20,10 @@ return new class extends Migration
 
             $table->foreign('codigo_barra_producto')
                 ->references('codigo_barra_producto')
-                ->on('Producto');
+                ->on('producto');
             $table->foreign('id_creditofiscal')
                 ->references('id_creditofiscal')
-                ->on('CreditoFiscal')
+                ->on('creditofiscal')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('DetalleCredito');
+        Schema::dropIfExists('detallecredito');
     }
 };

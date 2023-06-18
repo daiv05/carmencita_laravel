@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('Empleado', function (Blueprint $table) {
+        Schema::create('empleado', function (Blueprint $table) {
             $table->id('id_empleado');
             $table->BigInteger('id_nacionalidad')->unsigned();
             $table->unsignedBigInteger('id_estado_familiar');
@@ -32,10 +32,10 @@ return new class extends Migration
             $table->timestamps();
 
             //llaves foraneas
-            $table->foreign('id_nacionalidad')->references('id_nacionalidad')->on('Nacionalidad')->onDelete('restrict')->onUpdate('cascade');
-            $table->foreign('id_estado_familiar')->references('id_estado_familiar')->on('EstadoFamiliar')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('id_sexo')->references('id_sexo')->on('Sexo')->onDelete('restrict')->onUpdate('restrict');
-            $table->foreign('id_cargo')->references('id_cargo')->on('Cargo')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreign('id_nacionalidad')->references('id_nacionalidad')->on('nacionalidad')->onDelete('restrict')->onUpdate('cascade');
+            $table->foreign('id_estado_familiar')->references('id_estado_familiar')->on('estadofamiliar')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('id_sexo')->references('id_sexo')->on('sexo')->onDelete('restrict')->onUpdate('restrict');
+            $table->foreign('id_cargo')->references('id_cargo')->on('cargo')->onDelete('restrict')->onUpdate('restrict');
         
         });
     }
@@ -45,6 +45,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('Empleado');
+        Schema::dropIfExists('empleado');
     }
 };
