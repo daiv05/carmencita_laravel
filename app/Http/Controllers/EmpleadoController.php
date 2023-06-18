@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use PhpParser\Node\Expr\Empty_;
 use App\Http\Resources\Empleado as EmpleadoResource;
+use Illuminate\Support\Facades\Validator;
 
 class EmpleadoController extends Controller
 {
@@ -62,7 +63,7 @@ class EmpleadoController extends Controller
         ];*/       
         
         //$validator = \Validator::make($request->input(),$rules);
-        $validator = \Validator::make($request->all(),[
+        $validator = Validator::make($request->all(),[
             //'name' => 'required|string|max:255',
             'email' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:8',
@@ -163,7 +164,7 @@ class EmpleadoController extends Controller
                 ], 404);
             }
 
-            $validator = \Validator::make($request->all(),[
+            $validator = Validator::make($request->all(),[
                 //'name' => 'required|string|max:255',
                 'primer_nombre' => 'required|string|max:32',
                 'primer_apellido' => 'required|string|max:32',
