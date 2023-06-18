@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://daiv05.github.io'],
+    'allowed_origins' => ['https://carmencita-vuejs.vercel.app'],
 
     'allowed_origins_patterns' => [],
 
