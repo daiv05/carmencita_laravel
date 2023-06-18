@@ -9,7 +9,7 @@ class Sexo extends Model
 {
     use HasFactory;
 
-    protected $table = 'Sexo';
+    protected $table = 'sexo';
     protected $primaryKey = 'id_sexo';
     public $timestamps = false;
 

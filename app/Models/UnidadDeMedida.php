@@ -9,7 +9,7 @@ class UnidadDeMedida extends Model
 {
     use HasFactory;
 
-    protected $table = 'UnidadDeMedida';
+    protected $table = 'unidaddemedida';
 
 
     protected $primaryKey = 'id_unidad_de_medida';
@@ -19,7 +19,6 @@ class UnidadDeMedida extends Model
     
 
     protected $fillable = [
-        'id_unidad_de_medida',
         'nombre_unidad_de_medida',
     ];
 

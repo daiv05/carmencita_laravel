@@ -10,7 +10,7 @@ class Departamento extends Model
     use HasFactory;
 
 
-    protected $table = 'Departamento';
+    protected $table = 'departamento';
 
 
     protected $primaryKey = 'id_departamento';

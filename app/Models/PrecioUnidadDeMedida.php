@@ -9,7 +9,7 @@ class PrecioUnidadDeMedida extends Model
 {
     use HasFactory;
 
-    protected $table = 'PrecioUnidadDeMedida';
+    protected $table = 'preciounidaddemedida';
 
 
     protected $primaryKey = 'id_precio_unidad_de_medida';

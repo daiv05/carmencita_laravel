@@ -10,7 +10,7 @@ class Municipio extends Model
     use HasFactory;
 
 
-    protected $table = 'Municipio';
+    protected $table = 'municipio';
 
 
     protected $primaryKey = 'id_municipio';

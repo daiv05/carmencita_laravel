@@ -10,7 +10,7 @@ class JornadaLaboralDiaria extends Model
     use HasFactory;
 
 
-    protected $table = 'JornadaLaboralDiaria';
+    protected $table = 'jornadalaboraldiaria';
 
 
     protected $primaryKey = 'id_jornada_laboral_diaria';
