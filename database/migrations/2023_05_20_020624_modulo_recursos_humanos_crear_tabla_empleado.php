@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('segundo_nombre',32)->nullable();
             $table->string('primer_apellido',32);
             $table->string('segundo_apellido',32)->nullable();
-            $table->string('dui_empleado',9)->unique()->regex('/^[0-9]+$/');
+            $table->string('dui_empleado',9)->unique();
             $table->date('fecha_nacimiento');
             $table->string('telefono',12);
             $table->string('residencia');
