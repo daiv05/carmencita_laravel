@@ -164,7 +164,7 @@ class ProductoController extends Controller
             'codigo_barra_producto' => [
                 'string',
                 'max:13',
-                Rule::unique('Producto')->ignore($producto, 'codigo_barra_producto'),
+                Rule::unique('producto')->ignore($producto, 'codigo_barra_producto'),
             ], // El código de barras debe ser único
             'nombre_producto' => 'required|string|max:50',
             'cantidad_producto_disponible' => 'required|integer',
