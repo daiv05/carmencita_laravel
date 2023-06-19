@@ -26,7 +26,7 @@ class ActualizarProductoRequest extends FormRequest
             'codigo_barra_producto' => [
                 'string',
                 'max:10',
-                Rule::unique('Producto')->ignore($this->route('idProducto'),'codigo_barra_producto'),
+                Rule::unique('producto')->ignore($this->route('idProducto'),'codigo_barra_producto'),
             ], // El código de barras debe ser único
             'nombre_producto' => 'required|string|max:50',
             'cantidad_producto_disponible' => 'required|integer',
