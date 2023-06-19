@@ -76,7 +76,7 @@ class CargoController extends Controller
             "nombre_cargo"=>[
                 "required",
                 "string",
-                Rule::unique('Cargo')->ignore($cargo)
+                Rule::unique('cargo')->ignore($cargo)
             ],
             "descripcion_cargo"=>"required|string",
             "salario_cargo"=>"required|numeric",
