@@ -159,7 +159,14 @@ class VentaController extends Controller
         $venta = Venta::create($request->venta);
         if (isset($venta)) {
             $detalle_venta = new DetalleVentaController();
-            return $detalle_venta->register_detalle_venta($request, $venta->id_venta);
+            $validar = $detalle_venta->register_detalle_venta($request, $venta->id_venta);
+            if ($validar->getStatusCode() == 201){
+                $impresion_service = new ImpresionController();
+                $impresion_service->generatePDF($venta);
+                return $validar;
+            } else {
+                return $validar;
+            }
         } else {
             return response()->json([
                 'respuesta' => false,
