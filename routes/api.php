@@ -17,7 +17,7 @@ use App\Models\Producto;
 use App\Http\Controllers\DetalleCreditoController;
 use App\Http\Controllers\MunicipioController;
 use App\Http\Controllers\DepartamentoController;
-
+use App\Http\Controllers\ImpresionController;
 use App\Models\CreditoFiscal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +39,8 @@ use App\Http\Controllers\VentasCFController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('impresion_prueba', [ImpresionController::class, 'generatePDF']);
 
 Route::get('pacientes',[JornadaLaboralDiariaController::class,'index']);
 
