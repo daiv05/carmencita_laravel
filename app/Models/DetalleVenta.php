@@ -10,7 +10,7 @@ class DetalleVenta extends Model
     use HasFactory;
 
 
-    protected $table = 'DetalleVenta';
+    protected $table = 'detalleventa';
 
 
     protected $primaryKey = 'id_detalle_venta';

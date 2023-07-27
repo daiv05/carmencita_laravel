@@ -23,7 +23,7 @@ class GuardarCargoRequest extends FormRequest
     {
         return [
             "id_jornada_laboral_diaria"=>"required",
-            "nombre_cargo"=>"required|string|unique:Cargo,nombre_cargo",
+            "nombre_cargo"=>"required|string|unique:cargo,nombre_cargo",
             "salario_cargo"=>"required|numeric",
             "descripcion_cargo"=>"required|string"
         ];

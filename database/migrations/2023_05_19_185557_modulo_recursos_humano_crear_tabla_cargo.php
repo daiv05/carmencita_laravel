@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         //
-        Schema::create('Cargo',function(Blueprint $table){
+        Schema::create('cargo',function(Blueprint $table){
             $table->id('id_cargo');
             $table->string('nombre_cargo',50);
             $table->decimal('salario_cargo',10,2);
             $table->string('descripcion_cargo',100);
             $table->bigInteger('id_jornada_laboral_diaria')->unsigned();
-            $table->foreign('id_jornada_laboral_diaria')->references('id_jornada_laboral_diaria')->on('JornadaLaboralDiaria')
+            $table->foreign('id_jornada_laboral_diaria')->references('id_jornada_laboral_diaria')->on('jornadalaboraldiaria')
             ->onUpdate('cascade')
             ->onDelete('restrict');
             /*$table->foreignId('id_jornadad_laboral_diaria')
@@ -34,6 +34,6 @@ return new class extends Migration
     public function down(): void
     {
         //
-        Schema::dropIfExists('JornadaLaboralDiaria');
+        Schema::dropIfExists('cargo');
     }
 };

@@ -27,7 +27,7 @@ class ActualizarCargoRequest extends FormRequest
             "nombre_cargo"=>[
                 "required",
                 "string",
-                Rule::unique('Cargo','nombre_cargo')->ignore($this->route("id_cargo"),'id_cargo')
+                Rule::unique('cargo','nombre_cargo')->ignore($this->route('id_cargo'))
             ],
             "descripcion_cargo"=>"required|string",
             "salario_cargo"=>"required|numeric",

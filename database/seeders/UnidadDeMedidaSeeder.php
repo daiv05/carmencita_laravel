@@ -15,18 +15,21 @@ class UnidadDeMedidaSeeder extends Seeder
     public function run(): void
     {
 
-        // Crear registros de unidades de medida
-        UnidadDeMedida::create([
-            'nombre_unidad_de_medida' => 'Tira'
-        ]);
+        $unidad_de_medida = [
+            [
+                'nombre_unidad_de_medida' => 'Tira'
+            ],
+            [
+                'nombre_unidad_de_medida' => 'Caja'
+            ],
+            [
+                'nombre_unidad_de_medida' => 'Bolsa'
+            ]
+        ];
 
-        UnidadDeMedida::create([
-            'nombre_unidad_de_medida' => 'Caja'
-        ]);
-
-        UnidadDeMedida::create([
-            'nombre_unidad_de_medida' => 'Bolsa'
-        ]);
+        foreach ($unidad_de_medida as $unidad) {
+            UnidadDeMedida::create($unidad);
+        }
 
     }
 }

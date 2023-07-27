@@ -10,7 +10,7 @@ class Cargo extends Model
     use HasFactory;
 
 
-    protected $table = 'Cargo';
+    protected $table = 'cargo';
 
 
     protected $primaryKey = 'id_cargo';

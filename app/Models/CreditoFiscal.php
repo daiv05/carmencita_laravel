@@ -10,7 +10,7 @@ class CreditoFiscal extends Model
     use HasFactory;
 
 
-    protected $table = 'CreditoFiscal';
+    protected $table = 'creditofiscal';
 
 
     protected $primaryKey = 'id_creditofiscal';
