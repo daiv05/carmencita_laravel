@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ImpresionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get(
+    '/ver_factura',
+    [ImpresionController::class, 'ver_factura']
+)->name('impresion_facturas');
