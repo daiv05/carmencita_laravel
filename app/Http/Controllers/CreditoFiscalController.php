@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\DetalleCreditoController;
 use App\Models\Cliente;
+use Illuminate\Support\Facades\DB;
 
 class CreditoFiscalController extends Controller
 {
@@ -176,6 +177,30 @@ class CreditoFiscalController extends Controller
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => 'Error al crear el credito',
+            ], 400);
+        }
+    }
+
+    public function getCreditosFiscalesDomicilio(Request $request){
+        $date = $request->fecha;
+        $creditos = DB::select("SELECT * FROM creditofiscal WHERE creditofiscal.id_creditofiscal NOT IN (SELECT id_creditofiscal FROM creditofiscaldomicilio) and creditofiscal.fecha_credito=:fecha",['fecha'=>$date]);
+        //$creditos = CreditoFiscal::where('fecha_credito','>=',$today)->get();
+        //$clientes = [];
+        foreach($creditos as $credito){
+            $cliente = Cliente::where('id_cliente',$credito->id_cliente)->first();
+            $credito->id_cliente = $cliente->distintivo_cliente;
+        }
+
+        if(isset($creditos)){
+            return response()->json([
+                'status' => true,
+                'creditos'=> $creditos,
+            ]);
+        }
+        else{
+            return response()->json([
+                'status' => false,
+                'message' => 'no se encontraron pedidos'
             ], 400);
         }
     }

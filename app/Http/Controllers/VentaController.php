@@ -6,6 +6,7 @@ use App\Models\Venta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\DetalleVentaController;
+use Illuminate\Support\Facades\DB;
 
 class VentaController extends Controller
 {
@@ -164,6 +165,27 @@ class VentaController extends Controller
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => 'Error al crear la venta',
+            ], 400);
+        }
+    }
+
+    public function getVentasDomicilio(Request $request){
+
+        $today = now()->format('Y-m-d');
+        $date = $request->fecha;
+        //$ventas = Venta::where('fecha_venta',$date)->get();
+        $ventas = DB::select("SELECT * FROM venta WHERE venta.id_venta NOT IN (SELECT id_venta FROM ventadomicilio) and venta.fecha_venta=:fecha_venta",['fecha_venta'=>$date]);
+        if(isset($ventas)){
+            return response()->json([
+                'status' => true,
+                'facturas'=> $ventas,
+                'fecha'=>$date
+            ]);
+        }
+        else{
+            return response()->json([
+                'status' => false,
+                'message' => 'no se encontraron pedidos'
             ], 400);
         }
     }

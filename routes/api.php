@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CargoController;
+use App\Http\Controllers\HojaDeRutaController;
 use App\Http\Controllers\SexoController;
 use App\Http\Controllers\EstadoFamiliarController;
 use App\Http\Controllers\NacionalidadController;
@@ -166,3 +167,13 @@ Route::put('ventaCF/updateEstado/{ventaCF}',[VentasCFController::class,'updateEs
 
 //Ruta para actualizar estado de credito fiscal
 Route::put('creditos/updateEstado/{CFSales}',[VentasCFController::class,'updateEstadoCredito']);
+
+//Hojas de ruta y pedidos a domicilio
+Route::controller(HojaDeRutaController::class)->group(function () {
+    Route::get('/hoja_de_ruta', 'index');
+    Route::get('/hoja_de_ruta/{id}', 'show');
+    Route::post('/hoja_de_ruta', 'store');
+});
+
+Route::post('/facturas_domicilio',[VentaController::class,'getVentasDomicilio']);
+Route::post('/creditos_fiscales_domicilio',[CreditoFiscalController::class,'getCreditosFiscalesDomicilio']);
