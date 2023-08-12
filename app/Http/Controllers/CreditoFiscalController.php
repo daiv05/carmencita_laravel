@@ -182,10 +182,10 @@ class CreditoFiscalController extends Controller
     }
 
     public function getCreditosFiscalesDomicilio(Request $request){
+        //funcion para obtener los creditos fiscales que no estan asignados a una hoja de ruta
         $date = $request->fecha;
         $creditos = DB::select("SELECT * FROM creditofiscal WHERE creditofiscal.id_creditofiscal NOT IN (SELECT id_creditofiscal FROM creditofiscaldomicilio) and creditofiscal.fecha_credito=:fecha",['fecha'=>$date]);
-        //$creditos = CreditoFiscal::where('fecha_credito','>=',$today)->get();
-        //$clientes = [];
+        
         foreach($creditos as $credito){
             $cliente = Cliente::where('id_cliente',$credito->id_cliente)->first();
             $credito->id_cliente = $cliente->distintivo_cliente;
