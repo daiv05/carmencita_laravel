@@ -177,3 +177,4 @@ Route::controller(HojaDeRutaController::class)->group(function () {
 
 Route::post('/facturas_domicilio',[VentaController::class,'getVentasDomicilio']);
 Route::post('/creditos_fiscales_domicilio',[CreditoFiscalController::class,'getCreditosFiscalesDomicilio']);
+Route::post('/pedidos_domicilio',[VentaController::class,'getPedidos']);
