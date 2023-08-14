@@ -8,17 +8,16 @@ use Illuminate\Http\Request;
 
 class ImpresionController extends Controller
 {
-    public function generatePDF(Request $request)
+    public function generatePDF(Venta $venta)
     {
-        $venta = Venta::find(1);
         $venta->with('detalleVenta');
         foreach ($venta->detalleVenta as $detalle) {
             $detalle->with('producto');
         }
         
         //dd($ventaArray);
-        $pdf = Pdf::loadView('impresion_facturas', compact('venta'))->setOption(['defaultFont' => 'gabriele-l']);;
-        return $pdf->download('archivo.pdf'); // Descarga el PDF automáticamente
+        $pdf = Pdf::loadView('impresion_facturas', compact('venta'))->setOption(['defaultFont' => 'gabriele-l']);
+        return $pdf->download('archivo.pdf');
     }
 
     public function ver_factura(Request $request){
@@ -27,8 +26,9 @@ class ImpresionController extends Controller
         foreach ($venta->detalleVenta as $detalle) {
             $detalle->with('producto');
         }
-        // $pdf = Pdf::loadView('impresion_facturas', $venta);
-        return view('impresion_facturas')->with('venta', $venta); // Muestra el PDF en el navegador
+        // $pdf = Pdf::loadView('impresion_facturas', compact('venta'))->setOption(['defaultFont' => 'gabriele-l']);
+        // return $pdf->download('archivo.pdf');
+        return view('impresion_facturas')->with('venta', $venta);
     }
 }
 
