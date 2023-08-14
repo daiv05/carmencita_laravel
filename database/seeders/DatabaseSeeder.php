@@ -44,6 +44,7 @@ class DatabaseSeeder extends Seeder
         
         $this->call(JornadaLaboralDiariaSeeder::class);
         $this->call(CargoSeeder::class);
+        $this->call(EmpleadoSeeder::class);
 
     }
 }
