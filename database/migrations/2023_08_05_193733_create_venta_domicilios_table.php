@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('ventadomicilio', function (Blueprint $table) {
             $table->id('id_vd');
             $table->timestamps();
-            $table->unsignedBigInteger('id_hr');
+            $table->unsignedBigInteger('id_hr')->nullable();
             $table->unsignedBigInteger('id_venta');
             $table->boolean('esta_cancelada');
             $table->boolean('esta_emitida');

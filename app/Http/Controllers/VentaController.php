@@ -165,6 +165,14 @@ class VentaController extends Controller
             $detalle_venta = new DetalleVentaController();
             $validar = $detalle_venta->register_detalle_venta($request, $venta->id_venta);
             if ($validar->getStatusCode() == 201){
+                if ($request->domicilio){
+                    $domicilio = new VentaDomicilioController();
+                    $validar_domi_venta = $domicilio->register_venta_domicilio($request, $venta->id_venta);
+                    if ($validar_domi_venta->getStatusCode() == 201){
+                        $impresion_service = new ImpresionController();
+                        return $impresion_service->generatePDF($venta);
+                    }
+                }
                 $impresion_service = new ImpresionController();
                 return $impresion_service->generatePDF($venta);
             } else {
