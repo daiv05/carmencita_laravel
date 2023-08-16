@@ -164,17 +164,15 @@ class VentaController extends Controller
         if (isset($venta)) {
             $detalle_venta = new DetalleVentaController();
             $validar = $detalle_venta->register_detalle_venta($request, $venta->id_venta);
-            if ($validar->getStatusCode() == 201){
-                if ($request->domicilio){
-                    $domicilio = new VentaDomicilioController();
-                    $validar_domi_venta = $domicilio->register_venta_domicilio($request, $venta->id_venta);
-                    if ($validar_domi_venta->getStatusCode() == 201){
-                        $impresion_service = new ImpresionController();
-                        return $impresion_service->generatePDF($venta);
-                    }
-                }
+            if ($validar->getStatusCode() == 201) {
                 $impresion_service = new ImpresionController();
-                return $impresion_service->generatePDF($venta);
+                $pdf = base64_encode($impresion_service->generatePDF($venta));
+                return response()->json([
+                    'respuesta' => true,
+                    'mensaje' => 'Venta creada correctamente',
+                    'datos' => $venta->id_venta,
+                    'pdf' => $pdf
+                ], 201);
             } else {
                 return $validar;
             }
@@ -186,20 +184,20 @@ class VentaController extends Controller
         }
     }
 
-    public function getVentasDomicilio(Request $request){
+    public function getVentasDomicilio(Request $request)
+    {
 
         $today = now()->format('Y-m-d');
         $date = $request->fecha;
         //$ventas = Venta::where('fecha_venta',$date)->get();
-        $ventas = DB::select("SELECT * FROM venta WHERE venta.id_venta NOT IN (SELECT id_venta FROM ventadomicilio) and venta.fecha_venta=:fecha_venta",['fecha_venta'=>$date]);
-        if(isset($ventas)){
+        $ventas = DB::select("SELECT * FROM venta WHERE venta.id_venta NOT IN (SELECT id_venta FROM ventadomicilio) and venta.fecha_venta=:fecha_venta", ['fecha_venta' => $date]);
+        if (isset($ventas)) {
             return response()->json([
                 'status' => true,
-                'facturas'=> $ventas,
-                'fecha'=>$date
+                'facturas' => $ventas,
+                'fecha' => $date
             ]);
-        }
-        else{
+        } else {
             return response()->json([
                 'status' => false,
                 'message' => 'no se encontraron pedidos'
@@ -207,91 +205,89 @@ class VentaController extends Controller
         }
     }
 
-    public function getPedidos(Request $request){
+    public function getPedidos(Request $request)
+    {
 
         $queryBaseVentas = "select 'Factura' as tipo, venta.id_venta as id,nombre_cliente_venta as cliente ,fecha_venta as fecha, total_venta as total,hojaderuta.id_hr as hr from venta left join ventadomicilio on ventadomicilio.id_venta = venta.id_venta
         left join hojaderuta on hojaderuta.id_hr = ventadomicilio.id_hr"; //obtiene todas las facturas 
-        $ventasNoAsignadas = " where venta.id_venta not in (SELECT id_venta from ventadomicilio)";// agrega la condicion para mostrar solo las no asignadas
+        $ventasNoAsignadas = " where venta.id_venta not in (SELECT id_venta from ventadomicilio)"; // agrega la condicion para mostrar solo las no asignadas
         $ventasAsignadas = " where venta.id_venta in (SELECT id_venta from ventadomicilio)"; // agrega la condicion para mostrar solo las asignadas
         $ventasFecha = " venta.fecha_venta=:fecha_venta";
-        
+
         $queryBaseCreditos = " select 'Credito Fiscal'as tipo,creditofiscal.id_creditofiscal as id, id_cliente as cliente, fecha_credito as fecha,total_credito as total, hojaderuta.id_hr as hr from creditofiscal left join creditofiscaldomicilio on creditofiscaldomicilio.id_creditofiscal=creditofiscal.id_creditofiscal 
         left join hojaderuta on hojaderuta.id_hr = creditofiscaldomicilio.id_hr";
         $creditosNoAsignados = " where creditofiscal.id_creditofiscal not in (SELECT id_creditofiscal from creditofiscaldomicilio)";
         $creditosFecha = " fecha_credito=:fecha_credito";
         $creditosAsignados = " where creditofiscal.id_creditofiscal in (SELECT id_creditofiscal from creditofiscaldomicilio)";
         $orderby = ' order by fecha desc';
-        $queryFinal = ""; 
+        $queryFinal = "";
 
-        if(!isset($request->tipo)){
+        if (!isset($request->tipo)) {
             $request->tipo = 'all';
         }
 
-        if($request->tipo == 'factura' or $request->tipo=='all'){
+        if ($request->tipo == 'factura' or $request->tipo == 'all') {
             $queryFinal = $queryBaseVentas;
             $whereFactura = false; // para controlar cuando se asigne un where a la query
-            if($request->estado == 'asignadas'){
-                $queryFinal .= $ventasAsignadas; 
+            if ($request->estado == 'asignadas') {
+                $queryFinal .= $ventasAsignadas;
                 $whereFactura = true;
-            }else if($request->estado == 'no_asignadas'){
-                $queryFinal .= $ventasNoAsignadas; 
+            } else if ($request->estado == 'no_asignadas') {
+                $queryFinal .= $ventasNoAsignadas;
                 $whereFactura = true;
             }
-            if(isset($request->fecha)){
-                if($whereFactura){
-                    $queryFinal .= " and". $ventasFecha;
-                }else{
-                    $queryFinal .= " where".$ventasFecha;
+            if (isset($request->fecha)) {
+                if ($whereFactura) {
+                    $queryFinal .= " and" . $ventasFecha;
+                } else {
+                    $queryFinal .= " where" . $ventasFecha;
                 }
             }
-            if($request->tipo=='all'){
-                $queryFinal .=" union";
+            if ($request->tipo == 'all') {
+                $queryFinal .= " union";
             }
-
         }
-        if($request->tipo =='credito' or $request->tipo=='all'){
+        if ($request->tipo == 'credito' or $request->tipo == 'all') {
             $queryFinal .= $queryBaseCreditos;
             $whereCredito = false;
-            if($request->estado == 'asignadas'){
+            if ($request->estado == 'asignadas') {
                 $queryFinal .= $creditosAsignados;
-                $whereCredito = true; 
-            }else if($request->estado == 'no_asignadas'){
-                $queryFinal .= $creditosNoAsignados; 
+                $whereCredito = true;
+            } else if ($request->estado == 'no_asignadas') {
+                $queryFinal .= $creditosNoAsignados;
                 $whereCredito = true;
             }
 
-            if(isset($request->fecha)){
-                if($whereCredito){
-                    $queryFinal .= " and". $creditosFecha;
-                }else{
-                    $queryFinal .= " where".$creditosFecha;
+            if (isset($request->fecha)) {
+                if ($whereCredito) {
+                    $queryFinal .= " and" . $creditosFecha;
+                } else {
+                    $queryFinal .= " where" . $creditosFecha;
                 }
             }
         }
 
         $queryFinal .= $orderby;
 
-        if(isset($request->fecha)){
-            if($request->tipo == 'all'){
-                $pedidos = DB::select($queryFinal,['fecha_venta'=>$request->fecha,'fecha_credito'=>$request->fecha]);
-            } else if($request->tipo == 'factura'){
-                $pedidos = DB::select($queryFinal,['fecha_venta'=>$request->fecha]);
-            }else{
-                $pedidos = DB::select($queryFinal,['fecha_credito'=>$request->fecha]);
+        if (isset($request->fecha)) {
+            if ($request->tipo == 'all') {
+                $pedidos = DB::select($queryFinal, ['fecha_venta' => $request->fecha, 'fecha_credito' => $request->fecha]);
+            } else if ($request->tipo == 'factura') {
+                $pedidos = DB::select($queryFinal, ['fecha_venta' => $request->fecha]);
+            } else {
+                $pedidos = DB::select($queryFinal, ['fecha_credito' => $request->fecha]);
             }
-        }
-        else{
+        } else {
             $pedidos = DB::select($queryFinal);
         }
 
-        foreach($pedidos as $pedido){
-            if($pedido->tipo == 'Credito Fiscal'){
-                $cliente = Cliente::where('id_cliente',$pedido->cliente)->first();
-                if(isset($cliente)){
+        foreach ($pedidos as $pedido) {
+            if ($pedido->tipo == 'Credito Fiscal') {
+                $cliente = Cliente::where('id_cliente', $pedido->cliente)->first();
+                if (isset($cliente)) {
                     $pedido->cliente = $cliente->distintivo_cliente;
                 }
             }
-            
         }
 
         $perPage = 15;
@@ -299,7 +295,7 @@ class VentaController extends Controller
         //$offset = ($currentPage - 1) * $perPage;
 
         $pagination = new LengthAwarePaginator(
-            array_slice($pedidos,($currentPage - 1) * $perPage, $perPage),
+            array_slice($pedidos, ($currentPage - 1) * $perPage, $perPage),
             count($pedidos),
             $perPage,
             $currentPage,
@@ -309,19 +305,17 @@ class VentaController extends Controller
             ]
         );
 
-        if(isset($pedidos)){
+        if (isset($pedidos)) {
             return response()->json([
                 'status' => true,
-                'pedidos'=> $pedidos,
-                'pagination' =>$pagination
+                'pedidos' => $pedidos,
+                'pagination' => $pagination
             ]);
-        }
-        else{
+        } else {
             return response()->json([
                 'status' => false,
                 'message' => 'no se encontraron pedidos'
             ], 400);
         }
-
     }
 }

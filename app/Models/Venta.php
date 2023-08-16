@@ -29,6 +29,7 @@ class Venta extends Model
 
     protected $atrbutes = [
         'estado_venta' => true,
+        'domicilio' => false,
     ];
 
     public function detalleVenta()

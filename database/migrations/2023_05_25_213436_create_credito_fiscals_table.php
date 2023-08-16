@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('total_credito', 8, 2);
             $table->decimal('total_iva_credito', 8, 2);
             $table->boolean('estado_credito')->default(true);
+            $table->boolean('domicilio')->default(false);
 
             $table->foreign('id_cliente')
                 ->references('id_cliente')
