@@ -23,7 +23,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\VentasCFController;
-
+use App\Http\Controllers\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,9 +36,16 @@ use App\Http\Controllers\VentasCFController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function(){
+    Route::post('logout',[LoginController::class,'logout']);
+    Route::get("empleados",[EmpleadoController::class,'listaEmpleados']);
 });
+
+Route::post("login",[LoginController::class,"authorization"]);
+
+/*Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});*/
 
 Route::get('pacientes',[JornadaLaboralDiariaController::class,'index']);
 
@@ -62,7 +69,7 @@ Route::put('empleado_update/{empleado}', [EmpleadoController::class, 'update']);
 
 Route::put('empleado_activo/{empleado}',[EmpleadoController::class,'updateEstado']);
 
-Route::get("empleados",[EmpleadoController::class,'listaEmpleados']);
+
 
 //Rutas para cargos
 Route::resource('cargos',CargoController::class);
