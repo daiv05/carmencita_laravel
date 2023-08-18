@@ -36,9 +36,24 @@ use App\Http\Controllers\LoginController;
 |
 */
 
-Route::middleware('auth:sanctum')->group(function(){
-    Route::post('logout',[LoginController::class,'logout']);
+Route::middleware(['auth:sanctum','permission:all'])->group(function(){
     Route::get("empleados",[EmpleadoController::class,'listaEmpleados']);
+    Route::get('pacientes',[JornadaLaboralDiariaController::class,'index']);
+    //Route::get('cargos',[CargoController::class,'index']);
+    //Route::get('cargos/{id_cargo}',[CargoController::class,'show']);
+    Route::get('sexos',[SexoController::class,'index']);
+    Route::get('estado_familiar',[EstadoFamiliarController::class,'index']);
+    Route::get('nacionalidades',[NacionalidadController::class,'index']);
+    Route::post('empleado',[EmpleadoController::class,'store']);
+
+    });
+
+Route::middleware(['auth:sanctum'])->group(function(){
+    Route::post('logout',[LoginController::class,'logout']);
+});
+
+Route::middleware(['auth:sanctum','permission:Ventas|all'])->group(function(){
+    Route::get('ventasCF',[VentasCFController::class,'index']);
 });
 
 Route::post("login",[LoginController::class,"authorization"]);
@@ -47,19 +62,6 @@ Route::post("login",[LoginController::class,"authorization"]);
     return $request->user();
 });*/
 
-Route::get('pacientes',[JornadaLaboralDiariaController::class,'index']);
-
-//Route::get('cargos',[CargoController::class,'index']);
-
-//Route::get('cargos/{id_cargo}',[CargoController::class,'show']);
-
-Route::get('sexos',[SexoController::class,'index']);
-
-Route::get('estado_familiar',[EstadoFamiliarController::class,'index']);
-
-Route::get('nacionalidades',[NacionalidadController::class,'index']);
-
-Route::post('empleado',[EmpleadoController::class,'store']);
 
 //Route::post('cargos',[CargoController::class,'store']);
 

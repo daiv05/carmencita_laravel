@@ -27,7 +27,9 @@ class LoginController extends Controller
                 "result"=>true,
                 "user"=>$user,
                 "message"=>"Se ha autenticado correctamente",
-                "token"=>$token
+                "token"=>$token,
+                "roles"=>$user->getRoleNames(),
+                "permisos"=>$user->getPermissionsViaRoles()
             ],200);
 
             return response()->json(
