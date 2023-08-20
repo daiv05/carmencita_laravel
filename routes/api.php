@@ -37,6 +37,8 @@ use App\Http\Controllers\LoginController;
 */
 
 
+
+/*Aquí solo registrar rutas a las que pueda acceder el gerente*/
 Route::middleware(['auth:sanctum', 'permission:all'])->group(function () {
     Route::get("empleados", [EmpleadoController::class, 'listaEmpleados']);
     Route::get('pacientes', [JornadaLaboralDiariaController::class, 'index']);
@@ -84,6 +86,8 @@ Route::middleware(['auth:sanctum', 'permission:all'])->group(function () {
     Route::resource('clientes', ClienteController::class);
 });
 
+
+/*Aqui poner las rutas para el cajero */ 
 Route::middleware(["auth:sanctum","permission:all|Ventas"])->group(function(){
     Route::get('ventasCF', [VentasCFController::class, 'index']);
     //Rutas para productos
@@ -95,15 +99,16 @@ Route::middleware(["auth:sanctum","permission:all|Ventas"])->group(function(){
     });
 });
 
-Route::middleware(["auth:sanctum","permission:all|Inventario"])->group(function(){
+/*aqui poner las rutas para el sub gerente o del modulo perteneciente a recursos humanos */
+Route::middleware(["auth:sanctum","permission:all|Inventario|Ventas"])->group(function(){
 
 });
 
-Route::middleware(["auth:sanctum","permission:all|Recursos Humano"])->group(function(){
+/*poner todas las rutas de recursos humanos*/
+Route::middleware(["auth:sanctum","permission:all|Recursos Humanos"])->group(function(){
 
 });
 
-/*End to middleware 1*/
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', [LoginController::class, 'logout']);
