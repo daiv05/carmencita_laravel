@@ -18,7 +18,7 @@ class RoleSeeder extends Seeder
         $permisosGerente = ["all"];
         $permisosSubGerente = ["Ventas","Inventario","Recursos Humanos"];
         $permisosCajero = ["Ventas"];
-        $permisosEmpleado = ["Recursos Humanos"];
+        $permisosEmpleado = ["Asistencia"];
 
         $roleSubGerente = Role::create(["name"=>"Sub-Gerente"]);
         $roleGerente =Role::create(["name"=>"Gerente"]);
@@ -31,6 +31,7 @@ class RoleSeeder extends Seeder
         $permissionSeguridad = Permission::create(["name"=>"Seguridad"]);
         $permissionMarketing = Permission::create(["name"=>"Marketing"]);
         $permissionAll = Permission::create(["name"=>"all"]);
+        $permissionAsistencia = Permission::create(["name"=>"Asistencia"]);
 
         foreach ($permisosGerente as $permiso){
             $roleGerente->givePermissionTo($permiso);
