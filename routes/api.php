@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CargoController;
+use App\Http\Controllers\HojaAsistenciaController;
 use App\Http\Controllers\HojaDeRutaController;
 use App\Http\Controllers\SexoController;
 use App\Http\Controllers\EstadoFamiliarController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\DetalleVentaController;
 use App\Http\Controllers\VentaController;
 use App\Http\Controllers\CreditoFiscalController;
+use App\Http\Controllers\AsistenciaController;
 use App\Models\Producto;
 use App\Http\Controllers\DetalleCreditoController;
 use App\Http\Controllers\MunicipioController;
@@ -24,6 +26,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\VentasCFController;
+use App\Http\Controllers\PlanillaController;
 
 
 /*
@@ -178,3 +181,17 @@ Route::controller(HojaDeRutaController::class)->group(function () {
 Route::post('/facturas_domicilio',[VentaController::class,'getVentasDomicilio']);
 Route::post('/creditos_fiscales_domicilio',[CreditoFiscalController::class,'getCreditosFiscalesDomicilio']);
 Route::post('/pedidos_domicilio',[VentaController::class,'getPedidos']);
+
+//Asistencia y Planillas
+Route::controller(HojaAsistenciaController::class)->group(function (){
+    Route::post('hoja_asistencia','store');
+});
+
+Route::controller(AsistenciaController::class)->group(function (){
+    Route::post('asistencia','store');
+    Route::get('asistencia', 'getAsistenciasEmpleado');
+});
+
+Route::controller(PlanillaController::class)->group(function (){
+    Route::post('planilla','store');
+});

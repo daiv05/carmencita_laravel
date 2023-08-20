@@ -47,6 +47,22 @@ class EmpleadoSeeder extends Seeder
                 'domicilio' => 'San Salvador',
                 'residencia' => 'San Salvador',
                 'profesion_oficio'=> 'Contador'
+            ],
+            [
+                'primer_nombre' => 'Claudia',
+                'segundo_nombre' => '',
+                'primer_apellido' => 'Guillen',
+                'id_nacionalidad' => '1',
+                'id_estado_familiar'=> '1',
+                'id_sexo' => '1',
+                'id_cargo'=> '3',
+                'dui_empleado' => '059195866',
+                'fecha_nacimiento' => '1998-09-22',
+                'telefono' => '77787849',
+                'esta_activo' => '1',
+                'domicilio' => 'San Salvador',
+                'residencia' => 'San Salvador',
+                'profesion_oficio'=> 'Empleado'
             ]
         ];
         $usuarios =[
@@ -57,6 +73,11 @@ class EmpleadoSeeder extends Seeder
             [
                 
                 'email' => 'usuario2@',
+                'password'=> 'clave0001',   
+            ],
+            [
+                
+                'email' => 'usuario3@',
                 'password'=> 'clave0001',   
             ]
         ];
