@@ -150,7 +150,7 @@ class VentaController extends Controller
             'fecha_venta' => 'required|date',
             'total_venta' => 'required|decimal:0,2',
             'total_iva' => 'required|decimal:0,2',
-            'nombre_cliente_venta' => 'nullable|string|max:30',
+            'nombre_cliente_venta' => 'nullable|string|max:30'
         ];
         $validator = Validator::make($request->venta, $rules);
         if ($validator->fails()) {
@@ -161,6 +161,8 @@ class VentaController extends Controller
         }
 
         $venta = Venta::create($request->venta);
+        $venta->domicilio = $request->domicilio;
+        $venta->save();
         if (isset($venta)) {
             $detalle_venta = new DetalleVentaController();
             $validar = $detalle_venta->register_detalle_venta($request, $venta->id_venta);

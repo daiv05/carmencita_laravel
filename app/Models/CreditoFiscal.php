@@ -29,6 +29,7 @@ class CreditoFiscal extends Model
 
     protected $atrbutes = [
         'estado_credito' => true,
+        'domicilio' => false,
     ];
 
     public function cliente()
