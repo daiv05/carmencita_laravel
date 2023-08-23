@@ -110,12 +110,17 @@ Route::middleware(["auth:sanctum","permission:all|Inventario|Ventas"])->group(fu
 
 /*poner todas las rutas de recursos humanos*/
 Route::middleware(["auth:sanctum","permission:all|Recursos Humanos"])->group(function(){
-
+    Route::get('empleado/{empleado}', [EmpleadoController::class, 'show']);
 });
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', [LoginController::class, 'logout']);
+
+    //Para marcar y obtener las asistencias del usuario logueado, todos los empleados lo pueden hacer
+    Route::post('asistencia',[AsistenciaController::class,'store']);
+    Route::get('asistencia', [AsistenciaController::class,'getAsistenciasEmpleado']);
+
 });
 
 Route::post("login", [LoginController::class, "authorization"]);
@@ -126,6 +131,8 @@ Route::post("login", [LoginController::class, "authorization"]);
 
 
 //Route::post('cargos',[CargoController::class,'store']);
+
+
 
 
 //Rutas para DetalleVenta
@@ -212,10 +219,10 @@ Route::controller(HojaAsistenciaController::class)->group(function (){
     Route::post('hoja_asistencia','store');
 });
 
-Route::controller(AsistenciaController::class)->group(function (){
+/*Route::controller(AsistenciaController::class)->group(function (){
     Route::post('asistencia','store');
     Route::get('asistencia', 'getAsistenciasEmpleado');
-});
+});*/
 
 Route::controller(PlanillaController::class)->group(function (){
     Route::post('planilla','store');
