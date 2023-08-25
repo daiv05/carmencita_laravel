@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 
 class Producto extends Model
 {
@@ -41,5 +43,10 @@ class Producto extends Model
     public function precioUnidadDeMedida()
     {
         return $this->hasMany(PrecioUnidadDeMedida::class, 'codigo_barra_producto', 'codigo_barra_producto');
+    }
+
+    public function lotes(): HasMany
+    {
+        return $this->hasMany(Lote::class,'codigo_barra_producto','codigo_barra_producto');
     }
 }

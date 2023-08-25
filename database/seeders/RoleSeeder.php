@@ -41,7 +41,7 @@ class RoleSeeder extends Seeder
         }
 
         $user = User::create([
-            "id_empleado"=>3,
+            "id_empleado"=>2,
             "name"=>"juanillo",
             "email"=>"juanacosta_555@gmail.com",
             "password"=>bcrypt("password")

@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\VentasCFController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\LoteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -101,7 +102,8 @@ Route::middleware(["auth:sanctum","permission:all|Ventas"])->group(function(){
 
 /*aqui poner las rutas para el sub gerente o del modulo perteneciente a recursos humanos */
 Route::middleware(["auth:sanctum","permission:all|Inventario|Ventas"])->group(function(){
-
+    /*Endpoint para gestion de existencias.*/
+    Route::resource("/gestion_existencias",LoteController::class);
 });
 
 /*poner todas las rutas de recursos humanos*/
