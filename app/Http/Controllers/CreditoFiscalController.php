@@ -88,6 +88,7 @@ class CreditoFiscalController extends Controller
      */
     public function update(Request $request, CreditoFiscal $creditoFiscal)
     {
+        $detalle_credito_controller = new DetalleCreditoController();
 
         $rules = [
             'id_cliente' => 'required|integer',
