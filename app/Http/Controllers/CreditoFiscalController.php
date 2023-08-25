@@ -88,15 +88,15 @@ class CreditoFiscalController extends Controller
      */
     public function update(Request $request, CreditoFiscal $creditoFiscal)
     {
-        //
+
         $rules = [
-            'id_cliente' => 'integer',
-            'fecha_credito' => 'date',
-            'total_credito' => 'decimal:0,2',
-            'total_iva_credito' => 'decimal:0,2',
+            'id_cliente' => 'required|integer',
+            'fecha_credito' => 'required|date',
+            'total_credito' => 'required|decimal:0,2',
+            'total_iva_credito' => 'required|decimal:0,2',
         ];
 
-        $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->credito, $rules);
 
         if ($validator->fails()) {
             return response()->json([
@@ -105,8 +105,16 @@ class CreditoFiscalController extends Controller
             ], 400);
         }
 
-        if ($request->validate($rules)) {
-            $creditoFiscal->update($request->all());
+        //if ($request->validate($rules)) {
+            $creditoFiscal->update($request->credito);
+            $id_credito = $creditoFiscal->id_creditofiscal;
+            $detallesActuales = $creditoFiscal->detalleCredito()->get(); //Obtiene los detalles actuales de la venta (detalles antes del update)
+            foreach ($detallesActuales as $detalleActual) {
+                $detalle_credito_controller->destroy($detalleActual);
+            }
+
+            return $detalle_credito_controller->register_detalle_credito($request, $id_credito);
+
             if (isset($creditoFiscal)) {
                 return response()->json([
                     'respuesta' => true,
@@ -118,7 +126,7 @@ class CreditoFiscalController extends Controller
                     'mensaje' => 'Error al actualizar el credito fiscal',
                 ], 400);
             }
-        }
+        //}
     }
 
     /**

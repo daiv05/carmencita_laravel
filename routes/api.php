@@ -101,6 +101,7 @@ Route::middleware(["auth:sanctum","permission:all|Ventas"])->group(function(){
     Route::get("productos/{producto}/foto", function (Producto $producto) {
         return response()->download(public_path(Storage::url($producto->foto)), $producto->nombre_producto);
     });
+
 });
 
 /*aqui poner las rutas para el sub gerente o del modulo perteneciente a recursos humanos */
@@ -209,11 +210,11 @@ Route::controller(HojaDeRutaController::class)->group(function () {
     Route::get('/hoja_de_ruta/{id}', 'show');
     Route::post('/hoja_de_ruta', 'store');
 });
-
 Route::post('/facturas_domicilio',[VentaController::class,'getVentasDomicilio']);
 Route::post('/creditos_fiscales_domicilio',[CreditoFiscalController::class,'getCreditosFiscalesDomicilio']);
 Route::post('/pedidos_domicilio',[VentaController::class,'getPedidos']);
-
+Route::put('modificar_pedido_factura/{venta}',[VentaController::class,'update']);
+Route::put('modificar_pedido_credito/{creditoFiscal}',[CreditoFiscalController::class,'update']);
 //Asistencia y Planillas
 Route::controller(HojaAsistenciaController::class)->group(function (){
     Route::post('hoja_asistencia','store');
