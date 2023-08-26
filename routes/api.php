@@ -25,6 +25,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\VentasCFController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LoteController;
+use App\Http\Controllers\FechaController;
+use App\Http\Controllers\InformeVentasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -104,6 +106,9 @@ Route::middleware(["auth:sanctum","permission:all|Ventas"])->group(function(){
 Route::middleware(["auth:sanctum","permission:all|Inventario|Ventas"])->group(function(){
     /*Endpoint para gestion de existencias.*/
     Route::resource("/gestion_existencias",LoteController::class);
+    /*Control de filtro de fechas para reportes de inventario */
+    Route::get("/fechas_filtro",[FechaController::class,"obtenerFechasParaFiltro"]);
+
 });
 
 /*poner todas las rutas de recursos humanos*/
@@ -193,3 +198,7 @@ Route::put('ventaCF/updateEstado/{ventaCF}', [VentasCFController::class, 'update
 
 //Ruta para actualizar estado de credito fiscal
 Route::put('creditos/updateEstado/{CFSales}', [VentasCFController::class, 'updateEstadoCredito']);
+
+/**Middleware para estadisticas */
+
+Route::get("/filtro_ventas_totales/{parametros}",[InformeVentasController::class,"obtenerVentasTotalesPorFecha"]);

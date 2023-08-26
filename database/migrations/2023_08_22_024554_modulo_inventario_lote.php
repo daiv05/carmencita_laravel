@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create("lotes", function(Blueprint $table){
             $table->id("id_lote");
+            $table->integer("cantidad_total_unidades");
             $table->integer("cantidad");
             $table->date("fecha_ingreso");
             $table->date("fecha_vencimiento");
             $table->decimal("precio_unitario",10,2);
+            $table->decimal("costo_total",10,2);
             $table->string("codigo_barra_producto");
-            $table->decimal("precio_lote",10,2);
             $table->foreign("codigo_barra_producto")
             ->references("codigo_barra_producto")
             ->on("producto")
