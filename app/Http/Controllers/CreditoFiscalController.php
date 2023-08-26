@@ -107,26 +107,26 @@ class CreditoFiscalController extends Controller
         }
 
         //if ($request->validate($rules)) {
-            $creditoFiscal->update($request->credito);
-            $id_credito = $creditoFiscal->id_creditofiscal;
-            $detallesActuales = $creditoFiscal->detalleCredito()->get(); //Obtiene los detalles actuales de la venta (detalles antes del update)
-            foreach ($detallesActuales as $detalleActual) {
-                $detalle_credito_controller->destroy($detalleActual);
-            }
+        $creditoFiscal->update($request->credito);
+        $id_credito = $creditoFiscal->id_creditofiscal;
+        $detallesActuales = $creditoFiscal->detalleCredito()->get(); //Obtiene los detalles actuales de la venta (detalles antes del update)
+        foreach ($detallesActuales as $detalleActual) {
+            $detalle_credito_controller->destroy($detalleActual);
+        }
 
-            return $detalle_credito_controller->register_detalle_credito($request, $id_credito);
+        return $detalle_credito_controller->register_detalle_credito($request, $id_credito);
 
-            if (isset($creditoFiscal)) {
-                return response()->json([
-                    'respuesta' => true,
-                    'mensaje' => 'Credito fiscal actualizado correctamente',
-                ], 201);
-            } else {
-                return response()->json([
-                    'respuesta' => false,
-                    'mensaje' => 'Error al actualizar el credito fiscal',
-                ], 400);
-            }
+        if (isset($creditoFiscal)) {
+            return response()->json([
+                'respuesta' => true,
+                'mensaje' => 'Credito fiscal actualizado correctamente',
+            ], 201);
+        } else {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Error al actualizar el credito fiscal',
+            ], 400);
+        }
         //}
     }
 
@@ -136,7 +136,15 @@ class CreditoFiscalController extends Controller
     public function destroy(CreditoFiscal $creditoFiscal)
     {
         //
+        $detalle_credito_controller = new DetalleCreditoController();
+
         if (isset($creditoFiscal)) {
+            $detallesActuales = $creditoFiscal->detalleCredito()->get(); //Obtiene los detalles actuales de la venta (detalles antes del update)
+            
+            foreach ($detallesActuales as $detalleActual) {
+                $detalle_credito_controller->destroy($detalleActual);
+            }
+            
             $creditoFiscal->delete();
             return response()->json([
                 'respuesta' => true,
@@ -190,23 +198,23 @@ class CreditoFiscalController extends Controller
         }
     }
 
-    public function getCreditosFiscalesDomicilio(Request $request){
+    public function getCreditosFiscalesDomicilio(Request $request)
+    {
         //funcion para obtener los creditos fiscales que no estan asignados a una hoja de ruta
         $date = $request->fecha;
-        $creditos = DB::select("SELECT * FROM creditofiscal WHERE creditofiscal.id_creditofiscal NOT IN (SELECT id_creditofiscal FROM creditofiscaldomicilio) and creditofiscal.fecha_credito=:fecha",['fecha'=>$date]);
-        
-        foreach($creditos as $credito){
-            $cliente = Cliente::where('id_cliente',$credito->id_cliente)->first();
+        $creditos = DB::select("SELECT * FROM creditofiscal WHERE creditofiscal.id_creditofiscal NOT IN (SELECT id_creditofiscal FROM creditofiscaldomicilio) and creditofiscal.fecha_credito=:fecha", ['fecha' => $date]);
+
+        foreach ($creditos as $credito) {
+            $cliente = Cliente::where('id_cliente', $credito->id_cliente)->first();
             $credito->id_cliente = $cliente->distintivo_cliente;
         }
 
-        if(isset($creditos)){
+        if (isset($creditos)) {
             return response()->json([
                 'status' => true,
-                'creditos'=> $creditos,
+                'creditos' => $creditos,
             ]);
-        }
-        else{
+        } else {
             return response()->json([
                 'status' => false,
                 'message' => 'no se encontraron pedidos'

@@ -138,7 +138,14 @@ class VentaController extends Controller
     public function destroy(Venta $venta)
     {
         //
+        $detalle_venta_controller = new DetalleVentaController();
         if (isset($venta)) {
+            $detallesActuales = $venta->detalleVenta()->get(); //Obtiene los detalles actuales de la venta (detalles antes del update)
+            
+            foreach ($detallesActuales as $detalleActual) {
+                $detalle_venta_controller->destroy($detalleActual);
+            }
+            
             $venta->delete();
             return response()->json([
                 'respuesta' => true,
