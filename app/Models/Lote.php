@@ -10,7 +10,7 @@ class Lote extends Model
 {
     use HasFactory;
     public $timestamps = false;
-
+    protected $primaryKey = "id_lote";
     public function producto(): BelongsTo
     {
         //return $this->belongsTo(Post::class, 'foreign_key');

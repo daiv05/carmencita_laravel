@@ -21,8 +21,11 @@ class LoteController extends Controller
     }
 
     public function store(Request $request){
-        $validator = Validator::make($request->all(),[
+        /*$validator = Validator::make($request->all(),[
 
+        ]);*/
+        return response()->json([
+            "mensaje"=>"Funciono la prueba para las cabeceras CORS",
         ]);
     }
 
@@ -30,14 +33,14 @@ class LoteController extends Controller
         
     }
 
-    public function update(Request $request){
+    public function update(Request $request, Lote $tempLote){
         $validator = Validator::make($request->all(),[
             "id_lote"=>Rule::exists("lotes","id_lote"),
             "fecha_vencimiento"=>"date_format:Y-m-d|required",
             "codigo_barra_producto"=>["required",Rule::exists("producto","codigo_barra_producto")],
-            "cantidad_total_unidades"=>"required|decimal:2",
+            "cantidad_total_unidades"=>"required|integer",
             "cantidad"=>"required|integer",
-            "precio_unitario"=>"required|decimal:2|integer",
+            "precio_unitario"=>"required|decimal:2",
             "costo_total"=>"required|decimal:2"
         ]);
         if($validator->fails()){
@@ -46,12 +49,21 @@ class LoteController extends Controller
                 "errores"=>$validator->messages(),
             ],404);
         }
-        $lote = Lote::where("id_lote",$request->input("id_lote"))->first();
-        $lote->fecha_vencimiento = $request->input("fecha_vencimiento");
+        $lote = Lote::find($request->input("id_lote"));
+        $lote->fecha_vencimiento = date('Y-m-d',strtotime($request->input("fecha_vencimiento")));
         $lote->precio_unitario = $request->input("precio_unitario");
         $lote->costo_total = $request->input("costo_total");
-        $loye->codigo_barra_producto = $request->input("");
-
+        $lote->codigo_barra_producto = $request->input("codigo_barra_producto");
+        $lote->cantidad = $request->input("cantidad");
+        $lote->precio_unitario = $request->input("precio_unitario");
+        $lote->cantidad_total_unidades = $request->input("cantidad_total_unidades");
+        $lote->fecha_ingreso = $request->input("fecha_ingreso");
+        $lote->save();
+        return response()->json([
+            "status"=>true,
+            "mensaje"=>"Se actualizo el lote con éxito",
+            "lote"=>$lote,
+        ],201);
     }
 }
 
