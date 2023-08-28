@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\LoteResource;
 use App\Http\Resources\PaginacioLoteRecurso;
 use Illuminate\Http\Request;
 use App\Models\Lote;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Resources\PaginacionLoteRecursos;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-
+use PDOException;
 
 class LoteController extends Controller
 {
@@ -21,12 +22,44 @@ class LoteController extends Controller
     }
 
     public function store(Request $request){
-        /*$validator = Validator::make($request->all(),[
-
-        ]);*/
-        return response()->json([
-            "mensaje"=>"Funciono la prueba para las cabeceras CORS",
+        $validator = Validator::make($request->all(),[
+            "fecha_vencimiento"=>"date_format:Y-m-d|required",
+            "codigo_barra_producto"=>["required",Rule::exists("producto","codigo_barra_producto")],
+            "cantidad_total_unidades"=>"required|integer",
+            "cantidad"=>"required|integer",
+            "precio_unitario"=>"required|decimal:2",
+            "costo_total"=>"required|decimal:2",
+            "fecha_ingreso"=>"date_format:Y-m-d|required"
         ]);
+        if($validator->fails()){
+            return response()->json([
+                "status"=>false,
+                "errores"=>$validator->errors()->all(),
+            ],404);
+        }
+        try{    
+        $lote = new Lote();
+        $lote->fecha_vencimiento = date('Y-m-d',strtotime($request->input("fecha_vencimiento")));
+        $lote->codigo_barra_producto = $request->input("codigo_barra_producto");
+        $lote->cantidad_total_unidades = $request->input("cantidad_total_unidades");
+        $lote->cantidad = $request->input("cantidad");
+        $lote->precio_unitario = $request->input("precio_unitario");
+        $lote->costo_total = $request->input("costo_total");
+        $lote->fecha_ingreso = date('Y-m-d',strtotime($request->input("fecha_ingreso")));
+        $lote->save();
+        
+        return response()->json([
+                "status"=>false,
+                "mensaje"=>"Se guardo el lote con éxito",
+                "lote"=> Lote::findorFail($lote->id_lote)->load("producto"),
+            ]);
+        }   
+        catch(PDOException $e){
+            return response()->json([
+                "status"=>false,
+                "error"=>$e->getMessage(),
+            ],404);
+        }
     }
 
     public function show(){
@@ -65,5 +98,7 @@ class LoteController extends Controller
             "lote"=>$lote,
         ],201);
     }
+
+    /*agregar metodos para cambiar el precio del producto en funcion del precio unitario que es nuevo en el sistema */
 }
 
