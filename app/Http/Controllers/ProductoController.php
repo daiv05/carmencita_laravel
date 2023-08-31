@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ActualizarProductoRequest;
 use App\Models\Producto;
 use Error;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Database\QueryException;
 
 
 class ProductoController extends Controller
@@ -352,4 +354,43 @@ class ProductoController extends Controller
             ], 400);
         }
     }
+
+    public function obtenerProductosMasVendidosConIngresos()
+    {
+        $masVendidos = [];
+        try{
+
+            $masVendidos = Producto::select([
+                'PRODUCTO.CODIGO_BARRA_PRODUCTO',
+                'PRODUCTO.NOMBRE_PRODUCTO',
+                Producto::raw('SUM(DETALLEVENTA.CANTIDAD_PRODUCTO) AS CANTIDAD_TOTAL_VENDIDA'),
+                Producto::raw('SUM(DETALLEVENTA.SUB_TOTAL_DETALLE_VENTA) AS INGRESOS_GENERADOS')
+            ])
+            ->join('DETALLEVENTA', 'PRODUCTO.CODIGO_BARRA_PRODUCTO', '=', 'DETALLEVENTA.CODIGO_BARRA_PRODUCTO')
+            ->groupBy('PRODUCTO.CODIGO_BARRA_PRODUCTO', 'PRODUCTO.NOMBRE_PRODUCTO')
+            ->orderByDesc('CANTIDAD_TOTAL_VENDIDA')
+            ->orderByDesc('INGRESOS_GENERADOS')
+            ->get();
+
+            return response()->json([
+                "status"=>true,
+                "mensaje"=>"Exito al realizar la consulta",
+                "datos_filtrados"=>$masVendidos,
+            ],200);
+
+        } catch(ModelNotFoundException $e){
+            return response()->json([
+                "status"=>false,
+                "mensaje"=>$e->getMessage(),
+            ],500);
+        } catch(QueryException $e){
+            return response()->json([
+                "status"=>false,
+                "mensaje"=>$e->getMessage()
+            ],500);
+        }
+
+        
+    }
+
 }

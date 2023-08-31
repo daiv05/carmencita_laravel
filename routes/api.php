@@ -202,3 +202,6 @@ Route::put('creditos/updateEstado/{CFSales}', [VentasCFController::class, 'updat
 /**Middleware para estadisticas */
 
 Route::get("filtro_ventas_totales/",[InformeVentasController::class,"obtenerVentasTotalesPorFecha"]);
+
+//Ruta para obtener los productos más vendidos
+Route::get("productos_mas_vendidos/",[ProductoController::class,"getProductosMasVendidosConIngresos"]);
