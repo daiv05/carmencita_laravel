@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Resources\InformeInventarioResource;
 use App\Models\Producto;
-use PhpParser\Node\Expr\Cast\Array_;
+
 
 class InformeInventarioController extends Controller
 {
@@ -43,6 +43,15 @@ class InformeInventarioController extends Controller
             "categories"=>$categories,
         ]);
     }
+
+    public function obtenerVentasPorProductos(Request $request, string $fechaInicioVenta = '1990-01-01', 
+    string $fechaFinVenta = '2050-12-31', float $minTotal = 0.00, float $maxTotal = 5000000.00, 
+    int $minTotalProducto = 0, int $maxTotalProducto = 1000000)
+    {
+        return Producto::obtenerProductosConTotales($fechaInicioVenta,$fechaFinVenta
+                                                    ,$minTotal,$maxTotal,$minTotalProducto,$maxTotalProducto);
+    }
+
     public function destroy(){
         return "";
     }   
