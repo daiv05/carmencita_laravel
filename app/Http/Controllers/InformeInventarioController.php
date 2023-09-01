@@ -13,6 +13,18 @@ class InformeInventarioController extends Controller
         return InformeInventarioResource::collection(Producto::paginate(5));
     }
     
+    public function obtenerDatosFiltradosProductoPorPrecios(Request $request,int $valorMinimo = 0,int $valorMaximo = 650){
+        //$valorMinimo = $request->query("valorMinimo",0);
+        //$valorMaximo = $request->query("valorMaximo",650);
+
+        $resultados = Producto::whereRaw('cantidad_producto_disponible * precio_unitario > ?',[$valorMinimo])
+        ->whereRaw('cantidad_producto_disponible * precio_unitario < ?',[$valorMaximo])
+        ->paginate(5);
+
+        return InformeInventarioResource::collection($resultados);
+        
+    }
+
     public function obtenerDatosGraficoInventarioValorado(){
         $data = array();
         $categories = array();
