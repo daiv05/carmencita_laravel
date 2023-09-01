@@ -88,6 +88,19 @@ class CreditoFiscalController extends Controller
      */
     public function update(Request $request, CreditoFiscal $creditoFiscal)
     {
+        if ($creditoFiscal->estado_credito and !($creditoFiscal->delivery)) {
+            //Para validar que sea pedido a domicilio y que no este emitido
+            $mensaje = 'Este pedido no se puede actualizar';
+            if ($creditoFiscal->estado_credito) {
+                $mensaje = 'Este pedido no se puede actualizar porque ya se ha emitido';
+            }
+
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => $mensaje
+            ], 200);
+        }
+
         $detalle_credito_controller = new DetalleCreditoController();
 
         $rules = [
@@ -139,12 +152,25 @@ class CreditoFiscalController extends Controller
         $detalle_credito_controller = new DetalleCreditoController();
 
         if (isset($creditoFiscal)) {
+            if ($creditoFiscal->estado_credito or !($creditoFiscal->delivery)) {
+                //Para validar que sea pedido a domicilio y que no este emitido
+
+                $mensaje = 'Este pedido no se puede eliminar';
+                if ($creditoFiscal->estado_credito) {
+                    $mensaje = 'Este pedido no se puede eliminar porque ya se ha emitido';
+                }
+
+                return response()->json([
+                    'respuesta' => false,
+                    'mensaje' => $mensaje
+                ], 200);
+            }
             $detallesActuales = $creditoFiscal->detalleCredito()->get(); //Obtiene los detalles actuales de la venta (detalles antes del update)
-            
+
             foreach ($detallesActuales as $detalleActual) {
                 $detalle_credito_controller->destroy($detalleActual);
             }
-            
+
             $creditoFiscal->delete();
             return response()->json([
                 'respuesta' => true,

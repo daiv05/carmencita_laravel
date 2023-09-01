@@ -216,7 +216,7 @@ Route::post('/pedidos_domicilio',[VentaController::class,'getPedidos']);
 Route::put('modificar_pedido_factura/{venta}',[VentaController::class,'update']);
 Route::put('modificar_pedido_credito/{creditoFiscal}',[CreditoFiscalController::class,'update']);
 Route::post('delete_pedido/credito_fiscal/{creditoFiscal}',[CreditoFiscalController::class,'destroy']);
-Route::post('delete_pedido/factura/{factura}',[VentaController::class,'destroy']);
+Route::post('delete_pedido/factura/{venta}',[VentaController::class,'destroy']);
 //Asistencia y Planillas
 Route::controller(HojaAsistenciaController::class)->group(function (){
     Route::post('hoja_asistencia','store');
