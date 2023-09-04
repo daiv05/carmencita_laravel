@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Venta;
+use App\Models\VentaDomicilio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\DetalleVentaController;
@@ -90,7 +91,7 @@ class VentaController extends Controller
      */
     public function update(Request $request, Venta $venta)
     {
-        if ($venta->estado_venta or !($venta->delivery)) {
+        if ($venta->estado_venta or !($venta->domicilio)) {
             //Para validar que sea pedido a domicilio y que no este emitido
             $mensaje = 'Este pedido no se puede actualizar';
             if ($venta->estado_venta) {
@@ -149,42 +150,57 @@ class VentaController extends Controller
      */
     public function destroy(Venta $venta)
     {
-        //
-        $detalle_venta_controller = new DetalleVentaController();
-        
-        if (isset($venta)) {
+        try {
 
-            if ($venta->estado_venta or !($venta->delivery)) {
-                //Para validar que sea pedido a domicilio y que no este emitido
-                $mensaje = 'Este pedido no se puede eliminar';
-                if ($venta->estado_venta) {
-                    $mensaje = 'Este pedido no se puede eliminar porque ya se ha emitido';
+            $detalle_venta_controller = new DetalleVentaController();
+
+            if (isset($venta)) {
+
+                if ($venta->estado_venta or !($venta->domicilio)) {
+                    //Para validar que sea pedido a domicilio y que no este emitido
+                    $mensaje = 'Este pedido no se puede eliminar';
+                    if ($venta->estado_venta) {
+                        $mensaje = 'Este pedido no se puede eliminar porque ya se ha emitido';
+                    }
+
+                    return response()->json([
+                        'respuesta' => false,
+                        'mensaje' => $mensaje
+                    ], 200);
+                }
+                
+                $asignada = VentaDomicilio::where('id_venta',$venta->id_venta)->exists();
+                if($asignada){
+                    return response()->json([
+                        'respuesta' => false,
+                        'mensaje' => 'El pedido no se puede eliminar porque ya esta asignado a una hoja de ruta'
+                    ], 200);
+                }
+                
+                $detallesActuales = $venta->detalleVenta()->get();
+                foreach ($detallesActuales as $detalleActual) {
+                    $detalle_venta_controller->destroy($detalleActual);
                 }
 
+                $venta->delete();
+
+                return response()->json([
+                    'respuesta' => true,
+                    'mensaje' => 'Venta eliminada correctamente',
+                    'detalles' => $detallesActuales,
+                    'venta' => $venta
+                ], 200);
+
+            } else {
                 return response()->json([
                     'respuesta' => false,
-                    'mensaje' => $mensaje
-                ], 200);
+                    'mensaje' => 'Error al eliminar la venta',
+                ], 400);
             }
-
-            $detallesActuales = $venta->detalleVenta()->get(); 
-            foreach ($detallesActuales as $detalleActual) {
-                $detalle_venta_controller->destroy($detalleActual);
-            }
-
-            $venta->delete();
-
-            return response()->json([
-                'respuesta' => true,
-                'mensaje' => 'Venta eliminada correctamente',
-                'detalles' => $detallesActuales,
-                'venta' => $venta
-            ], 200);
-
-        } else {
+        } catch (\Exception $e) {
             return response()->json([
                 'respuesta' => false,
-                'mensaje' => 'Error al eliminar la venta',
+                'mensaje' => $e->getMessage(),
             ], 400);
         }
     }
@@ -226,7 +242,7 @@ class VentaController extends Controller
         $today = now()->format('Y-m-d');
         $date = $request->fecha;
         //$ventas = Venta::where('fecha_venta',$date)->get();
-        $ventas = DB::select("SELECT * FROM venta WHERE venta.id_venta NOT IN (SELECT id_venta FROM ventadomicilio) and venta.fecha_venta=:fecha_venta", ['fecha_venta' => $date]);
+        $ventas = DB::select("SELECT * FROM venta WHERE venta.delivery = 1 and venta.id_venta NOT IN (SELECT id_venta FROM ventadomicilio) and venta.fecha_venta=:fecha_venta", ['fecha_venta' => $date]);
         if (isset($ventas)) {
             return response()->json([
                 'status' => true,
@@ -245,16 +261,16 @@ class VentaController extends Controller
     {
 
         $queryBaseVentas = "select 'Factura' as tipo,venta.estado_venta as estado, venta.id_venta as id,nombre_cliente_venta as cliente ,fecha_venta as fecha, total_venta as total,hojaderuta.id_hr as hr from venta left join ventadomicilio on ventadomicilio.id_venta = venta.id_venta
-        left join hojaderuta on hojaderuta.id_hr = ventadomicilio.id_hr"; //obtiene todas las facturas 
-        $ventasNoAsignadas = " where venta.id_venta not in (SELECT id_venta from ventadomicilio)"; // agrega la condicion para mostrar solo las no asignadas
-        $ventasAsignadas = " where venta.id_venta in (SELECT id_venta from ventadomicilio)"; // agrega la condicion para mostrar solo las asignadas
+        left join hojaderuta on hojaderuta.id_hr = ventadomicilio.id_hr where venta.domicilio = 1"; //obtiene todas las facturas 
+        $ventasNoAsignadas = " and venta.id_venta not in (SELECT id_venta from ventadomicilio)"; // agrega la condicion para mostrar solo las no asignadas
+        $ventasAsignadas = " and venta.id_venta in (SELECT id_venta from ventadomicilio)"; // agrega la condicion para mostrar solo las asignadas
         $ventasFecha = " venta.fecha_venta=:fecha_venta";
 
         $queryBaseCreditos = " select 'Credito Fiscal'as tipo,creditofiscal.estado_credito as estado,creditofiscal.id_creditofiscal as id, id_cliente as cliente, fecha_credito as fecha,total_credito as total, hojaderuta.id_hr as hr from creditofiscal left join creditofiscaldomicilio on creditofiscaldomicilio.id_creditofiscal=creditofiscal.id_creditofiscal 
-        left join hojaderuta on hojaderuta.id_hr = creditofiscaldomicilio.id_hr";
-        $creditosNoAsignados = " where creditofiscal.id_creditofiscal not in (SELECT id_creditofiscal from creditofiscaldomicilio)";
+        left join hojaderuta on hojaderuta.id_hr = creditofiscaldomicilio.id_hr where creditofiscal.domicilio=1";
+        $creditosNoAsignados = " and creditofiscal.id_creditofiscal not in (SELECT id_creditofiscal from creditofiscaldomicilio)";
         $creditosFecha = " fecha_credito=:fecha_credito";
-        $creditosAsignados = " where creditofiscal.id_creditofiscal in (SELECT id_creditofiscal from creditofiscaldomicilio)";
+        $creditosAsignados = " and creditofiscal.id_creditofiscal in (SELECT id_creditofiscal from creditofiscaldomicilio)";
         $orderby = ' order by fecha desc';
         $queryFinal = "";
 
@@ -276,7 +292,7 @@ class VentaController extends Controller
                 if ($whereFactura) {
                     $queryFinal .= " and" . $ventasFecha;
                 } else {
-                    $queryFinal .= " where" . $ventasFecha;
+                    $queryFinal .= " and" . $ventasFecha;
                 }
             }
             if ($request->tipo == 'all') {
@@ -299,7 +315,7 @@ class VentaController extends Controller
                 if ($whereCredito) {
                     $queryFinal .= " and" . $creditosFecha;
                 } else {
-                    $queryFinal .= " where" . $creditosFecha;
+                    $queryFinal .= " and" . $creditosFecha;
                 }
             }
         }

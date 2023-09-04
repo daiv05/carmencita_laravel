@@ -88,7 +88,7 @@ class CreditoFiscalController extends Controller
      */
     public function update(Request $request, CreditoFiscal $creditoFiscal)
     {
-        if ($creditoFiscal->estado_credito and !($creditoFiscal->delivery)) {
+        if ($creditoFiscal->estado_credito and !($creditoFiscal->domicilio)) {
             //Para validar que sea pedido a domicilio y que no este emitido
             $mensaje = 'Este pedido no se puede actualizar';
             if ($creditoFiscal->estado_credito) {
@@ -152,7 +152,7 @@ class CreditoFiscalController extends Controller
         $detalle_credito_controller = new DetalleCreditoController();
 
         if (isset($creditoFiscal)) {
-            if ($creditoFiscal->estado_credito or !($creditoFiscal->delivery)) {
+            if ($creditoFiscal->estado_credito or !($creditoFiscal->domicilio)) {
                 //Para validar que sea pedido a domicilio y que no este emitido
 
                 $mensaje = 'Este pedido no se puede eliminar';
@@ -228,7 +228,7 @@ class CreditoFiscalController extends Controller
     {
         //funcion para obtener los creditos fiscales que no estan asignados a una hoja de ruta
         $date = $request->fecha;
-        $creditos = DB::select("SELECT * FROM creditofiscal WHERE creditofiscal.id_creditofiscal NOT IN (SELECT id_creditofiscal FROM creditofiscaldomicilio) and creditofiscal.fecha_credito=:fecha", ['fecha' => $date]);
+        $creditos = DB::select("SELECT * FROM creditofiscal WHERE creditofiscal.domicilio=1 and creditofiscal.id_creditofiscal NOT IN (SELECT id_creditofiscal FROM creditofiscaldomicilio) and creditofiscal.fecha_credito=:fecha", ['fecha' => $date]);
 
         foreach ($creditos as $credito) {
             $cliente = Cliente::where('id_cliente', $credito->id_cliente)->first();

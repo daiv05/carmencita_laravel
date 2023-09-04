@@ -25,10 +25,12 @@ class Venta extends Model
         'total_iva',
         'nombre_cliente_venta',
         'estado_venta',
+        'domicilio'
     ];
 
-    protected $atrbutes = [
+    protected $attributes = [
         'estado_venta' => true,
+        'domicilio' => false,
     ];
 
     public function detalleVenta()
