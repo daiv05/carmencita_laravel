@@ -7,6 +7,20 @@ use Illuminate\Http\Request;
 
 class CreditoFiscalDomicilioController extends Controller
 {
+    public function index(){
+        $creditoFiscal = CreditoFiscalDomicilio::with('creditoFiscal')->get();
+        return response()->json([
+            'creditoFiscal' => $creditoFiscal,
+        ], 201);
+    }
+
+    public function show($id){
+        $cred = CreditoFiscalDomicilio::find($id)->with('creditoFiscal')->get();
+        return response()->json([
+            'creditoFiscal' => $cred,
+        ], 201);
+    }
+
     public function register_CreditoFiscalDomicilio(Request $request, int $id_hr){
 
         $pedidos = $request->pedidos_fiscal;

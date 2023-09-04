@@ -254,3 +254,13 @@ Route::controller(PlanillaController::class)->group(function (){
     Route::post('planilla','store');
 });
 Route::put('creditos/updateEstado/{CFSales}', [VentasCFController::class, 'updateEstadoCredito']);
+
+Route::controller(VentaDomicilioController::class)->group(function () {
+    Route::get('/venta_domicilio', 'index');
+    Route::get('/venta_domicilio/{id}', 'show');
+});
+
+Route::controller(CreditoFiscalDomicilioController::class)->group(function () {
+    Route::get('/credito_fiscal_domicilio', 'index');
+    Route::get('/credito_fiscal_domicilio/{id}', 'show');
+});
