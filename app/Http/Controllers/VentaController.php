@@ -242,7 +242,7 @@ class VentaController extends Controller
         $today = now()->format('Y-m-d');
         $date = $request->fecha;
         //$ventas = Venta::where('fecha_venta',$date)->get();
-        $ventas = DB::select("SELECT * FROM venta WHERE venta.delivery = 1 and venta.id_venta NOT IN (SELECT id_venta FROM ventadomicilio) and venta.fecha_venta=:fecha_venta", ['fecha_venta' => $date]);
+        $ventas = DB::select("SELECT * FROM venta WHERE venta.domicilio = 1 and venta.id_venta NOT IN (SELECT id_venta FROM ventadomicilio) and venta.fecha_venta=:fecha_venta", ['fecha_venta' => $date]);
         if (isset($ventas)) {
             return response()->json([
                 'status' => true,
