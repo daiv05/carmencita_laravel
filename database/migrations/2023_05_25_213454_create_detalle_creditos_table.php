@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('codigo_barra_producto',15);
             $table->unsignedBigInteger('id_creditofiscal');
             $table->integer('cantidad_producto_credito');
-            $table->decimal('subtotal_detalle_credito', 8, 2);
+            $table->decimal('subtotal_detalle_credito', 8, 4);
 
             $table->foreign('codigo_barra_producto')
                 ->references('codigo_barra_producto')

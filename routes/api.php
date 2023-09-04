@@ -20,7 +20,7 @@ use App\Models\Producto;
 use App\Http\Controllers\DetalleCreditoController;
 use App\Http\Controllers\MunicipioController;
 use App\Http\Controllers\DepartamentoController;
-
+use App\Http\Controllers\ImpresionController;
 use App\Models\CreditoFiscal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -90,6 +90,9 @@ Route::middleware(['auth:sanctum', 'permission:all'])->group(function () {
     Route::resource('clientes', ClienteController::class);
 });
 
+Route::get('impresion_prueba', [ImpresionController::class, 'generatePDF']);
+
+Route::get('pacientes',[JornadaLaboralDiariaController::class,'index']);
 
 /*Aqui poner las rutas para el cajero */ 
 Route::middleware(["auth:sanctum","permission:all|Ventas"])->group(function(){

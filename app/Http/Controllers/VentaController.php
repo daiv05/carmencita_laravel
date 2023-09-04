@@ -214,7 +214,7 @@ class VentaController extends Controller
             'fecha_venta' => 'required|date',
             'total_venta' => 'required|decimal:0,2',
             'total_iva' => 'required|decimal:0,2',
-            'nombre_cliente_venta' => 'nullable|string|max:30',
+            'nombre_cliente_venta' => 'nullable|string|max:30'
         ];
         $validator = Validator::make($request->venta, $rules);
         if ($validator->fails()) {
@@ -225,9 +225,23 @@ class VentaController extends Controller
         }
 
         $venta = Venta::create($request->venta);
+        $venta->domicilio = $request->domicilio;
+        $venta->save();
         if (isset($venta)) {
             $detalle_venta = new DetalleVentaController();
-            return $detalle_venta->register_detalle_venta($request, $venta->id_venta);
+            $validar = $detalle_venta->register_detalle_venta($request, $venta->id_venta);
+            if ($validar->getStatusCode() == 201) {
+                $impresion_service = new ImpresionController();
+                $pdf = base64_encode($impresion_service->generatePDF($venta));
+                return response()->json([
+                    'respuesta' => true,
+                    'mensaje' => 'Venta creada correctamente',
+                    'datos' => $venta->id_venta,
+                    'pdf' => $pdf
+                ], 201);
+            } else {
+                return $validar;
+            }
         } else {
             return response()->json([
                 'respuesta' => false,
@@ -257,8 +271,7 @@ class VentaController extends Controller
         }
     }
 
-    public function getPedidos(Request $request)
-    {
+    public function getPedidos(Request $request){
 
         $queryBaseVentas = "select 'Factura' as tipo,venta.estado_venta as estado, venta.id_venta as id,nombre_cliente_venta as cliente ,fecha_venta as fecha, total_venta as total,hojaderuta.id_hr as hr from venta left join ventadomicilio on ventadomicilio.id_venta = venta.id_venta
         left join hojaderuta on hojaderuta.id_hr = ventadomicilio.id_hr where venta.domicilio = 1"; //obtiene todas las facturas 
@@ -298,7 +311,6 @@ class VentaController extends Controller
             if ($request->tipo == 'all') {
                 $queryFinal .= " union";
             }
-
         }
         if ($request->tipo == 'credito' or $request->tipo == 'all') {
             $queryFinal .= $queryBaseCreditos;
@@ -371,6 +383,5 @@ class VentaController extends Controller
                 'message' => 'no se encontraron pedidos'
             ], 400);
         }
-
     }
 }

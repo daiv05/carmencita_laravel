@@ -7,6 +7,21 @@ use Illuminate\Http\Request;
 
 class VentaDomicilioController extends Controller
 {
+    public function guardar_venta_domicilio(Request $request, int $id_venta)
+    {
+        $ventaDomicilio = VentaDomicilio::create([
+            'id_venta' => $id_venta,
+            'esta_cancelada' => 0,
+            'esta_emitida' => 0,
+        ]);
+        $ventaDomicilio->save();
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Venta Domicilio registrada correctamente',
+        ], 201);
+
+    }
+
     public function register_ventaDomicilio(Request $request, int $id_hr){
 
         $pedidos = $request->pedidos_factura;
