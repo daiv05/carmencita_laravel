@@ -45,4 +45,7 @@ class Empleado extends Model
     public function user(){
         return $this->belongsTo(User::class,"id_empleado","id_empleado");
     }
+    public function asistencia(){
+        return $this->hasMany(Asistencia::class,'id_empleado');
+    }
 }

@@ -42,6 +42,31 @@ class VentaSeeder extends Seeder
                 'total_iva' => 5.00,
                 'nombre_cliente_venta' => 'Cliente 5'
             ],
+            //pedidos
+            [
+                'fecha_venta' => '2023-10-10',
+                'total_venta' => 50.00,
+                'total_iva' => 5.00,
+                'nombre_cliente_venta' => 'Luis',
+                'estado_venta' => false,
+                'domicilio' => true,
+            ],
+            [
+                'fecha_venta' => '2023-10-10',
+                'total_venta' => 100.00,
+                'total_iva' =>13.00,
+                'nombre_cliente_venta' => 'Pedro',
+                'estado_venta' => false,
+                'domicilio' => true,
+            ],
+            [
+                'fecha_venta' => '2023-10-10',
+                'total_venta' => 50.00,
+                'total_iva' => 5.00,
+                'nombre_cliente_venta' => 'Maria',
+                'estado_venta' => false,
+                'domicilio' => true,
+            ],
         ];
 
         foreach ($ventas as $venta) {

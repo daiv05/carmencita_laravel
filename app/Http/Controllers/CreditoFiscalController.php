@@ -88,15 +88,29 @@ class CreditoFiscalController extends Controller
      */
     public function update(Request $request, CreditoFiscal $creditoFiscal)
     {
-        //
+        if ($creditoFiscal->estado_credito and !($creditoFiscal->domicilio)) {
+            //Para validar que sea pedido a domicilio y que no este emitido
+            $mensaje = 'Este pedido no se puede actualizar';
+            if ($creditoFiscal->estado_credito) {
+                $mensaje = 'Este pedido no se puede actualizar porque ya se ha emitido';
+            }
+
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => $mensaje
+            ], 200);
+        }
+
+        $detalle_credito_controller = new DetalleCreditoController();
+
         $rules = [
-            'id_cliente' => 'integer',
-            'fecha_credito' => 'date',
-            'total_credito' => 'decimal:0,2',
-            'total_iva_credito' => 'decimal:0,2',
+            'id_cliente' => 'required|integer',
+            'fecha_credito' => 'required|date',
+            'total_credito' => 'required|decimal:0,2',
+            'total_iva_credito' => 'required|decimal:0,2',
         ];
 
-        $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->credito, $rules);
 
         if ($validator->fails()) {
             return response()->json([
@@ -105,20 +119,28 @@ class CreditoFiscalController extends Controller
             ], 400);
         }
 
-        if ($request->validate($rules)) {
-            $creditoFiscal->update($request->all());
-            if (isset($creditoFiscal)) {
-                return response()->json([
-                    'respuesta' => true,
-                    'mensaje' => 'Credito fiscal actualizado correctamente',
-                ], 201);
-            } else {
-                return response()->json([
-                    'respuesta' => false,
-                    'mensaje' => 'Error al actualizar el credito fiscal',
-                ], 400);
-            }
+        //if ($request->validate($rules)) {
+        $creditoFiscal->update($request->credito);
+        $id_credito = $creditoFiscal->id_creditofiscal;
+        $detallesActuales = $creditoFiscal->detalleCredito()->get(); //Obtiene los detalles actuales de la venta (detalles antes del update)
+        foreach ($detallesActuales as $detalleActual) {
+            $detalle_credito_controller->destroy($detalleActual);
         }
+
+        return $detalle_credito_controller->register_detalle_credito($request, $id_credito);
+
+        if (isset($creditoFiscal)) {
+            return response()->json([
+                'respuesta' => true,
+                'mensaje' => 'Credito fiscal actualizado correctamente',
+            ], 201);
+        } else {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Error al actualizar el credito fiscal',
+            ], 400);
+        }
+        //}
     }
 
     /**
@@ -127,7 +149,28 @@ class CreditoFiscalController extends Controller
     public function destroy(CreditoFiscal $creditoFiscal)
     {
         //
+        $detalle_credito_controller = new DetalleCreditoController();
+
         if (isset($creditoFiscal)) {
+            if ($creditoFiscal->estado_credito or !($creditoFiscal->domicilio)) {
+                //Para validar que sea pedido a domicilio y que no este emitido
+
+                $mensaje = 'Este pedido no se puede eliminar';
+                if ($creditoFiscal->estado_credito) {
+                    $mensaje = 'Este pedido no se puede eliminar porque ya se ha emitido';
+                }
+
+                return response()->json([
+                    'respuesta' => false,
+                    'mensaje' => $mensaje
+                ], 200);
+            }
+            $detallesActuales = $creditoFiscal->detalleCredito()->get(); //Obtiene los detalles actuales de la venta (detalles antes del update)
+
+            foreach ($detallesActuales as $detalleActual) {
+                $detalle_credito_controller->destroy($detalleActual);
+            }
+
             $creditoFiscal->delete();
             return response()->json([
                 'respuesta' => true,
@@ -183,23 +226,23 @@ class CreditoFiscalController extends Controller
         }
     }
 
-    public function getCreditosFiscalesDomicilio(Request $request){
+    public function getCreditosFiscalesDomicilio(Request $request)
+    {
         //funcion para obtener los creditos fiscales que no estan asignados a una hoja de ruta
         $date = $request->fecha;
-        $creditos = DB::select("SELECT * FROM creditofiscal WHERE creditofiscal.id_creditofiscal NOT IN (SELECT id_creditofiscal FROM creditofiscaldomicilio) and creditofiscal.fecha_credito=:fecha",['fecha'=>$date]);
-        
-        foreach($creditos as $credito){
-            $cliente = Cliente::where('id_cliente',$credito->id_cliente)->first();
+        $creditos = DB::select("SELECT * FROM creditofiscal WHERE creditofiscal.domicilio=1 and creditofiscal.id_creditofiscal NOT IN (SELECT id_creditofiscal FROM creditofiscaldomicilio) and creditofiscal.fecha_credito=:fecha", ['fecha' => $date]);
+
+        foreach ($creditos as $credito) {
+            $cliente = Cliente::where('id_cliente', $credito->id_cliente)->first();
             $credito->id_cliente = $cliente->distintivo_cliente;
         }
 
-        if(isset($creditos)){
+        if (isset($creditos)) {
             return response()->json([
                 'status' => true,
-                'creditos'=> $creditos,
+                'creditos' => $creditos,
             ]);
-        }
-        else{
+        } else {
             return response()->json([
                 'status' => false,
                 'message' => 'no se encontraron pedidos'
