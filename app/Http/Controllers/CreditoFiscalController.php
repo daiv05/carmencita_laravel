@@ -88,7 +88,7 @@ class CreditoFiscalController extends Controller
      */
     public function update(Request $request, CreditoFiscal $creditoFiscal)
     {
-        if ($creditoFiscal->estado_credito and !($creditoFiscal->domicilio)) {
+        if ($creditoFiscal->estado_credito or !($creditoFiscal->domicilio)) {
             //Para validar que sea pedido a domicilio y que no este emitido
             $mensaje = 'Este pedido no se puede actualizar';
             if ($creditoFiscal->estado_credito) {
@@ -98,7 +98,7 @@ class CreditoFiscalController extends Controller
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => $mensaje
-            ], 200);
+            ], 400);
         }
 
         $detalle_credito_controller = new DetalleCreditoController();
@@ -133,7 +133,7 @@ class CreditoFiscalController extends Controller
             return response()->json([
                 'respuesta' => true,
                 'mensaje' => 'Credito fiscal actualizado correctamente',
-            ], 201);
+            ], 200);
         } else {
             return response()->json([
                 'respuesta' => false,
@@ -191,8 +191,8 @@ class CreditoFiscalController extends Controller
         $rules = [
             'id_cliente' => 'required|integer',
             'fecha_credito' => 'required|date',
-            'total_credito' => 'required|decimal:0,2',
-            'total_iva_credito' => 'required|decimal:0,2',
+            'total_credito' => 'required|decimal:0,4',
+            'total_iva_credito' => 'required|decimal:0,4',
         ];
 
         $validator = Validator::make($request->credito, $rules);
@@ -230,7 +230,7 @@ class CreditoFiscalController extends Controller
     {
         //funcion para obtener los creditos fiscales que no estan asignados a una hoja de ruta
         $date = $request->fecha;
-        $creditos = DB::select("SELECT * FROM creditofiscal WHERE creditofiscal.domicilio=1 and creditofiscal.id_creditofiscal NOT IN (SELECT id_creditofiscal FROM creditofiscaldomicilio) and creditofiscal.fecha_credito=:fecha", ['fecha' => $date]);
+        $creditos = DB::select("SELECT * FROM creditofiscal WHERE creditofiscal.domicilio = 1 and creditofiscal.id_creditofiscal NOT IN (SELECT id_creditofiscal FROM creditofiscaldomicilio) and creditofiscal.fecha_credito=:fecha", ['fecha' => $date]);
 
         foreach ($creditos as $credito) {
             $cliente = Cliente::where('id_cliente', $credito->id_cliente)->first();

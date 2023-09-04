@@ -101,7 +101,7 @@ class VentaController extends Controller
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => $mensaje
-            ], 200);
+            ], 400);
         }
         $detalle_venta_controller = new DetalleVentaController();
 
@@ -212,8 +212,8 @@ class VentaController extends Controller
         $rules = [
             // fecha_venta en formato dd-mm-aaaa
             'fecha_venta' => 'required|date',
-            'total_venta' => 'required|decimal:0,2',
-            'total_iva' => 'required|decimal:0,2',
+            'total_venta' => 'required|decimal:0,4',
+            'total_iva' => 'required|decimal:0,4',
             'nombre_cliente_venta' => 'nullable|string|max:30'
         ];
         $validator = Validator::make($request->venta, $rules);
