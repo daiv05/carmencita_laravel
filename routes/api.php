@@ -25,6 +25,11 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\VentasCFController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\LoteController;
+use App\Http\Controllers\FechaController;
+use App\Http\Controllers\InformeVentasController;
+use App\Http\Controllers\InformeInventarioController;
+use Illuminate\Console\View\Components\Info;
 
 /*
 |--------------------------------------------------------------------------
@@ -105,6 +110,10 @@ Route::middleware(["auth:sanctum","permission:all|Ventas"])->group(function(){
 
 /*aqui poner las rutas para el sub gerente o del modulo perteneciente a recursos humanos */
 Route::middleware(["auth:sanctum","permission:all|Inventario|Ventas"])->group(function(){
+    /*Endpoint para gestion de existencias.*/
+    Route::resource("gestion_existencias",LoteController::class);
+    /*Control de filtro de fechas para reportes de inventario */
+    Route::get("/fechas_filtro",[FechaController::class,"obtenerFechasParaFiltro"]);
 
 });
 
@@ -207,3 +216,13 @@ Route::post('/facturas_domicilio',[VentaController::class,'getVentasDomicilio'])
 Route::post('/creditos_fiscales_domicilio',[CreditoFiscalController::class,'getCreditosFiscalesDomicilio']);
 Route::post('/pedidos_domicilio',[VentaController::class,'getPedidos']);
 Route::put('creditos/updateEstado/{CFSales}', [VentasCFController::class, 'updateEstadoCredito']);
+
+/**Middleware para estadisticas */
+Route::middleware(["auth:sanctum","permission:all"])->group(function(){
+    Route::resource("informe_inventario_valorado",InformeInventarioController::class);
+    Route::get("datos_inventario_valorado",[InformeInventarioController::class,"obtenerDatosGraficoInventarioValorado"]);
+    Route::get("filtro_datos_producto_valorado/{valorMinimo?}/{valorMaximo?}",[InformeInventarioController::class,"obtenerDatosFiltradosProductoPorPrecios"]);
+    Route::get("ventas_por_producto",[InformeInventarioController::class,"obtenerVentasPorProductos"]);
+});
+
+Route::get("/filtro_ventas_totales/{parametros}",[InformeVentasController::class,"obtenerVentasTotalesPorFecha"]);
