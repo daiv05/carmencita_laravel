@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use App\Http\Resources\InformeInventarioResource;
 use App\Models\Producto;
 use App\Filtros\FiltroHistorialVentasProducto;
+use Illuminate\Support\Facades\DB;
+use App\Filtros\FiltroProductosMasVendidos;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 
 
 class InformeInventarioController extends Controller
@@ -95,5 +99,43 @@ class InformeInventarioController extends Controller
     }
     public function update(){
         return "";
+    }
+
+    public function obtenerProductosMasVendidosConIngresos($fechaInicio = '1950-01-01', $fechaFin = '2050-12-31')
+    {
+        
+        $managerFiltros = new FiltroProductosMasVendidos(10);
+        
+        try {
+
+            if ($fechaInicio != '1950-01-01' && $fechaFin != '2050-12-31'){
+                return $managerFiltros->obtenerProductosPorFechaInicioYFechaFin($fechaInicio, $fechaFin);
+            }
+            else if ($fechaInicio != '1950-01-01')
+            {
+                return $managerFiltros->filtrarPorFechaInicio($fechaInicio);
+            }
+            else if ($fechaFin != '2050-12-31')
+            {
+                return $managerFiltros->filtrarPorFechaFin($fechaFin);
+            }
+            else
+            {
+                return $managerFiltros->obtenerProductosPorFechaInicioYFechaFin($fechaInicio, $fechaFin);
+            }
+            
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                "status" => false,
+                "mensaje" => $e->getMessage(),
+            ], 500);
+        } catch (QueryException $e) {
+            return response()->json([
+                "status" => false,
+                "mensaje" => $e->getMessage()
+            ], 500);
+        }
+
+
     }
 }
