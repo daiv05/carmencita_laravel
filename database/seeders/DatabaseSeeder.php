@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\CreditoFiscal;
+use App\Models\HojaDeRuta;
 use App\Models\JornadaLaboralDiaria;
 use App\Models\Municipio;
 use App\Models\UnidadDeMedida;
@@ -47,6 +48,10 @@ class DatabaseSeeder extends Seeder
         $this->call(EmpleadoSeeder::class);
         $this->call(AsistenciaSeeder::class);
         $this->call(RoleSeeder::class);
+
+        $this->call(HojaDeRutaSeeder::class);
+        $this->call(CreditoFiscalDomicilioSeeder::class);
+        $this->call(VentaDomicilioSeeder::class);
 
     }
 }

@@ -7,6 +7,16 @@ use Illuminate\Http\Request;
 
 class VentaDomicilioController extends Controller
 {
+    public function index()
+    {
+        return VentaDomicilio::with('venta')->get();;
+    }
+
+    public function show($id)
+    {
+        return VentaDomicilio::find($id)->with('venta')->get();
+    }
+    
     public function guardar_venta_domicilio(Request $request, int $id_venta)
     {
         $ventaDomicilio = VentaDomicilio::create([
