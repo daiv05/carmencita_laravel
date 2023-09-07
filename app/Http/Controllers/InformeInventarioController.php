@@ -47,12 +47,41 @@ class InformeInventarioController extends Controller
     }
     
 
+    public function existenMasParametrosDeConsulta($parametrosFiltro){
+        if((isset($parametrosFiltro["minTotal"])) ||(isset($parametrosFiltro["maxTotal"])) || (isset($parametrosFiltro["minTotalProducto"])) || (isset($parametrosFiltro["maxTotalProducto"]))){
+            return true;
+        }
+        return false;
+    }
+
     public function obtenerVentasPorProductos(Request $request)
     {
         $parametrosFiltro = $request->all();
         $managerFiltros = new FiltroHistorialVentasProducto(10);
-
-        if(isset($parametrosFiltro["fechaInicioVenta"]) && isset($parametrosFiltro["fechaFinVenta"])){
+       if(isset($parametrosFiltro["fechaInicioVenta"]) && isset($parametrosFiltro["fechaFinVenta"])){
+            //$parametrosFiltro["fechaInicioVenta"] = date("Y-m-d",strtotime($parametrosFiltro["fechaInicioVenta"]));
+            return $managerFiltros->filtrarPorFechas($parametrosFiltro["fechaInicioVenta"],$parametrosFiltro["fechaFinVenta"]);
+        }
+        else if(isset($parametrosFiltro["fechaInicioVenta"])){
+            //$parametrosFiltro["fechaFinVenta"] = date("Y-m-d",strtotime($parametrosFiltro["fechaFinVenta"]));
+            return $managerFiltros->filtrarPorFechaInicio(
+                $parametrosFiltro["fechaInicioVenta"]
+            );
+        }
+        else if(isset($parametrosFiltro["fechaFinVenta"])){
+            return $managerFiltros->filtrarPorFechaFin(
+                $parametrosFiltro["fechaFinVenta"]
+            );
+        }
+        else if((!isset($parametrosFiltro["fechaInicioVenta"]) && !isset($parametrosFiltro["fechaFinVenta"])) && $this->existenMasParametrosDeConsulta($parametrosFiltro) ){
+            return $managerFiltros->filtrarPorValorVentasCantidades(
+                isset($parametrosFiltro["minTotal"]) ? $parametrosFiltro["minTotal"] : null,
+                isset($parametrosFiltro["maxTotal"]) ? $parametrosFiltro["maxTotal"] : null,
+                isset($parametrosFiltro["minTotalProducto"]) ? $parametrosFiltro["minTotalProducto"] : null,
+                isset($parametrosFiltro["maxTotalProducto"]) ? $parametrosFiltro["maxTotalProducto"] : null
+            );
+        }
+        else if(isset($parametrosFiltro["fechaInicioVenta"]) && isset($parametrosFiltro["fechaFinVenta"])){
             $resultado = $managerFiltros->filtroFechasValorVentasCantidades(
                 $parametrosFiltro["fechaInicioVenta"],
                 $parametrosFiltro["fechaFinVenta"],
@@ -61,7 +90,7 @@ class InformeInventarioController extends Controller
                 isset($parametrosFiltro["minTotalProducto"]) ? $parametrosFiltro["minTotalProducto"] : null,
                 isset($parametrosFiltro["maxTotalProducto"]) ? $parametrosFiltro["maxTotalProducto"] : null
             );
-
+            return $resultado;
         }
         else if(isset($parametrosFiltro["fechaInicioVenta"])){
            $resultado = $managerFiltros->filtroFechaIncioValorVentasCantidades(
