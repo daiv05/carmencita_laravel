@@ -148,7 +148,7 @@ class EmpleadoController extends Controller
     public function show(Empleado $empleado)
     {
         //
-        return $empleado;
+        return $empleado::with('cargo')->where('id_empleado',$empleado->id_empleado)->first();
     }
 
     /**

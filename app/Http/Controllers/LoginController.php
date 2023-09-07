@@ -31,14 +31,14 @@ class LoginController extends Controller
                 "roles"=>$user->getRoleNames(),
                 "permisos"=>$user->getPermissionsViaRoles()
             ],200);
-
+        }
             return response()->json(
                 [
                     "result"=>false,
                     "message"=>"Email o contraseña no valido"
                 ],400
             );
-        }
+        
     }
      
 

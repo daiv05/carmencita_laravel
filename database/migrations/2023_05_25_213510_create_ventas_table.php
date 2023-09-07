@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('venta', function (Blueprint $table) {
             $table->id('id_venta');
             $table->date('fecha_venta');
-            $table->decimal('total_venta', 8, 2);
-            $table->decimal('total_iva', 8, 2);
+            $table->decimal('total_venta', 8, 4);
+            $table->decimal('total_iva', 8, 4);
             $table->string('nombre_cliente_venta', 30)->nullable();
             $table->boolean('estado_venta')->default(true);
+            $table->boolean('domicilio')->default(false);
         });
     }
 

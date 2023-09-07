@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_venta');
             $table->string('codigo_barra_producto', 15);
             $table->integer('cantidad_producto');
-            $table->decimal('subtotal_detalle_venta', 8, 2);
+            $table->decimal('subtotal_detalle_venta', 8, 4);
 
             $table->foreign('id_venta')
                 ->references('id_venta')

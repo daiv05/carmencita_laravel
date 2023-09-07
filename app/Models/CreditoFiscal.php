@@ -25,10 +25,12 @@ class CreditoFiscal extends Model
         'total_credito',
         'total_iva_credito',
         'estado_credito',
+        'domicilio'
     ];
 
     protected $atrbutes = [
         'estado_credito' => true,
+        'domicilio' => false,
     ];
 
     public function cliente()
