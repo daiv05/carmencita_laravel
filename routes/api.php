@@ -208,7 +208,7 @@ Route::middleware(["auth:sanctum","permission:all"])->group(function(){
     Route::get("filtro_datos_producto_valorado/{valorMinimo?}/{valorMaximo?}",[InformeInventarioController::class,"obtenerDatosFiltradosProductoPorPrecios"]);
     Route::get("ventas_por_producto/{fechaInicioVenta?}/{fechaFinVenta?}/{minTotal?}/{maxTotal?}/{minTotalProducto?}/{maxTotalProducto?}",[InformeInventarioController::class,"obtenerVentasPorProductos"]);
     //Ruta para obtener los productos más vendidos
-    Route::get("productos_mas_vendidos/{fechaInicio?}/{fechaFin?}",[InformeInventarioController::class,"obtenerProductosMasVendidosConIngresos"]);
+    Route::get("productos_mas_vendidos/",[InformeInventarioController::class,"obtenerProductosMasVendidosConIngresos"]);
 });
 
 Route::get("filtro_ventas_totales/",[InformeVentasController::class,"obtenerVentasTotalesPorFecha"]);

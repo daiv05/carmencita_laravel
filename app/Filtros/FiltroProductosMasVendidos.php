@@ -12,7 +12,7 @@ class FiltroProductosMasVendidos implements InterfazFiltroProductosMasVendidos {
         $this->numberPaginate = $numberPaginate;
     }
 
-    public function filtrarPorFechaInicio($fechaInicio){
+    public function filtrarPorFechaInicio($fechaInicio, $tipoOrden){
 
         return DB::table('producto as X1')
             ->select(
@@ -49,11 +49,12 @@ class FiltroProductosMasVendidos implements InterfazFiltroProductosMasVendidos {
                 $query->where(DB::raw('COALESCE(X2.total_venta, 0)'), '>', 0)
                     ->orWhere(DB::raw('COALESCE(X3.total_credito, 0)'), '>', 0);
             })            
+            ->orderBy('total_producto_vendido', $tipoOrden)
             ->paginate($this->numberPaginate);
 
     }
 
-    public function filtrarPorFechaFin($fechaFin){
+    public function filtrarPorFechaFin($fechaFin, $tipoOrden){
 
         return DB::table('producto as X1')
             ->select(
@@ -90,6 +91,7 @@ class FiltroProductosMasVendidos implements InterfazFiltroProductosMasVendidos {
                 $query->where(DB::raw('COALESCE(X2.total_venta, 0)'), '>', 0)
                     ->orWhere(DB::raw('COALESCE(X3.total_credito, 0)'), '>', 0);
             })            
+            ->orderBy('total_producto_vendido', $tipoOrden)
             ->paginate($this->numberPaginate);
 
     }
@@ -110,7 +112,7 @@ class FiltroProductosMasVendidos implements InterfazFiltroProductosMasVendidos {
         
     }
 
-    public function obtenerProductosPorFechaInicioYFechaFin($fechaInicio, $fechaFin){
+    public function obtenerProductosPorFechaInicioYFechaFin($fechaInicio, $fechaFin, $tipoOrden){
 
         return DB::table('producto as X1')
             ->select(
@@ -147,10 +149,10 @@ class FiltroProductosMasVendidos implements InterfazFiltroProductosMasVendidos {
                 $query->where(DB::raw('COALESCE(X2.total_venta, 0)'), '>', 0)
                     ->orWhere(DB::raw('COALESCE(X3.total_credito, 0)'), '>', 0);
             })
-            ->orderByDesc('total_producto_vendido')
+            ->orderBy('total_producto_vendido', $tipoOrden)
             ->limit(3)
             ->paginate($this->numberPaginate);
-
+            
     }
 
 }
