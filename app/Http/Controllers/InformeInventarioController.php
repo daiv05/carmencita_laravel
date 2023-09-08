@@ -57,7 +57,7 @@ class InformeInventarioController extends Controller
     public function obtenerVentasPorProductos(Request $request)
     {
         $parametrosFiltro = $request->all();
-        $managerFiltros = new FiltroHistorialVentasProducto(10);
+        $managerFiltros = new FiltroHistorialVentasProducto(2);
        if(isset($parametrosFiltro["fechaInicioVenta"]) && isset($parametrosFiltro["fechaFinVenta"])){
             //$parametrosFiltro["fechaInicioVenta"] = date("Y-m-d",strtotime($parametrosFiltro["fechaInicioVenta"]));
             return $managerFiltros->filtrarPorFechas($parametrosFiltro["fechaInicioVenta"],$parametrosFiltro["fechaFinVenta"]);
