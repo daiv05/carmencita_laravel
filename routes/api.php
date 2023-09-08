@@ -16,6 +16,7 @@ use App\Http\Controllers\DetalleVentaController;
 use App\Http\Controllers\VentaController;
 use App\Http\Controllers\CreditoFiscalController;
 use App\Http\Controllers\AsistenciaController;
+use App\Http\Controllers\CreditoFiscalDomicilioController;
 use App\Models\Producto;
 use App\Http\Controllers\DetalleCreditoController;
 use App\Http\Controllers\MunicipioController;
@@ -32,6 +33,7 @@ use App\Http\Controllers\LoteController;
 use App\Http\Controllers\FechaController;
 use App\Http\Controllers\InformeVentasController;
 use App\Http\Controllers\InformeInventarioController;
+use App\Http\Controllers\VentaDomicilioController;
 use Illuminate\Console\View\Components\Info;
 
 /*
