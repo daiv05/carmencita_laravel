@@ -258,9 +258,13 @@ Route::put('creditos/updateEstado/{CFSales}', [VentasCFController::class, 'updat
 Route::controller(VentaDomicilioController::class)->group(function () {
     Route::get('/venta_domicilio', 'index');
     Route::get('/venta_domicilio/{id}', 'show');
+    Route::get('/ventas/desvincular_hr/', 'desvincularHojaRuta');
+    Route::get('/ventas/confirmar_pago/{venta_domicilio}', 'confirmar_pago_venta');
 });
 
 Route::controller(CreditoFiscalDomicilioController::class)->group(function () {
     Route::get('/credito_fiscal_domicilio', 'index');
     Route::get('/credito_fiscal_domicilio/{id}', 'show');
+    Route::get('/creditos/desvincular_hr/', 'desvincularHojaRuta');
+    Route::get('/creditos/confirmar_pago/{credito_domicilio}', 'confirmar_pago_credito');
 });
