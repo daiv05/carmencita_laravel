@@ -101,27 +101,28 @@ class InformeInventarioController extends Controller
         return "";
     }
 
-    public function obtenerProductosMasVendidosConIngresos($fechaInicio = '1950-01-01', $fechaFin = '2050-12-31')
+    public function obtenerProductosMasVendidosConIngresos(Request $request)
     {
+        $parametros = request()->all();
         
         $managerFiltros = new FiltroProductosMasVendidos(10);
         
         try {
 
-            if ($fechaInicio != '1950-01-01' && $fechaFin != '2050-12-31'){
-                return $managerFiltros->obtenerProductosPorFechaInicioYFechaFin($fechaInicio, $fechaFin);
+            if (isset($parametros['fechaInicio']) && isset($parametros['fechaFin'])){
+                return $managerFiltros->filtrarPorFechaInicioYFechaFin($parametros['fechaInicio'], $parametros['fechaFin'], $parametros['tipoOrden']);
             }
-            else if ($fechaInicio != '1950-01-01')
+            else if (isset($parametros['fechaInicio']))
             {
-                return $managerFiltros->filtrarPorFechaInicio($fechaInicio);
+                return $managerFiltros->filtrarPorFechaInicio($parametros['fechaInicio'], $parametros['tipoOrden']);
             }
-            else if ($fechaFin != '2050-12-31')
+            else if (isset($parametros['fechaFin']))
             {
-                return $managerFiltros->filtrarPorFechaFin($fechaFin);
+                return $managerFiltros->filtrarPorFechaFin($parametros['fechaFin'], $parametros['tipoOrden']);
             }
             else
             {
-                return $managerFiltros->obtenerProductosPorFechaInicioYFechaFin($fechaInicio, $fechaFin);
+                return $managerFiltros->obtenerProductosPorOrden($parametros['tipoOrden']);
             }
             
         } catch (ModelNotFoundException $e) {

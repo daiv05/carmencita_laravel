@@ -4,18 +4,20 @@ namespace App\Filtros;
 
 interface InterfazFiltroProductosMasVendidos{
 
-    public function filtrarPorFechaInicio($fechaInicio);
+    public function filtrarPorFechaInicio($fechaInicio, $tipoOrden);
 
-    public function filtrarPorFechaFin($fechaFin);
+    public function filtrarPorFechaFin($fechaFin, $tipoOrden);
 
-    public function filtrarPorCantidad($cantidad);
+    public function filtrarPorCantidad($cantidad, $tipoOrden);
 
-    public function filtrarPorFechaIncioYFechaFinYCantidad($fechaInicio, $fechaFin,$cantidad);
+    public function filtrarPorFechaIncioYFechaFinYCantidad($fechaInicio, $fechaFin, $cantidad, $tipoOrden);
 
-    public function filtrarPorFechaInicioYCantidad($fechaInicio,$cantidad);
+    public function filtrarPorFechaInicioYCantidad($fechaInicio,$cantidad, $tipoOrden);
 
-    public function filtrarPorFechaFinYCantidad($fechaFin,$cantidad);
+    public function filtrarPorFechaFinYCantidad($fechaFin,$cantidad, $tipoOrden);
 
-    public function obtenerProductosPorFechaInicioYFechaFin($fechaInicio, $fechaFin);
+    public function obtenerProductosPorOrden($tipoOrden);
+
+    public function filtrarPorFechaInicioYFechaFin($fechaInicio, $fechaFin, $tipoOrden);
 
 }
