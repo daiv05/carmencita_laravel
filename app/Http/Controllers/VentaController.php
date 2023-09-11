@@ -232,12 +232,11 @@ class VentaController extends Controller
             $validar = $detalle_venta->register_detalle_venta($request, $venta->id_venta);
             if ($validar->getStatusCode() == 201) {
                 $impresion_service = new ImpresionController();
-                $pdf = base64_encode($impresion_service->generatePDF($venta));
+                $estado_impresion = $impresion_service->generate_pdf_consumidor_final($venta);
                 return response()->json([
                     'respuesta' => true,
                     'mensaje' => 'Venta creada correctamente',
-                    'datos' => $venta->id_venta,
-                    'pdf' => $pdf
+                    'datos' => $estado_impresion,
                 ], 201);
             } else {
                 return $validar;
