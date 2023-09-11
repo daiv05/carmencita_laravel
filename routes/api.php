@@ -222,6 +222,7 @@ Route::controller(HojaDeRutaController::class)->group(function () {
     Route::get('/hoja_de_ruta/{id}', 'show');
     Route::post('/hoja_de_ruta', 'store');
 });
+Route::get('/hoja_de_ruta_paginadas',[HojaDeRutaController::class,'obtenerHojasDeRutasPaginadasFiltro']);
 Route::post('/facturas_domicilio',[VentaController::class,'getVentasDomicilio']);
 Route::post('/creditos_fiscales_domicilio',[CreditoFiscalController::class,'getCreditosFiscalesDomicilio']);
 Route::post('/pedidos_domicilio',[VentaController::class,'getPedidos']);

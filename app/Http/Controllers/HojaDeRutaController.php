@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\HojaDeRuta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class HojaDeRutaController extends Controller
 {
@@ -84,5 +85,53 @@ class HojaDeRutaController extends Controller
                 'mensaje' => "Error al crear la Hoja de Ruta",
             ], 400);
         }
+    }
+
+    public function obtenerHojasDeRutasPaginadasFiltro(Request $request){
+        /*$hojas = 
+        HojaDeRuta::with('ventaDomicilio')->with('creditoFiscalDomicilio')->with('empleado')->paginate(10);*/
+        $parametrosConsulta = $request->all();
+        $resultados = [];
+        $condiciones = $this->construirCondiciones(
+            isset($parametrosConsulta["fechaEntrega"])?$parametrosConsulta["fechaEntrega"]:null);
+            
+        if(isset($parametrosConsulta["tipo"])){
+            if($parametrosConsulta["tipo"] == "Consumidor final"){
+                $resultados = DB::table('hojaderuta')
+                ->select('hojaderuta.id_hr', 'hojaderuta.fecha_entrega', 'hojaderuta.total', DB::raw("'Consumidor Final' as tipo"))
+                ->join('ventadomicilio', 'hojaderuta.id_hr', '=', 'ventadomicilio.id_hr')
+                ->join('venta', 'venta.id_venta', '=', 'ventadomicilio.id_venta');    
+            }
+            else if($parametrosConsulta["tipo"] == "Crédito Fiscal"){
+                $resultados = DB::table('hojaderuta')
+                ->select('hojaderuta.id_hr', 'hojaderuta.fecha_entrega', 'hojaderuta.total', DB::raw("'Crédito Fiscal' as tipo"))
+                ->join('creditofiscaldomicilio', 'creditofiscaldomicilio.id_hr', '=', 'hojaderuta.id_hr')
+                ->join('creditofiscal', 'creditofiscal.id_creditofiscal', '=', 'creditofiscaldomicilio.id_creditofiscal');
+            }
+        }
+        if(count($condiciones) > 0){
+            $resultados->where(
+                function($query) use ($condiciones){
+                    foreach($condiciones as $condicion){
+                        $query->whereRaw($condicion);
+                    }
+                }
+            );
+        }
+        $resultados = $resultados->paginate(5);
+        //->where("hojaderuta.fecha_entrega","=","10290-90-10")
+        //->paginate(10); 
+     
+
+        return $resultados;
+    }
+
+    public function construirCondiciones($fechaEntrega){
+        $condiciones = [];
+        if($fechaEntrega!=null){
+            $condiciones[] = "hojaderuta.fecha_entrega = '$fechaEntrega'";
+        }
+
+        return $condiciones;
     }
 }
