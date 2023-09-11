@@ -2,11 +2,11 @@
 <html>
 
 <head>
-    <title>Título del PDF</title>
+    <title>Facturas - Consumidor Final</title>
 </head>
 
 <body>
-    <div style="margin-right: 20px; margin-left: 20px; margin-top: 100px">
+    <div style="margin-right: 20px; margin-left: 20px; margin-top: 110px">
         <div class="margen-right-fecha">
             <p class="text-sm text-right inset-y-0 right-0 font-mono">{{ date('d-m-Y', strtotime($venta->fecha_venta)) }}
             </p>
@@ -68,7 +68,7 @@
                     <td class="text-left td-h-10"></td>
                     <td class="text-left td-h-10"></td>
                     <td class="text-left text-sm font-mono">$
-                        {{ number_format($venta->total_venta - $venta->total_iva, 2) }}</td>
+                        {{ number_format($venta->total_venta, 2) }}</td>
                 </tr>
                 <tr class="">
                     <td class="text-left td-h-10"></td>
@@ -76,7 +76,7 @@
                     <td class="text-left td-h-10"></td>
                     <td class="text-left td-h-10"></td>
                     <td class="text-left td-h-10"></td>
-                    <td class="text-left td-h-10"></td>
+                    <td class="text-left text-sm font-mono">$ {{ number_format($venta->total_iva, 2) }}</td>
                 </tr>
                 <tr class="">
                     <td class="text-left td-h-10"></td>
