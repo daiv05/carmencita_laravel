@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
+use Nette\Utils\DateTime;                 
 
 class Producto extends Model
 {
@@ -49,6 +50,62 @@ class Producto extends Model
     {
         return $this->hasMany(Lote::class,'codigo_barra_producto','codigo_barra_producto');
     }
+    public function updateExistencias(int $cantidad, bool $salida){
+
+        $loteActivo = $this->getLoteActivo();
+        if($loteActivo){
+            if($salida){
+                $this->decrementQuietly('cantidad_producto_disponible', $cantidad);
+                if(($loteActivo->cantidad - $cantidad) < 0 ){
+                    $diferencia = $cantidad - $loteActivo->cantidad;
+                    $loteActivo->cantidad = 0;
+                    $loteActivo->update();
+                    $loteActivo = $this->getLoteActivo();
+                    $loteActivo->decrementQuietly('cantidad',$diferencia);
+                }else{
+                    $loteActivo->decrementQuietly('cantidad', $cantidad);
+                }
+            }else{
+                $this->incrementQuietly('cantidad_producto_disponible', $cantidad);
+                $loteActivo->incrementQuietly('cantidad', $cantidad);
+            }
+        }else{
+            return false;
+        }
+    }
+
+    public function getLoteActivo(){
+        $fechaActual = new DateTime();
+        $loteActivo = $this->lotes()->where('fecha_vencimiento','>',$fechaActual)->where('cantidad','>',0)->first();
+        if(isset($loteActivo)){
+            foreach($this->lotes()->get() as $lote){
+                if($lote->fecha_ingreso < $loteActivo->fecha_ingreso and $lote->cantidad > 0 and $fechaActual<$lote->fecha_vencimiento){
+                    $loteActivo = $lote;
+                }
+            }
+        }else{
+            $loteActivo = false;
+        }
+
+        return $loteActivo;
+    }
+
+    public function getExistencias(){
+        $fechaActual = new DateTime();
+        $lotes = $this->lotes()->where('fecha_vencimiento','>',$fechaActual)->where('cantidad','>',0)->get();
+        $exitenciasLotes = 0;
+        foreach($lotes as $lote){
+            $exitenciasLotes += $lote->cantidad;
+        }
+
+        if($this->cantidad_producto_disponible != $exitenciasLotes){
+            $this->cantidad_producto_disponible = $exitenciasLotes;
+            $this->update();
+        }
+
+        return $exitenciasLotes;
+
+    }
     
     public static function obtenerProductosConTotales($fechaInicioVenta, $fechaFinVenta, $minTotal, $maxTotal, $minTotalProductoVendido, $maxTotalProductoVendido)
     {
@@ -89,6 +146,6 @@ class Producto extends Model
             })
             ->havingRaw("total BETWEEN  '$minTotal' AND '$maxTotal'")
             ->havingRaw("total_producto_vendido BETWEEN '$minTotalProductoVendido' AND '$maxTotalProductoVendido'")
-            ->paginate(5);
+            ->paginate(10);
      }
     }

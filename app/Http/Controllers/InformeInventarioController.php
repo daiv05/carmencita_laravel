@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\ClasesPersonalizadas\FiltroHistorialVentasProducto as ClasesPersonalizadasFiltroHistorialVentasProducto;
 use Illuminate\Http\Request;
 use App\Http\Resources\InformeInventarioResource;
 use App\Models\Producto;
-
+use App\Filtros\FiltroHistorialVentasProducto;
+use Illuminate\Database\Eloquent\Casts\Json;
 
 class InformeInventarioController extends Controller
 {
@@ -43,13 +45,76 @@ class InformeInventarioController extends Controller
             "categories"=>$categories,
         ]);
     }
+    
 
-    public function obtenerVentasPorProductos(Request $request, string $fechaInicioVenta = '1990-01-01', 
-    string $fechaFinVenta = '2050-12-31', float $minTotal = 0.00, float $maxTotal = 5000000.00, 
-    int $minTotalProducto = 0, int $maxTotalProducto = 1000000)
+    public function existenMasParametrosDeConsulta($parametrosFiltro){
+        if((isset($parametrosFiltro["minTotal"])) ||(isset($parametrosFiltro["maxTotal"])) || (isset($parametrosFiltro["minTotalProducto"])) || (isset($parametrosFiltro["maxTotalProducto"]))){
+            return true;
+        }
+        return false;
+    }
+
+    public function obtenerVentasPorProductos(Request $request)
     {
-        return Producto::obtenerProductosConTotales($fechaInicioVenta,$fechaFinVenta
-                                                    ,$minTotal,$maxTotal,$minTotalProducto,$maxTotalProducto);
+        $parametrosFiltro = $request->all();
+        $managerFiltros = new FiltroHistorialVentasProducto(5);
+       if(isset($parametrosFiltro["fechaInicioVenta"]) && isset($parametrosFiltro["fechaFinVenta"])){
+            //$parametrosFiltro["fechaInicioVenta"] = date("Y-m-d",strtotime($parametrosFiltro["fechaInicioVenta"]));
+            return $managerFiltros->filtrarPorFechas($parametrosFiltro["fechaInicioVenta"],$parametrosFiltro["fechaFinVenta"]);
+        }
+        else if(isset($parametrosFiltro["fechaInicioVenta"])){
+            //$parametrosFiltro["fechaFinVenta"] = date("Y-m-d",strtotime($parametrosFiltro["fechaFinVenta"]));
+            return $managerFiltros->filtrarPorFechaInicio(
+                $parametrosFiltro["fechaInicioVenta"]
+            );
+        }
+        else if(isset($parametrosFiltro["fechaFinVenta"])){
+            return $managerFiltros->filtrarPorFechaFin(
+                $parametrosFiltro["fechaFinVenta"]
+            );
+        }
+        else if((!isset($parametrosFiltro["fechaInicioVenta"]) && !isset($parametrosFiltro["fechaFinVenta"])) && $this->existenMasParametrosDeConsulta($parametrosFiltro) ){
+            return $managerFiltros->filtrarPorValorVentasCantidades(
+                isset($parametrosFiltro["minTotal"]) ? $parametrosFiltro["minTotal"] : null,
+                isset($parametrosFiltro["maxTotal"]) ? $parametrosFiltro["maxTotal"] : null,
+                isset($parametrosFiltro["minTotalProducto"]) ? $parametrosFiltro["minTotalProducto"] : null,
+                isset($parametrosFiltro["maxTotalProducto"]) ? $parametrosFiltro["maxTotalProducto"] : null
+            );
+        }
+        else if(isset($parametrosFiltro["fechaInicioVenta"]) && isset($parametrosFiltro["fechaFinVenta"])){
+            $resultado = $managerFiltros->filtroFechasValorVentasCantidades(
+                $parametrosFiltro["fechaInicioVenta"],
+                $parametrosFiltro["fechaFinVenta"],
+                isset($parametrosFiltro["minTotal"]) ? $parametrosFiltro["minTotal"] : null,
+                isset($parametrosFiltro["maxTotal"]) ? $parametrosFiltro["maxTotal"] : null,
+                isset($parametrosFiltro["minTotalProducto"]) ? $parametrosFiltro["minTotalProducto"] : null,
+                isset($parametrosFiltro["maxTotalProducto"]) ? $parametrosFiltro["maxTotalProducto"] : null
+            );
+            return $resultado;
+        }
+        else if(isset($parametrosFiltro["fechaInicioVenta"])){
+           $resultado = $managerFiltros->filtroFechaIncioValorVentasCantidades(
+                $parametrosFiltro["fechaInicioVenta"],
+                isset($parametrosFiltro["minTotal"]) ? $parametrosFiltro["minTotal"] : null,
+                isset($parametrosFiltro["maxTotal"]) ? $parametrosFiltro["maxTotal"] : null,
+                isset($parametrosFiltro["minTotalProducto"]) ? $parametrosFiltro["minTotalProducto"] : null,
+                isset($parametrosFiltro["maxTotalProducto"]) ? $parametrosFiltro["maxTotalProducto"] : null
+            );
+            return $resultado;
+        }
+        else if(isset($parametrosFiltro["fechaFinVenta"])){
+            $resultado = $managerFiltros->filtroFechaFinValorVentasCantidades(
+                $parametrosFiltro["fechaFinVenta"],
+                isset($parametrosFiltro["minTotal"]) ? $parametrosFiltro["minTotal"] : null,
+                isset($parametrosFiltro["maxTotal"]) ? $parametrosFiltro["maxTotal"] : null,
+                isset($parametrosFiltro["minTotalProducto"]) ? $parametrosFiltro["minTotalProducto"] : null,
+                isset($parametrosFiltro["maxTotalProducto"]) ? $parametrosFiltro["maxTotalProducto"] : null
+            );
+            return $resultado;
+        }
+
+        return $managerFiltros->obtenerTodos();
+        
     }
 
     public function destroy(){

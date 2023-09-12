@@ -101,7 +101,7 @@ class VentaController extends Controller
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => $mensaje
-            ], 200);
+            ], 400);
         }
         $detalle_venta_controller = new DetalleVentaController();
 
@@ -114,16 +114,22 @@ class VentaController extends Controller
         ];
 
         $validator = Validator::make($request->venta, $rules);
-
+        
         if ($validator->fails()) {
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => $validator->errors()->all()
             ], 400);
         }
+        
+        //Para validar que la fecha no se modifique si ya esta asignada a hoja de ruta
+        $datosNuevosVenta = $request->venta;
+        $asignada = VentaDomicilio::where('id_venta',$venta->id_venta)->exists();
+        if($asignada and ($request->venta["fecha_venta"] != $venta->fecha_venta)){
+            $datosNuevosVenta["fecha_venta"] = $venta->fecha_venta;
+        }
 
-        //if ($request->venta->validate($rules)) {
-        $venta->update($request->venta);
+        $venta->update($datosNuevosVenta);
         $detallesActuales = $venta->detalleVenta()->get(); //Obtiene los detalles actuales de la venta (detalles antes del update)
         foreach ($detallesActuales as $detalleActual) {
             $detalle_venta_controller->destroy($detalleActual);
@@ -212,8 +218,8 @@ class VentaController extends Controller
         $rules = [
             // fecha_venta en formato dd-mm-aaaa
             'fecha_venta' => 'required|date',
-            'total_venta' => 'required|decimal:0,2',
-            'total_iva' => 'required|decimal:0,2',
+            'total_venta' => 'required|decimal:0,4',
+            'total_iva' => 'required|decimal:0,4',
             'nombre_cliente_venta' => 'nullable|string|max:30'
         ];
         $validator = Validator::make($request->venta, $rules);
@@ -270,8 +276,7 @@ class VentaController extends Controller
         }
     }
 
-    public function getPedidos(Request $request)
-    {
+    public function getPedidos(Request $request){
 
         $queryBaseVentas = "select 'Factura' as tipo,venta.estado_venta as estado, venta.id_venta as id,nombre_cliente_venta as cliente ,fecha_venta as fecha, total_venta as total,hojaderuta.id_hr as hr from venta left join ventadomicilio on ventadomicilio.id_venta = venta.id_venta
         left join hojaderuta on hojaderuta.id_hr = ventadomicilio.id_hr where venta.domicilio = 1"; //obtiene todas las facturas 
@@ -353,6 +358,7 @@ class VentaController extends Controller
                     $pedido->cliente = $cliente->distintivo_cliente;
                 }
             }
+
         }
 
         $perPage = 15;
