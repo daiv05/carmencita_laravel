@@ -223,6 +223,7 @@ Route::controller(HojaDeRutaController::class)->group(function () {
     Route::get('/hoja_de_ruta', 'index');
     Route::get('/hoja_de_ruta/{id}', 'show');
     Route::post('/hoja_de_ruta', 'store');
+    Route::post('/hoja_de_ruta/marcar_entregada/{id}', 'marcarEntregada');
 });
 Route::get('/hoja_de_ruta_paginadas',[HojaDeRutaController::class,'obtenerHojasDeRutasPaginadasFiltro']);
 Route::post('/facturas_domicilio',[VentaController::class,'getVentasDomicilio']);
@@ -262,12 +263,12 @@ Route::controller(VentaDomicilioController::class)->group(function () {
     Route::get('/venta_domicilio', 'index');
     Route::get('/venta_domicilio/{id}', 'show');
     Route::get('/ventas/desvincular_hr/', 'desvincularHojaRuta');
-    Route::get('/ventas/confirmar_pago/{venta_domicilio}', 'confirmar_pago_venta');
+    Route::post('/ventas/confirmar_pago/{venta_domicilio}', 'confirmar_pago_venta');
 });
 
 Route::controller(CreditoFiscalDomicilioController::class)->group(function () {
     Route::get('/credito_fiscal_domicilio', 'index');
     Route::get('/credito_fiscal_domicilio/{id}', 'show');
     Route::get('/creditos/desvincular_hr/', 'desvincularHojaRuta');
-    Route::get('/creditos/confirmar_pago/{credito_domicilio}', 'confirmar_pago_credito');
+    Route::post('/creditos/confirmar_pago/{credito_domicilio}', 'confirmar_pago_credito');
 });

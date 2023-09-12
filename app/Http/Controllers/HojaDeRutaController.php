@@ -126,6 +126,37 @@ class HojaDeRutaController extends Controller
         return $resultados;
     }
 
+    public function marcarEntregada($id){
+        $hoja = HojaDeRuta::find($id);
+        if($hoja == null){
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => "No existe la hoja de ruta",
+            ], 400);
+        }
+        try {
+            $hoja->entregada = true;
+            foreach($hoja->ventaDomicilio as $vd){
+                $vd->esta_cancelada = 1;
+                $vd->save();
+            }
+            foreach($hoja->creditoFiscalDomicilio as $cfd){
+                $cfd->esta_cancelado = 1;
+                $cfd->save();
+            }
+            $hoja->save();
+        } catch (\Throwable $th) {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => "Error al marcar como entregada la hoja de ruta",
+            ], 400);
+        }
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => "Se marco como entregada la hoja de ruta",
+        ], 201);
+    }
+
     public function construirCondiciones($fechaEntrega){
         $condiciones = [];
         if($fechaEntrega!=null){

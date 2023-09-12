@@ -107,8 +107,8 @@ class VentaDomicilioController extends Controller
         }
     }
 
-    public function confirmar_pago_venta (Request $request, int $venta_domicilio){
-        $v_d = VentaDomicilio::find($venta_domicilio);
+    public function confirmar_pago_venta (Request $request, string $venta_domicilio){
+        $v_d = VentaDomicilio::find((int)$venta_domicilio);
         if (isset($v_d)){
             if ($v_d->esta_cancelada == 1){
                 return response()->json([

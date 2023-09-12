@@ -88,8 +88,8 @@ class CreditoFiscalDomicilioController extends Controller
         }
     }
 
-    public function confirmar_pago_credito (Request $request, int $credito_domicilio){
-        $c_d = CreditoFiscalDomicilio::find($credito_domicilio);
+    public function confirmar_pago_credito (Request $request, string $credito_domicilio){
+        $c_d = CreditoFiscalDomicilio::find((int)$credito_domicilio);
         if (isset($c_d)){
             if ($c_d->esta_cancelado == 1){
                 return response()->json([

@@ -76,10 +76,12 @@ class VentasCFController extends Controller
         if($ventaCF->estado_venta)
         {
             $ventaCF->estado_venta = false;
+            $this->update_existencias_venta($ventaCF, false);
         }
         else
         {
             $ventaCF->estado_venta = true;
+            $this->update_existencias_venta($ventaCF, true);
         }
 
         $ventaCF->update();
@@ -99,10 +101,13 @@ class VentasCFController extends Controller
             if($CFSales->estado_credito)
             {
                 $CFSales->estado_credito = false;
+
+                $this->update_existencias_credito($CFSales, false);
             }
             else
             {
                 $CFSales->estado_credito = true;
+                $this->update_existencias_credito($CFSales, true);
             }
     
             $CFSales->update();
@@ -112,5 +117,19 @@ class VentasCFController extends Controller
                 'estado_credito'=>$CFSales->estado_credito,
             ]);        
             
+        }
+
+        public function update_existencias_venta(Venta $venta, $salida){
+            foreach($venta->detalleVenta as $detalle){
+                $producto = Producto::findOrFail($detalle->codigo_barra_producto);
+                $producto->updateExistencias($detalle->cantidad_producto, $salida);
+            }
+        }
+
+        public function update_existencias_credito(CreditoFiscal $credito, $salida){
+            foreach($credito->detallecredito as $detalle){
+                $producto = Producto::findOrFail($detalle->codigo_barra_producto);
+                $producto->updateExistencias($detalle->cantidad_producto_credito, $salida);
+            }
         }
 }
