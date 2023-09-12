@@ -14,6 +14,15 @@ class LoteSeeder extends Seeder
      */
     public function run(): void
     {
-        Lote::factory()->count(50)->create();
+        $productos = Producto::all();
+        foreach($productos as $producto){
+            
+            $lotes = Lote::factory()->count(3)->for($producto)->create();
+            $producto->cantidad_producto_disponible=0;
+            foreach($lotes as $lote){
+                $producto->cantidad_producto_disponible += $lote->cantidad;
+                $producto->update();
+            } 
+        }
     }
 }
