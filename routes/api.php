@@ -32,6 +32,7 @@ use App\Http\Controllers\LoteController;
 use App\Http\Controllers\FechaController;
 use App\Http\Controllers\InformeVentasController;
 use App\Http\Controllers\InformeInventarioController;
+use App\Http\Controllers\InformeProductosPorVencerController;
 use Illuminate\Console\View\Components\Info;
 
 /*
@@ -265,3 +266,6 @@ Route::controller(CreditoFiscalDomicilioController::class)->group(function () {
     Route::get('/credito_fiscal_domicilio', 'index');
     Route::get('/credito_fiscal_domicilio/{id}', 'show');
 });
+
+//Para obtener los productos que vencen en los proximos 15 dias
+Route::get('productosXVenecer', [InformeProductosPorVencerController::class, 'index']);
