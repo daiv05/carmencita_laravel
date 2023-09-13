@@ -2,20 +2,26 @@
 <html>
 
 <head>
-    <title>Facturas - Consumidor Final</title>
+    <title>Facturas - Credito Fiscal</title>
 </head>
 
 <body>
     <div style="margin-right: 20px; margin-left: 20px; margin-top: 110px">
         <div class="margen-right-fecha">
-            <p class="text-sm text-right inset-y-0 right-0 font-mono">{{ date('d-m-Y', strtotime($venta->fecha_venta)) }}
+            <p class="text-sm text-right inset-y-0 right-0 font-mono">{{ date('d-m-Y', strtotime($credito->fecha_credito)) }}
             </p>
         </div>
         <div class="margen-left-nombre-cliente">
-            <p class="text-sm inset-y-0 left-0 font-mono">{{ $venta->nombre_cliente_venta }}</p>
+            <p class="text-sm inset-y-0 left-0 font-mono">{{ $credito->cliente->distintivo_cliente }}</p>
+            <p class="text-sm inset-y-0 left-0 font-mono"></p>
+            <p class="text-sm inset-y-0 left-0 font-mono" style="margin-left: 35px;">{{ $credito->cliente->direccion_cliente }}</p>
+            <p class="text-sm inset-y-0 left-0 font-mono" style="margin-left: 35px;">{{ $credito->cliente->municipio->nombre_municipio }} <label style="margin-left: 200px;">{{ $credito->cliente->municipio->departamento->nombre_departamento }} </label> </p>
+            <p class="text-sm inset-y-0 left-0 font-mono" style="margin-left: 190px;"> {{ $credito->cliente->nrc_cliente}} <label style="margin-left: 50px;">{{ $credito->cliente->dui_cliente }}</label> </p>
+            <p class="text-sm inset-y-0 left-0 font-mono"></p>
+            <p class="text-sm inset-y-0 left-0 font-mono"></p>
         </div>
 
-        <div style="height: 400px">
+        <div style="height: 300px">
             <table class="table">
                 <thead>
                     <tr class="invisible">
@@ -29,9 +35,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($venta->detalleVenta as $detalles)
+                    @foreach ($credito->detalleCredito as $detalles)
                         <tr>
-                            <td class="text-left text-sm font-mono td-num">{{ $detalles->cantidad_producto }}</td>
+                            <td class="text-left text-sm font-mono td-num">{{ $detalles->cantidad_producto_credito }}</td>
                             <td class="text-left text-sm font-mono td-descripcion">
                                 {{ $detalles->producto->nombre_producto }}</td>
                             <td class="text-left text-sm font-mono td-precio">$
@@ -39,7 +45,7 @@
                             <td class="text-left text-sm font-mono td-precio"></td>
                             <td class="text-left text-sm font-mono td-precio"></td>
                             <td class="text-left text-sm font-mono td-precio">$
-                                {{ number_format($detalles->cantidad_producto * $detalles->producto->precio_unitario, 2) }}
+                                {{ number_format($detalles->cantidad_producto_credito * $detalles->producto->precio_unitario, 2) }}
                             </td>
                         </tr>
                     @endforeach
@@ -68,7 +74,7 @@
                     <td class="text-left td-h-10"></td>
                     <td class="text-left td-h-10"></td>
                     <td class="text-left text-sm font-mono">$
-                        {{ number_format(($venta->total_venta - $venta->total_iva), 2) }}</td>
+                        {{ number_format(($credito->total_credito - $credito->total_iva_credito), 2) }}</td>
                 </tr>
                 <tr class="">
                     <td class="text-left td-h-10"></td>
@@ -76,15 +82,7 @@
                     <td class="text-left td-h-10"></td>
                     <td class="text-left td-h-10"></td>
                     <td class="text-left td-h-10"></td>
-                    <td class="text-left text-sm font-mono">$ {{ number_format($venta->total_iva, 2) }}</td>
-                </tr>
-                <tr class="">
-                    <td class="text-left td-h-10"></td>
-                    <td class="text-left td-h-10"></td>
-                    <td class="text-left td-h-10"></td>
-                    <td class="text-left td-h-10"></td>
-                    <td class="text-left td-h-10"></td>
-                    <td class="text-left td-h-10"></td>
+                    <td class="text-left text-sm font-mono">$ {{ number_format($credito->total_iva_credito, 2) }}</td>
                 </tr>
                 <tr class="">
                     <td class="text-left td-h-10"></td>
@@ -108,7 +106,15 @@
                     <td class="text-left td-h-10"></td>
                     <td class="text-left td-h-10"></td>
                     <td class="text-left td-h-10"></td>
-                    <td class="text-left text-sm font-mono">$ {{ number_format($venta->total_venta, 2) }}</td>
+                    <td class="text-left td-h-10"></td>
+                </tr>
+                <tr class="">
+                    <td class="text-left td-h-10"></td>
+                    <td class="text-left td-h-10"></td>
+                    <td class="text-left td-h-10"></td>
+                    <td class="text-left td-h-10"></td>
+                    <td class="text-left td-h-10"></td>
+                    <td class="text-left text-sm font-mono">$ {{ number_format($credito->total_credito, 2) }}</td>
                 </tr>
             </tbody>
         </table>

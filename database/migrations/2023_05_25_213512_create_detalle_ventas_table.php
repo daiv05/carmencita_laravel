@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('codigo_barra_producto', 15);
             $table->integer('cantidad_producto');
             $table->decimal('subtotal_detalle_venta', 8, 4);
+            $table->decimal('precio_unitario_venta', 8, 4)->default(0);
 
             $table->foreign('id_venta')
                 ->references('id_venta')
