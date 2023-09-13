@@ -4,9 +4,9 @@ namespace App\Filtros;
 
 interface InterfazFiltroProductosMasVendidos{
 
-    public function filtrarPorFechaInicio($fechaInicio, $tipoOrden);
+    public function filtrarPorFechaInicio($fechaInicio, $tipoOrden, $cantidadAMostrar);
 
-    public function filtrarPorFechaFin($fechaFin, $tipoOrden);
+    public function filtrarPorFechaFin($fechaFin, $tipoOrden, $cantidadAMostrar);
 
     public function filtrarPorCantidad($cantidad, $tipoOrden);
 
@@ -16,8 +16,8 @@ interface InterfazFiltroProductosMasVendidos{
 
     public function filtrarPorFechaFinYCantidad($fechaFin,$cantidad, $tipoOrden);
 
-    public function obtenerProductosPorOrden($tipoOrden);
+    public function obtenerProductosPorOrden($tipoOrden, $cantidadAMostrar);
 
-    public function filtrarPorFechaInicioYFechaFin($fechaInicio, $fechaFin, $tipoOrden);
+    public function filtrarPorFechaInicioYFechaFin($fechaInicio, $fechaFin, $tipoOrden, $cantidadAMostrar);
 
 }

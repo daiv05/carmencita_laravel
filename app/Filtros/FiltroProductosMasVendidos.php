@@ -12,7 +12,7 @@ class FiltroProductosMasVendidos implements InterfazFiltroProductosMasVendidos {
         $this->numberPaginate = $numberPaginate;
     }
 
-    public function filtrarPorFechaInicio($fechaInicio, $tipoOrden){
+    public function filtrarPorFechaInicio($fechaInicio, $tipoOrden, $cantidadAMostrar){
 
         return DB::table('producto as X1')
             ->select(
@@ -50,11 +50,12 @@ class FiltroProductosMasVendidos implements InterfazFiltroProductosMasVendidos {
                     ->orWhere(DB::raw('COALESCE(X3.total_credito, 0)'), '>', 0);
             })            
             ->orderBy('total_producto_vendido', $tipoOrden)
+            ->limit($cantidadAMostrar)->get()
             ->paginate($this->numberPaginate);
 
     }
 
-    public function filtrarPorFechaFin($fechaFin, $tipoOrden){
+    public function filtrarPorFechaFin($fechaFin, $tipoOrden, $cantidadAMostrar){
 
         return DB::table('producto as X1')
             ->select(
@@ -92,6 +93,7 @@ class FiltroProductosMasVendidos implements InterfazFiltroProductosMasVendidos {
                     ->orWhere(DB::raw('COALESCE(X3.total_credito, 0)'), '>', 0);
             })            
             ->orderBy('total_producto_vendido', $tipoOrden)
+            ->limit($cantidadAMostrar)->get()
             ->paginate($this->numberPaginate);
 
     }
@@ -112,7 +114,7 @@ class FiltroProductosMasVendidos implements InterfazFiltroProductosMasVendidos {
 
     }
 
-    public function obtenerProductosPorOrden($tipoOrden){
+    public function obtenerProductosPorOrden($tipoOrden, $cantidadAMostrar){
 
         return DB::table('producto as X1')
             ->select(
@@ -148,12 +150,12 @@ class FiltroProductosMasVendidos implements InterfazFiltroProductosMasVendidos {
                     ->orWhere(DB::raw('COALESCE(X3.total_credito, 0)'), '>', 0);
             })
             ->orderBy('total_producto_vendido', $tipoOrden)
-            ->limit(3)
+            ->limit($cantidadAMostrar)->get()
             ->paginate($this->numberPaginate);
 
     }
 
-    public function filtrarPorFechaInicioYFechaFin($fechaInicio, $fechaFin, $tipoOrden){
+    public function filtrarPorFechaInicioYFechaFin($fechaInicio, $fechaFin, $tipoOrden, $cantidadAMostrar){
         return DB::table('producto as X1')
             ->select(
                 'X1.codigo_barra_producto',
@@ -190,6 +192,7 @@ class FiltroProductosMasVendidos implements InterfazFiltroProductosMasVendidos {
                     ->orWhere(DB::raw('COALESCE(X3.total_credito, 0)'), '>', 0);
             })            
             ->orderBy('total_producto_vendido', $tipoOrden)
+            ->limit($cantidadAMostrar)->get()
             ->paginate($this->numberPaginate);
     }
 }

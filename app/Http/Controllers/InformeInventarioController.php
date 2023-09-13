@@ -110,19 +110,19 @@ class InformeInventarioController extends Controller
         try {
 
             if (isset($parametros['fechaInicio']) && isset($parametros['fechaFin'])){
-                return $managerFiltros->filtrarPorFechaInicioYFechaFin($parametros['fechaInicio'], $parametros['fechaFin'], $parametros['tipoOrden']);
+                return $managerFiltros->filtrarPorFechaInicioYFechaFin($parametros['fechaInicio'], $parametros['fechaFin'], $parametros['tipoOrden'], $parametros['cantidadAMostrar']);
             }
             else if (isset($parametros['fechaInicio']))
             {
-                return $managerFiltros->filtrarPorFechaInicio($parametros['fechaInicio'], $parametros['tipoOrden']);
+                return $managerFiltros->filtrarPorFechaInicio($parametros['fechaInicio'], $parametros['tipoOrden'], $parametros['cantidadAMostrar']);
             }
             else if (isset($parametros['fechaFin']))
             {
-                return $managerFiltros->filtrarPorFechaFin($parametros['fechaFin'], $parametros['tipoOrden']);
+                return $managerFiltros->filtrarPorFechaFin($parametros['fechaFin'], $parametros['tipoOrden'], $parametros['cantidadAMostrar']);
             }
             else
             {
-                return $managerFiltros->obtenerProductosPorOrden($parametros['tipoOrden']);
+                return $managerFiltros->obtenerProductosPorOrden($parametros['tipoOrden'], $parametros['cantidadAMostrar']);
             }
             
         } catch (ModelNotFoundException $e) {
@@ -137,6 +137,10 @@ class InformeInventarioController extends Controller
             ], 500);
         }
 
+
+    }
+
+    public function construirCondiciones(){
 
     }
 }
