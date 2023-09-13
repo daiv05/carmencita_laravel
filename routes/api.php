@@ -33,6 +33,7 @@ use App\Http\Controllers\FechaController;
 use App\Http\Controllers\InformeVentasController;
 use App\Http\Controllers\InformeInventarioController;
 use App\Http\Controllers\InformeProductosPorVencerController;
+use App\Http\Controllers\CreditoController;
 use Illuminate\Console\View\Components\Info;
 
 /*
@@ -269,3 +270,6 @@ Route::controller(CreditoFiscalDomicilioController::class)->group(function () {
 
 //Para obtener los productos que vencen en los proximos 15 dias
 Route::get('productosXVenecer', [InformeProductosPorVencerController::class, 'index']);
+
+//Para obtener los productos que vencen en los proximos 15 dias
+Route::apiResource('creditos', CreditoController::class);
