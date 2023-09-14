@@ -54,9 +54,11 @@ class ImpresionController extends Controller
         return implode(',', $output) . ' ' . implode(',', $output1);
     }
 
-    public function generate_pdf_credito_fiscal(CreditoFiscal $credito)
+    public function generate_pdf_credito_fiscal($id_credito)
     {
-        $credito->with('detalleCredito');
+        $credito = CreditoFiscal::find($id_credito);
+        $credito->with('detalleCredito')->with('cliente')->with('municipio')->with('departamento');
+        error_log($credito);
         foreach ($credito->detalleCredito as $detalle) {
             $detalle->with('producto');
             $cantidad = $detalle->cantidad_producto_credito;
