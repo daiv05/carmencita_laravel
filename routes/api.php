@@ -272,3 +272,6 @@ Route::controller(CreditoFiscalDomicilioController::class)->group(function () {
     Route::get('/creditos/desvincular_hr/', 'desvincularHojaRuta');
     Route::post('/creditos/confirmar_pago/{credito_domicilio}', 'confirmar_pago_credito');
 });
+
+Route::get('/impresion_consumidor_final/{id}', [ImpresionController::class, 'generate_pdf_consumidor_final']);
+Route::get('/impresion_credito_fiscal/{id}', [ImpresionController::class, 'generate_pdf_credito_fiscal']);
