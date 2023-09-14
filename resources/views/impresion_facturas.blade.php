@@ -15,7 +15,7 @@
             <p class="text-sm inset-y-0 left-0 font-mono">{{ $venta->nombre_cliente_venta }}</p>
         </div>
 
-        <div style="height: 400px">
+        <div style="height: 400px; border: 2px; border-color:brown">
             <table class="table">
                 <thead>
                     <tr class="invisible">
@@ -107,19 +107,13 @@
                     <td class="text-left td-h-10"></td>
                     <td class="text-left td-h-10"></td>
                     <td class="text-left td-h-10"></td>
-                    <td class="text-left td-h-10"></td>
                     <td class="text-left text-sm font-mono">$ {{ number_format($venta->total_venta, 2) }}</td>
                 </tr>
             </tbody>
         </table>
-
-
     </div>
 </body>
-
 </html>
-
-<script></script>
 
 <style>
     .td-h-10 {

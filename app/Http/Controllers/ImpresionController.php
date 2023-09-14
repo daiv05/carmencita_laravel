@@ -42,14 +42,14 @@ class ImpresionController extends Controller
         $ruta_pdf = 'factura_venta_' . $venta->id_venta . '.pdf';
         $pdf->save($ruta_pdf);
 
-        $command1 = 'PDFXEdit /importp "C:\settings_editor.dat" ';
+        $command1 = 'PDFXEdit /importp "C:\setting_3060.dat" ';
         $salida_import = exec($command1, $output, $return_var);
 
         error_log('----------- IMPORT ------------');
         error_log('salida. ' . implode(',', $output));
         error_log('status. ' . $return_var);
 
-        $command2 = 'PDFXEdit /print:default=no;showui=no;printer="Microsoft Print to PDF" ' . public_path($ruta_pdf);
+        $command2 = 'PDFXEdit /print:default=no;showui=no;printer="Canon G3060 series" ' . public_path($ruta_pdf);
         $salida_impresion = exec($command2, $output1, $return_var1);
 
         error_log('----------- IMPRESION ------------');
@@ -91,14 +91,14 @@ class ImpresionController extends Controller
         $ruta_pdf = 'factura_credito_' . $credito->id_creditofiscal . '.pdf';
         $pdf->save($ruta_pdf);
 
-        $command1 = 'PDFXEdit /importp "C:\settings_editor.dat" ';
+        $command1 = 'PDFXEdit /importp "C:\setting_3060.dat" ';
         $salida_import = exec($command1, $output, $return_var);
 
         error_log('----------- IMPORT ------------');
         error_log('salida. ' . implode(',', $output));
         error_log('status. ' . $return_var);
 
-        $command2 = 'PDFXEdit /print:default=no;showui=no;printer="Microsoft Print to PDF" ' . public_path($ruta_pdf);
+        $command2 = 'PDFXEdit /print:default=no;showui=no;printer="Canon G3060 series" ' . public_path($ruta_pdf);
         $salida_impresion = exec($command2, $output1, $return_var1);
 
         error_log('----------- IMPRESION ------------');
