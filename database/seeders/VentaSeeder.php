@@ -141,6 +141,31 @@ class VentaSeeder extends Seeder
                 'fecha_venta' => '2022-08-22',
                 'total_venta' => 48.90,
                 'total_iva' => 4.89,
+            ],    
+            //pedidos
+            [
+                'fecha_venta' => '2023-10-10',
+                'total_venta' => 50.00,
+                'total_iva' => 5.00,
+                'nombre_cliente_venta' => 'Luis',
+                'estado_venta' => false,
+                'domicilio' => true,
+            ],
+            [
+                'fecha_venta' => '2023-10-10',
+                'total_venta' => 100.00,
+                'total_iva' =>13.00,
+                'nombre_cliente_venta' => 'Pedro',
+                'estado_venta' => false,
+                'domicilio' => true,
+            ],
+            [
+                'fecha_venta' => '2023-10-10',
+                'total_venta' => 50.00,
+                'total_iva' => 5.00,
+                'nombre_cliente_venta' => 'Maria',
+                'estado_venta' => false,
+                'domicilio' => true,
             ],
         ];
 

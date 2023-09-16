@@ -25,10 +25,12 @@ class Venta extends Model
         'total_iva',
         'nombre_cliente_venta',
         'estado_venta',
+        'domicilio'
     ];
 
-    protected $atrbutes = [
+    protected $attributes = [
         'estado_venta' => true,
+        'domicilio' => false,
     ];
 
     public function detalleVenta()
@@ -36,6 +38,9 @@ class Venta extends Model
         return $this->hasMany(DetalleVenta::class, 'id_venta', 'id_venta');
     }
 
+    public function ventaDomicilio(){
+        return $this->hasOne(VentaDomicilio::class, 'id_venta', 'id_venta');
+    }
     
 
 

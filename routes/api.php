@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\CargoController;
+use App\Http\Controllers\HojaAsistenciaController;
+use App\Http\Controllers\HojaDeRutaController;
 use App\Http\Controllers\SexoController;
 use App\Http\Controllers\EstadoFamiliarController;
 use App\Http\Controllers\NacionalidadController;
@@ -13,21 +15,25 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\DetalleVentaController;
 use App\Http\Controllers\VentaController;
 use App\Http\Controllers\CreditoFiscalController;
+use App\Http\Controllers\AsistenciaController;
+use App\Http\Controllers\CreditoFiscalDomicilioController;
 use App\Models\Producto;
 use App\Http\Controllers\DetalleCreditoController;
 use App\Http\Controllers\MunicipioController;
 use App\Http\Controllers\DepartamentoController;
-
+use App\Http\Controllers\ImpresionController;
 use App\Models\CreditoFiscal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\VentasCFController;
+use App\Http\Controllers\PlanillaController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LoteController;
 use App\Http\Controllers\FechaController;
 use App\Http\Controllers\InformeVentasController;
 use App\Http\Controllers\InformeInventarioController;
+use App\Http\Controllers\VentaDomicilioController;
 use Illuminate\Console\View\Components\Info;
 
 /*
@@ -91,6 +97,9 @@ Route::middleware(['auth:sanctum', 'permission:all'])->group(function () {
     Route::resource('clientes', ClienteController::class);
 });
 
+Route::get('impresion_prueba', [ImpresionController::class, 'generatePDF']);
+
+Route::get('pacientes',[JornadaLaboralDiariaController::class,'index']);
 
 /*Aqui poner las rutas para el cajero */ 
 Route::middleware(["auth:sanctum","permission:all|Ventas"])->group(function(){
@@ -102,6 +111,7 @@ Route::middleware(["auth:sanctum","permission:all|Ventas"])->group(function(){
     Route::get("productos/{producto}/foto", function (Producto $producto) {
         return response()->download(public_path(Storage::url($producto->foto)), $producto->nombre_producto);
     });
+
 });
 
 /*aqui poner las rutas para el sub gerente o del modulo perteneciente a recursos humanos */
@@ -115,12 +125,17 @@ Route::middleware(["auth:sanctum","permission:all|Inventario|Ventas"])->group(fu
 
 /*poner todas las rutas de recursos humanos*/
 Route::middleware(["auth:sanctum","permission:all|Recursos Humanos"])->group(function(){
-
+    Route::get('empleado/{empleado}', [EmpleadoController::class, 'show']);
 });
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', [LoginController::class, 'logout']);
+
+    //Para marcar y obtener las asistencias del usuario logueado, todos los empleados lo pueden hacer
+    Route::post('asistencia',[AsistenciaController::class,'store']);
+    Route::get('asistencia', [AsistenciaController::class,'getAsistenciasEmpleado']);
+
 });
 
 Route::post("login", [LoginController::class, "authorization"]);
@@ -131,6 +146,8 @@ Route::post("login", [LoginController::class, "authorization"]);
 
 
 //Route::post('cargos',[CargoController::class,'store']);
+
+
 
 
 //Rutas para DetalleVenta
@@ -199,6 +216,19 @@ Route::get('creditos_detalle/{id_credito}', [VentasCFController::class, 'obtener
 Route::put('ventaCF/updateEstado/{ventaCF}', [VentasCFController::class, 'updateEstado']);
 
 //Ruta para actualizar estado de credito fiscal
+Route::put('creditos/updateEstado/{CFSales}',[VentasCFController::class,'updateEstadoCredito']);
+
+//Hojas de ruta y pedidos a domicilio
+Route::controller(HojaDeRutaController::class)->group(function () {
+    Route::get('/hoja_de_ruta', 'index');
+    Route::get('/hoja_de_ruta/{id}', 'show');
+    Route::post('/hoja_de_ruta', 'store');
+    Route::post('/hoja_de_ruta/marcar_entregada/{id}', 'marcarEntregada');
+});
+Route::get('/hoja_de_ruta_paginadas',[HojaDeRutaController::class,'obtenerHojasDeRutasPaginadasFiltro']);
+Route::post('/facturas_domicilio',[VentaController::class,'getVentasDomicilio']);
+Route::post('/creditos_fiscales_domicilio',[CreditoFiscalController::class,'getCreditosFiscalesDomicilio']);
+Route::post('/pedidos_domicilio',[VentaController::class,'getPedidos']);
 Route::put('creditos/updateEstado/{CFSales}', [VentasCFController::class, 'updateEstadoCredito']);
 
 /**Middleware para estadisticas */
@@ -206,10 +236,42 @@ Route::middleware(["auth:sanctum","permission:all"])->group(function(){
     Route::resource("informe_inventario_valorado",InformeInventarioController::class);
     Route::get("datos_inventario_valorado",[InformeInventarioController::class,"obtenerDatosGraficoInventarioValorado"]);
     Route::get("filtro_datos_producto_valorado/{valorMinimo?}/{valorMaximo?}",[InformeInventarioController::class,"obtenerDatosFiltradosProductoPorPrecios"]);
-    Route::get("ventas_por_producto/{fechaInicioVenta?}/{fechaFinVenta?}/{minTotal?}/{maxTotal?}/{minTotalProducto?}/{maxTotalProducto?}",[InformeInventarioController::class,"obtenerVentasPorProductos"]);
-    //Ruta para obtener los productos más vendidos
-    Route::get("productos_mas_vendidos/",[InformeInventarioController::class,"obtenerProductosMasVendidosConIngresos"]);
+    Route::get("ventas_por_producto",[InformeInventarioController::class,"obtenerVentasPorProductos"]);
 });
 
-Route::get("filtro_ventas_totales/",[InformeVentasController::class,"obtenerVentasTotalesPorFecha"]);
+Route::get("/filtro_ventas_totales/{parametros}",[InformeVentasController::class,"obtenerVentasTotalesPorFecha"]);
+Route::put('modificar_pedido_factura/{venta}',[VentaController::class,'update']);
+Route::put('modificar_pedido_credito/{creditoFiscal}',[CreditoFiscalController::class,'update']);
+Route::post('delete_pedido/credito_fiscal/{creditoFiscal}',[CreditoFiscalController::class,'destroy']);
+Route::post('delete_pedido/factura/{venta}',[VentaController::class,'destroy']);
+//Asistencia y Planillas
+Route::controller(HojaAsistenciaController::class)->group(function (){
+    Route::post('hoja_asistencia','store');
+});
 
+/*Route::controller(AsistenciaController::class)->group(function (){
+    Route::post('asistencia','store');
+    Route::get('asistencia', 'getAsistenciasEmpleado');
+});*/
+
+Route::controller(PlanillaController::class)->group(function (){
+    Route::post('planilla','store');
+});
+Route::put('creditos/updateEstado/{CFSales}', [VentasCFController::class, 'updateEstadoCredito']);
+
+Route::controller(VentaDomicilioController::class)->group(function () {
+    Route::get('/venta_domicilio', 'index');
+    Route::get('/venta_domicilio/{id}', 'show');
+    Route::get('/ventas/desvincular_hr/', 'desvincularHojaRuta');
+    Route::post('/ventas/confirmar_pago/{venta_domicilio}', 'confirmar_pago_venta');
+});
+
+Route::controller(CreditoFiscalDomicilioController::class)->group(function () {
+    Route::get('/credito_fiscal_domicilio', 'index');
+    Route::get('/credito_fiscal_domicilio/{id}', 'show');
+    Route::get('/creditos/desvincular_hr/', 'desvincularHojaRuta');
+    Route::post('/creditos/confirmar_pago/{credito_domicilio}', 'confirmar_pago_credito');
+});
+
+Route::get('/impresion_consumidor_final/{id}', [ImpresionController::class, 'generate_pdf_consumidor_final']);
+Route::get('/impresion_credito_fiscal/{id}', [ImpresionController::class, 'generate_pdf_credito_fiscal']);

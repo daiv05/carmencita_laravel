@@ -20,7 +20,7 @@ class DetalleVentaSeeder extends Seeder
                 'cantidad_producto' => 1,
                 'subtotal_detalle_venta' => 10.00,
             ],
-            [
+            /*[
                 'id_venta' => 1,
                 'codigo_barra_producto' => '7411001800903',
                 'cantidad_producto' => 1,
@@ -31,8 +31,14 @@ class DetalleVentaSeeder extends Seeder
                 'codigo_barra_producto' => '7411001800903',
                 'cantidad_producto' => 1,
                 'subtotal_detalle_venta' => 10.00,
-            ],
+            ],*/
             [
+                'id_venta' => 2,
+                'codigo_barra_producto' => '7411001800903',
+                'cantidad_producto' => 1,
+                'subtotal_detalle_venta' => 20.00,
+            ],
+            /*[
                 'id_venta' => 2,
                 'codigo_barra_producto' => '7411001800903',
                 'cantidad_producto' => 1,
@@ -43,20 +49,14 @@ class DetalleVentaSeeder extends Seeder
                 'codigo_barra_producto' => '7411001800903',
                 'cantidad_producto' => 1,
                 'subtotal_detalle_venta' => 20.00,
-            ],
-            [
-                'id_venta' => 2,
-                'codigo_barra_producto' => '7411001800903',
-                'cantidad_producto' => 1,
-                'subtotal_detalle_venta' => 20.00,
-            ],
+            ],*/
             [
                 'id_venta' => 3,
                 'codigo_barra_producto' => '7411001800903',
                 'cantidad_producto' => 1,
                 'subtotal_detalle_venta' => 30.00,
             ],
-            [
+            /*[
                 'id_venta' => 3,
                 'codigo_barra_producto' => '1234567890127',
                 'cantidad_producto' => 1,
@@ -67,19 +67,19 @@ class DetalleVentaSeeder extends Seeder
                 'codigo_barra_producto' => '1234567890128',
                 'cantidad_producto' => 1,
                 'subtotal_detalle_venta' => 30.00,
-            ],
+            ],*/
             [
                 'id_venta' => 4,
                 'codigo_barra_producto' => '1234567890129',
                 'cantidad_producto' => 1,
                 'subtotal_detalle_venta' => 40.00,
             ],
-            [
+            /*[
                 'id_venta' => 4,
                 'codigo_barra_producto' => '1234567890130',
                 'cantidad_producto' => 1,
                 'subtotal_detalle_venta' => 40.00,
-            ],
+            ],*/
             [
                 'id_venta' => 5,
                 'codigo_barra_producto' => '7413100033053',
@@ -107,6 +107,7 @@ class DetalleVentaSeeder extends Seeder
             [
                 'id_venta' => 9,
                 'codigo_barra_producto' => '7413100033053',
+                //'codigo_barra_producto' => '1234567890128',
                 'cantidad_producto' => 1,
                 'subtotal_detalle_venta' => 30.00,
             ],
@@ -175,7 +176,77 @@ class DetalleVentaSeeder extends Seeder
                 'codigo_barra_producto' => '7413100033053',
                 'cantidad_producto' => 1,
                 'subtotal_detalle_venta' => 33.60,
+                /*'id_venta' => 5,
+                'codigo_barra_producto' => '1234567890129',
+                'cantidad_producto' => 1,
+                'subtotal_detalle_venta' => 40.00,*/
             ],
+            /*[
+                'id_venta' => 5,
+                'codigo_barra_producto' => '1234567890130',
+                'cantidad_producto' => 1,
+                'subtotal_detalle_venta' => 40.00,
+            ],
+            [
+                'id_venta' => 6,
+                'codigo_barra_producto' => '1234567890128',
+                'cantidad_producto' => 1,
+                'subtotal_detalle_venta' => 30.00,
+            ],
+            [
+                'id_venta' => 6,
+                'codigo_barra_producto' => '1234567890129',
+                'cantidad_producto' => 1,
+                'subtotal_detalle_venta' => 40.00,
+            ],
+            [
+                'id_venta' => 6,
+                'codigo_barra_producto' => '1234567890130',
+                'cantidad_producto' => 1,
+                'subtotal_detalle_venta' => 40.00,
+            ],
+            [
+                'id_venta' => 7,
+                'codigo_barra_producto' => '1234567890128',
+                'cantidad_producto' => 1,
+                'subtotal_detalle_venta' => 30.00,
+            ],
+            [
+                'id_venta' => 7,
+                'codigo_barra_producto' => '1234567890129',
+                'cantidad_producto' => 1,
+                'subtotal_detalle_venta' => 40.00,
+            ],
+            [
+                'id_venta' => 7,
+                'codigo_barra_producto' => '1234567890130',
+                'cantidad_producto' => 1,
+                'subtotal_detalle_venta' => 40.00,
+            ],
+            [
+                'id_venta' => 8,
+                'codigo_barra_producto' => '1234567890130',
+                'cantidad_producto' => 1,
+                'subtotal_detalle_venta' => 40.00,
+            ],
+            [
+                'id_venta' => 8,
+                'codigo_barra_producto' => '1234567890128',
+                'cantidad_producto' => 1,
+                'subtotal_detalle_venta' => 30.00,
+            ],
+            [
+                'id_venta' => 8,
+                'codigo_barra_producto' => '1234567890129',
+                'cantidad_producto' => 1,
+                'subtotal_detalle_venta' => 40.00,
+            ],
+            [
+                'id_venta' => 8,
+                'codigo_barra_producto' => '1234567890130',
+                'cantidad_producto' => 1,
+                'subtotal_detalle_venta' => 40.00,
+            ],*/
 
         ];
 
