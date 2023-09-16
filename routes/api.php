@@ -271,5 +271,7 @@ Route::controller(CreditoFiscalDomicilioController::class)->group(function () {
 //Para obtener los productos que vencen en los proximos 15 dias
 Route::get('productosXVenecer', [InformeProductosPorVencerController::class, 'index']);
 
-//Para obtener los productos que vencen en los proximos 15 dias
+//Para creditos proveedores
 Route::apiResource('creditos', CreditoController::class);
+//para obtene los proveedores
+Route::get('proveedores', [CreditoController::class, 'getProveedores']);
