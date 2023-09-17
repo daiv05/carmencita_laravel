@@ -136,7 +136,7 @@ class InformeInventarioController extends Controller
     {
         $parametros = request()->all();
         
-        $managerFiltros = new FiltroProductosMasVendidos(10);
+        $managerFiltros = new FiltroProductosMasVendidos(5);
         
         try {
 
