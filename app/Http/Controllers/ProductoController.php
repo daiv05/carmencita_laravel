@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ActualizarProductoRequest;
 use App\Models\Producto;
 use Error;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 
 
 class ProductoController extends Controller
@@ -34,7 +37,8 @@ class ProductoController extends Controller
 
         // Se definen las reglas de validación para los campos del formulario
         $rules = [
-            'codigo_barra_producto' => 'required|unique:producto|string|max:13', // El código de barras debe ser único
+            'codigo_barra_producto' => 'required|unique:producto|string|max:13',
+            // El código de barras debe ser único
             'nombre_producto' => 'required|string|max:50',
             'cantidad_producto_disponible' => 'required|integer',
             'precio_unitario' => 'required|decimal:0,2',
@@ -165,7 +169,8 @@ class ProductoController extends Controller
                 'string',
                 'max:13',
                 Rule::unique('producto')->ignore($producto, 'codigo_barra_producto'),
-            ], // El código de barras debe ser único
+            ],
+            // El código de barras debe ser único
             'nombre_producto' => 'required|string|max:50',
             'cantidad_producto_disponible' => 'required|integer',
             'precio_unitario' => 'required|decimal:0,2',
@@ -352,4 +357,5 @@ class ProductoController extends Controller
             ], 400);
         }
     }
+
 }

@@ -7,6 +7,8 @@ use App\Models\Venta;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\HojaDeRuta;
+use Illuminate\Support\Facades\DB;
 
 class ImpresionController extends Controller
 {
@@ -157,4 +159,100 @@ class ImpresionController extends Controller
         }
         return view('impresion_creditos')->with('credito', $venta);
     }
+
+    //Ver detalle hoja de ruta
+    public function ver_detalle_hoja_de_ruta(Request $request, int $id_hoja_de_ruta)
+    {
+        //$id_hoja_de_ruta = $request->id_hoja_de_ruta;
+        
+        $id_hoja_de_ruta = 1;
+        
+        /*$hoja_de_ruta = DB::table('hojaderuta')
+        ->join('ventadomicilio', 'ventadomicilio.id_hr', '=', 'hojaderuta.id_hr')
+        ->join('venta', 'ventadomicilio.id_venta', '=', 'venta.id_venta')
+        ->select('hojaderuta.*', 'ventadomicilio.*', 'venta.*')
+        //->find($id_hoja_de_ruta, 'hojaderuta.id_hr')
+        ->where('hojaderuta.id_hr', '=', $id_hoja_de_ruta)
+        ->get();*/
+
+        $hoja_de_ruta = HojaDeRuta::with('ventadomicilio.venta')
+        ->with('empleado')
+        ->get();
+        
+        /*HojaDeRuta::find(1);
+        ->with('creditoFiscalDomicilio')
+        ->with('ventaDomicilio')
+        ->with('venta')->with('empleado')->first();*/
+        
+        //$hoja_de_ruta = HojaDeRuta::with(['posts', 'comments', 'profile'])->get();
+
+        return view('impresion_hoja_de_ruta')->with(['hoja_de_ruta' => $hoja_de_ruta]);
+    }
+
+    public function ver_hr_json (Request $request) {
+        
+        $hoja = HojaDeRuta::find(1);
+        // $hoja->with('creditoFiscalDomicilio')->with('creditoFiscal')->with('cliente');
+        // $hoja->with('ventaDomicilio')->with('venta')->with('empleado');
+        
+        foreach ($hoja->creditoFiscalDomicilio as $credito) {
+            $credito->creditoFiscal;
+            $credito->creditoFiscal->cliente;
+        }
+
+        foreach ($hoja->ventaDomicilio as $venta) {
+            $venta->venta;
+        }
+        
+        return response()->json($hoja);
+    }
+
+    public function ver_hr_blade (Request $request) {
+        
+        $hoja = HojaDeRuta::find(1);
+        $hoja->empleado;
+        // $hoja->with('creditoFiscalDomicilio')->with('creditoFiscal')->with('cliente');
+        // $hoja->with('ventaDomicilio')->with('venta')->with('empleado');
+        
+        foreach ($hoja->creditoFiscalDomicilio as $credito) {
+            $credito->creditoFiscal;
+            $credito->creditoFiscal->cliente;
+        }
+
+        foreach ($hoja->ventaDomicilio as $venta) {
+            $venta->venta;
+        }
+        
+        return view('impresion_hoja_de_ruta')->with('hoja_de_ruta', $hoja);
+    }
+
+    public function generate_pdf_hoja_de_ruta($id_hr)
+    {
+        $hoja_de_ruta = HojaDeRuta::find($id_hr);
+        
+        $hoja_de_ruta->empleado;
+        
+        foreach ($hoja_de_ruta->creditoFiscalDomicilio as $credito) {
+            $credito->creditoFiscal;
+            $credito->creditoFiscal->cliente;
+        }
+
+        foreach ($hoja_de_ruta->ventaDomicilio as $venta) {
+            $venta->venta;
+        }
+        
+        $pdf = Pdf::loadView('impresion_hoja_de_ruta', compact('hoja_de_ruta'));
+        $ruta_pdf = 'resumen_hoja_' . $hoja_de_ruta->id_hr . '.pdf';
+        $pdf->save($ruta_pdf);
+
+        /*$command1 = 'PDFXEdit /importp "C:\setting_3060.dat" ';
+        exec($command1, $output, $return_var);
+        $command2 = 'PDFXEdit /print:default=no;showui=no;printer="Canon G3060 series" ' . public_path($ruta_pdf);
+        exec($command2, $output1, $return_var1);*/
+        
+        //return implode(',', $output) . ' ' . implode(',', $output1);
+
+        return "ok";
+    }
+
 }

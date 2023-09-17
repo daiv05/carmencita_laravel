@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 use App\Http\Resources\InformeInventarioResource;
 use App\Models\Producto;
 use App\Filtros\FiltroHistorialVentasProducto;
+use Illuminate\Support\Facades\DB;
+use App\Filtros\FiltroProductosMasVendidos;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
+
 use Illuminate\Database\Eloquent\Casts\Json;
 
 class InformeInventarioController extends Controller
@@ -125,5 +130,48 @@ class InformeInventarioController extends Controller
     }
     public function update(){
         return "";
+    }
+
+    public function obtenerProductosMasVendidosConIngresos(Request $request)
+    {
+        $parametros = request()->all();
+        
+        $managerFiltros = new FiltroProductosMasVendidos(10);
+        
+        try {
+
+            if (isset($parametros['fechaInicio']) && isset($parametros['fechaFin'])){
+                return $managerFiltros->filtrarPorFechaInicioYFechaFin($parametros['fechaInicio'], $parametros['fechaFin'], $parametros['tipoOrden'], $parametros['cantidadAMostrar']);
+            }
+            else if (isset($parametros['fechaInicio']))
+            {
+                return $managerFiltros->filtrarPorFechaInicio($parametros['fechaInicio'], $parametros['tipoOrden'], $parametros['cantidadAMostrar']);
+            }
+            else if (isset($parametros['fechaFin']))
+            {
+                return $managerFiltros->filtrarPorFechaFin($parametros['fechaFin'], $parametros['tipoOrden'], $parametros['cantidadAMostrar']);
+            }
+            else
+            {
+                return $managerFiltros->obtenerProductosPorOrden($parametros['tipoOrden'], $parametros['cantidadAMostrar']);
+            }
+            
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                "status" => false,
+                "mensaje" => $e->getMessage(),
+            ], 500);
+        } catch (QueryException $e) {
+            return response()->json([
+                "status" => false,
+                "mensaje" => $e->getMessage()
+            ], 500);
+        }
+
+
+    }
+
+    public function construirCondiciones(){
+
     }
 }

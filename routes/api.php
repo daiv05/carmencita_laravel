@@ -275,3 +275,4 @@ Route::controller(CreditoFiscalDomicilioController::class)->group(function () {
 
 Route::get('/impresion_consumidor_final/{id}', [ImpresionController::class, 'generate_pdf_consumidor_final']);
 Route::get('/impresion_credito_fiscal/{id}', [ImpresionController::class, 'generate_pdf_credito_fiscal']);
+Route::get('/impresion_hoja_de_ruta/{id}', [ImpresionController::class, 'generate_pdf_hoja_de_ruta']);	
