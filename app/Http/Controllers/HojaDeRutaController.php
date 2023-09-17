@@ -128,6 +128,7 @@ class HojaDeRutaController extends Controller
 
     public function marcarEntregada($id){
         $hoja = HojaDeRuta::find($id);
+        //if($hoja == null || $hoja->entregada == 1){
         if($hoja == null){
             return response()->json([
                 'respuesta' => false,
@@ -135,20 +136,21 @@ class HojaDeRutaController extends Controller
             ], 400);
         }
         try {
-            $hoja->entregada = true;
+            //$hoja->entregada = true;
             foreach($hoja->ventaDomicilio as $vd){
-                $vd->esta_cancelada = 1;
+                $vd->esta_cancelada == 1 ? null : $vd->esta_cancelada = 1;
                 $vd->save();
             }
             foreach($hoja->creditoFiscalDomicilio as $cfd){
-                $cfd->esta_cancelado = 1;
+                $cfd->esta_cancelado == 1 ? null : $cfd->esta_cancelado = 1;
                 $cfd->save();
             }
-            $hoja->save();
+            //$hoja->save();
         } catch (\Throwable $th) {
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => "Error al marcar como entregada la hoja de ruta",
+                'error' => $th->getMessage(),
             ], 400);
         }
         return response()->json([
