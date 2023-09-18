@@ -34,6 +34,7 @@ use App\Http\Controllers\InformeVentasController;
 use App\Http\Controllers\InformeInventarioController;
 use App\Http\Controllers\InformeProductosPorVencerController;
 use App\Http\Controllers\CreditoController;
+use App\Http\Controllers\PromocionesController;
 use Illuminate\Console\View\Components\Info;
 
 /*
@@ -275,3 +276,9 @@ Route::get('productosXVenecer', [InformeProductosPorVencerController::class, 'in
 Route::apiResource('creditos', CreditoController::class);
 //para obtene los proveedores
 Route::get('proveedores', [CreditoController::class, 'getProveedores']);
+//Para obtene los productos para la promocion
+Route::get('productoProm', [PromocionesController::class, 'getProductos']);
+//para crear una promocion
+Route::apiResource('promociones', PromocionesController::class);
+
+

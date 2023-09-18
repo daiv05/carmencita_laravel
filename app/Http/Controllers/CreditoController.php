@@ -43,8 +43,8 @@ class CreditoController extends Controller
         $validator = Validator::make($request->all(),[
             //'name' => 'required|string|max:255',
             'fecha_credito' => 'required',
-            'fecha_limite_pago' => 'required',
-            'monto_credito' => ['required', 'numeric', 'min:1'],
+            'fecha_limite_pago' => 'required|after:fecha_credito',
+            'monto_credito' => ['required', 'numeric', 'gt:0'],
             'detalle_credito' => 'required',
             'id_proveedor' => 'required'
         ]);
