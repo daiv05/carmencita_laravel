@@ -10,6 +10,12 @@ use App\Models\DetallePlanilla;
 
 class PlanillaController extends Controller
 {
+
+    public function index()
+    {
+        return Planilla::all()->paginate(5);
+    }
+
     public function store(Request $request)
     {
 
