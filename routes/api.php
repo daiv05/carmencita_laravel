@@ -237,6 +237,9 @@ Route::middleware(["auth:sanctum","permission:all"])->group(function(){
     Route::get("datos_inventario_valorado",[InformeInventarioController::class,"obtenerDatosGraficoInventarioValorado"]);
     Route::get("filtro_datos_producto_valorado/{valorMinimo?}/{valorMaximo?}",[InformeInventarioController::class,"obtenerDatosFiltradosProductoPorPrecios"]);
     Route::get("ventas_por_producto",[InformeInventarioController::class,"obtenerVentasPorProductos"]);
+
+    Route::get("productos_mas_vendidos/",[InformeInventarioController::class,"obtenerProductosMasVendidosConIngresos"]);
+    Route::get("filtro_ventas_totales/",[InformeVentasController::class,"obtenerVentasTotalesPorFecha"]);
 });
 
 Route::get("/filtro_ventas_totales/{parametros}",[InformeVentasController::class,"obtenerVentasTotalesPorFecha"]);
