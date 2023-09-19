@@ -148,4 +148,8 @@ class Producto extends Model
             ->havingRaw("total_producto_vendido BETWEEN '$minTotalProductoVendido' AND '$maxTotalProductoVendido'")
             ->paginate(10);
      }
+
+     public function promocion(){
+        return $this->hasMany(Promocion::class, 'codigo_barra_producto');
+     }
     }

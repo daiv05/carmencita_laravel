@@ -16,17 +16,20 @@ class HojaDeRutaSeeder extends Seeder
             [
                 'fecha_entrega' => '2021-05-01',
                 'id_empleado' => 1,
-                'total' => 1000
+                'total' => 1000,
+                'esta_entregado'=> false
             ],
             [
                 'fecha_entrega' => '2021-05-02',
                 'id_empleado' => 2,
-                'total' => 2000
+                'total' => 2000,
+                'esta_entregado'=>true
             ],
             [
                 'fecha_entrega' => '2021-05-03',
                 'id_empleado' => 3,
-                'total' => 3000
+                'total' => 3000,
+                'esta_entregado'=>false
             ],
         ];
         foreach ($hr as $hoja) {

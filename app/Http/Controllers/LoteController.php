@@ -47,8 +47,8 @@ class LoteController extends Controller
             "codigo_barra_producto"=>["required",Rule::exists("producto","codigo_barra_producto")],
             "cantidad_total_unidades"=>"required|integer",
             "cantidad"=>"required|integer",
-            "precio_unitario"=>"required|decimal:2",
-            "costo_total"=>"required|decimal:2",
+            "precio_unitario"=>"required|numeric|regex:/^\d+(\.\d{1,2})?$/",
+            "costo_total"=>"required|numeric|regex:/^\d+(\.\d{1,2})?$/",
             "fecha_ingreso"=>"date_format:Y-m-d|required"
         ]);
         if($validator->fails()){
@@ -95,8 +95,8 @@ class LoteController extends Controller
             "codigo_barra_producto"=>["required",Rule::exists("producto","codigo_barra_producto")],
             "cantidad_total_unidades"=>"required|integer",
             "cantidad"=>"required|integer",
-            "precio_unitario"=>"required|decimal:2",
-            "costo_total"=>"required|decimal:2"
+            "precio_unitario"=>"required|numeric|regex:/^\d+(\.\d{1,2})?$/",
+            "costo_total"=>"required|numeric|regex:/^\d+(\.\d{1,2})?$/"
         ]);
         if($validator->fails()){
             return response()->json([

@@ -33,6 +33,9 @@ use App\Http\Controllers\LoteController;
 use App\Http\Controllers\FechaController;
 use App\Http\Controllers\InformeVentasController;
 use App\Http\Controllers\InformeInventarioController;
+use App\Http\Controllers\InformeProductosPorVencerController;
+use App\Http\Controllers\CreditoController;
+use App\Http\Controllers\PromocionesController;
 use App\Http\Controllers\VentaDomicilioController;
 use Illuminate\Console\View\Components\Info;
 
@@ -275,6 +278,21 @@ Route::controller(CreditoFiscalDomicilioController::class)->group(function () {
     Route::get('/creditos/desvincular_hr/', 'desvincularHojaRuta');
     Route::post('/creditos/confirmar_pago/{credito_domicilio}', 'confirmar_pago_credito');
 });
+
+//Para obtener los productos que vencen en los proximos 15 dias
+Route::get('productosXVenecer', [InformeProductosPorVencerController::class, 'index']);
+
+//Para creditos proveedores
+Route::apiResource('creditos', CreditoController::class);
+//para obtene los proveedores
+Route::get('proveedores', [CreditoController::class, 'getProveedores']);
+//Para obtene los productos para la promocion
+Route::get('productoProm', [PromocionesController::class, 'getProductos']);
+//para crear una promocion
+Route::apiResource('promociones', PromocionesController::class);
+
+
+
 
 Route::get('/impresion_consumidor_final/{id}', [ImpresionController::class, 'generate_pdf_consumidor_final']);
 Route::get('/impresion_credito_fiscal/{id}', [ImpresionController::class, 'generate_pdf_credito_fiscal']);

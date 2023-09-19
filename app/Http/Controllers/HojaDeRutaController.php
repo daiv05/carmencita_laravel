@@ -91,7 +91,23 @@ class HojaDeRutaController extends Controller
         /*$hojas = 
         HojaDeRuta::with('ventaDomicilio')->with('creditoFiscalDomicilio')->with('empleado')->paginate(10);*/
         $parametrosConsulta = $request->all();
-        $resultados = [];
+        $resultados = HojaDeRuta::with('empleado');
+        $condiciones = $this->construirCondiciones(
+            isset($parametrosConsulta["fechaEntrega"])?$parametrosConsulta["fechaEntrega"]:null, 
+            isset($parametrosConsulta["estaEntregado"])?$parametrosConsulta["estaEntregado"]:null
+        );
+        if(count($condiciones) > 0){
+            $resultados->where(
+                function($query) use ($condiciones){
+                    foreach($condiciones as $condicion){
+                        $query->whereRaw($condicion);
+                    }
+                }
+            );
+        }
+        $resultados->orderBy("fecha_entrega","desc");
+        return $resultados->paginate(10);
+        /*$resultados = [];
         $condiciones = $this->construirCondiciones(
             isset($parametrosConsulta["fechaEntrega"])?$parametrosConsulta["fechaEntrega"]:null);
             
@@ -118,12 +134,12 @@ class HojaDeRutaController extends Controller
                 }
             );
         }
-        $resultados = $resultados->paginate(5);
+        $resultados = $resultados->paginate(5);*/
         //->where("hojaderuta.fecha_entrega","=","10290-90-10")
         //->paginate(10); 
-     
+        
 
-        return $resultados;
+        //return $resultados;
     }
 
     public function marcarEntregada($id){
@@ -162,7 +178,10 @@ class HojaDeRutaController extends Controller
     public function construirCondiciones($fechaEntrega){
         $condiciones = [];
         if($fechaEntrega!=null){
-            $condiciones[] = "hojaderuta.fecha_entrega = '$fechaEntrega'";
+            $condiciones[] = "fecha_entrega = '$fechaEntrega'";
+        }
+        if($estaEntregado!=null){
+            $condiciones[] = "esta_entregado = '$estaEntregado'" ;
         }
 
         return $condiciones;
