@@ -144,15 +144,14 @@ class HojaDeRutaController extends Controller
 
     public function marcarEntregada($id){
         $hoja = HojaDeRuta::find($id);
-        //if($hoja == null || $hoja->entregada == 1){
-        if($hoja == null){
+        if($hoja == null || $hoja->esta_entregado == 1){
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => "No existe la hoja de ruta",
             ], 400);
         }
         try {
-            //$hoja->entregada = true;
+            $hoja->esta_entregado = true;
             foreach($hoja->ventaDomicilio as $vd){
                 $vd->esta_cancelada == 1 ? null : $vd->esta_cancelada = 1;
                 $vd->save();
@@ -161,7 +160,7 @@ class HojaDeRutaController extends Controller
                 $cfd->esta_cancelado == 1 ? null : $cfd->esta_cancelado = 1;
                 $cfd->save();
             }
-            //$hoja->save();
+            $hoja->save();
         } catch (\Throwable $th) {
             return response()->json([
                 'respuesta' => false,
@@ -175,7 +174,7 @@ class HojaDeRutaController extends Controller
         ], 201);
     }
 
-    public function construirCondiciones($fechaEntrega){
+    public function construirCondiciones($fechaEntrega, $estaEntregado){
         $condiciones = [];
         if($fechaEntrega!=null){
             $condiciones[] = "fecha_entrega = '$fechaEntrega'";
