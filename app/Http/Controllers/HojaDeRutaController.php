@@ -144,10 +144,16 @@ class HojaDeRutaController extends Controller
 
     public function marcarEntregada($id){
         $hoja = HojaDeRuta::find($id);
-        if($hoja == null || $hoja->esta_entregado == 1){
+        if($hoja == null){
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => "No existe la hoja de ruta",
+            ], 400);
+        }
+        if ($hoja->esta_entregado == 1){
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => "Esta hoja de ruta ya ha sido marcada como entregada",
             ], 400);
         }
         try {
