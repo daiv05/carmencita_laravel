@@ -25,6 +25,7 @@ class Producto extends Model
         'codigo_barra_producto',
         'nombre_producto',
         'cantidad_producto_disponible',
+        'cantidad_producto_fisico',
         'precio_unitario',
         'esta_disponible',
         'foto'

@@ -41,6 +41,7 @@ class ProductoController extends Controller
             // El código de barras debe ser único
             'nombre_producto' => 'required|string|max:50',
             'cantidad_producto_disponible' => 'required|integer',
+            'cantidad_producto_fisico' => 'required|integer',
             'precio_unitario' => 'required|decimal:0,2',
             'esta_disponible' => 'required|boolean',
             'foto' => 'image'
@@ -61,6 +62,7 @@ class ProductoController extends Controller
             $producto->codigo_barra_producto = $request->codigo_barra_producto;
             $producto->nombre_producto = $request->nombre_producto;
             $producto->cantidad_producto_disponible = $request->cantidad_producto_disponible;
+            $producto->cantidad_producto_fisico = $request->cantidad_producto_fisico;
             $producto->precio_unitario = $request->precio_unitario;
             $producto->esta_disponible = $request->esta_disponible;
             //$producto = Producto::create($request->all());
@@ -173,6 +175,7 @@ class ProductoController extends Controller
             // El código de barras debe ser único
             'nombre_producto' => 'required|string|max:50',
             'cantidad_producto_disponible' => 'required|integer',
+            'cantidad_producto_fisico' => 'required|integer',
             'precio_unitario' => 'required|decimal:0,2',
             'esta_disponible' => 'required|boolean',
             'foto' => 'image'
@@ -189,6 +192,7 @@ class ProductoController extends Controller
             $producto->codigo_barra_producto = $request->codigo_barra_producto;
             $producto->nombre_producto = $request->nombre_producto;
             $producto->cantidad_producto_disponible = $request->cantidad_producto_disponible;
+            $producto->cantidad_producto_fisico = $request->cantidad_producto_fisico;
             $producto->precio_unitario = $request->precio_unitario;
             $producto->esta_disponible = $request->esta_disponible;
 

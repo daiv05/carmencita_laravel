@@ -16,7 +16,7 @@ class InformeProductosPorVencerController extends Controller
 
         $productosPV = Lote::whereBetween('fecha_vencimiento', [$fechaActual, $fechaLimite])->with('producto')->get();
 
-        return response()->json(['productosPV'=>$productosPV]);
+        return response()->json(['fecha_actual'=>$fechaActual,'productosPV'=>$productosPV]);
     }
     
 }

@@ -283,15 +283,15 @@ Route::controller(CreditoFiscalDomicilioController::class)->group(function () {
 Route::get('productosXVenecer', [InformeProductosPorVencerController::class, 'index']);
 
 //Para creditos proveedores
-Route::apiResource('creditos', CreditoController::class);
+Route::apiResource('creditosProveedores', CreditoController::class);
 //para obtene los proveedores
 Route::get('proveedores', [CreditoController::class, 'getProveedores']);
 //Para obtene los productos para la promocion
 Route::get('productoProm', [PromocionesController::class, 'getProductos']);
 //para crear una promocion
 Route::apiResource('promociones', PromocionesController::class);
-
-
+//Eliminar una hoja de ruta
+Route::delete('hojaruta_delete/{id_hr}', [HojaDeRutaController::class, 'deleteHojaRuta']);
 
 
 Route::get('/impresion_consumidor_final/{id}', [ImpresionController::class, 'generate_pdf_consumidor_final']);
