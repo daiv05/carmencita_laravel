@@ -137,6 +137,7 @@ Route::middleware(["auth:sanctum", "permission:all|Ventas"])->group(function () 
         Route::get('/hoja_de_ruta/{id}', 'show');
         Route::post('/hoja_de_ruta', 'store');
         Route::post('/hoja_de_ruta/marcar_entregada/{id}', 'marcarEntregada');
+        Route::put('hoja_de_ruta/{hojaDeRuta}','update');
     });
     Route::get('/hoja_de_ruta_paginadas', [HojaDeRutaController::class, 'obtenerHojasDeRutasPaginadasFiltro']);
     Route::post('/facturas_domicilio', [VentaController::class, 'getVentasDomicilio']);

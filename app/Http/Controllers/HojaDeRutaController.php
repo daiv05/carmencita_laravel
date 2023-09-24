@@ -143,15 +143,16 @@ class HojaDeRutaController extends Controller
         //return $resultados;
     }
 
-    public function marcarEntregada($id){
+    public function marcarEntregada($id)
+    {
         $hoja = HojaDeRuta::find($id);
-        if($hoja == null){
+        if ($hoja == null) {
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => "No existe la hoja de ruta",
             ], 400);
         }
-        if ($hoja->esta_entregado == 1){
+        if ($hoja->esta_entregado == 1) {
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => "Esta hoja de ruta ya ha sido marcada como entregada",
@@ -159,11 +160,11 @@ class HojaDeRutaController extends Controller
         }
         try {
             $hoja->esta_entregado = true;
-            foreach($hoja->ventaDomicilio as $vd){
+            foreach ($hoja->ventaDomicilio as $vd) {
                 $vd->esta_cancelada == 1 ? null : $vd->esta_cancelada = 1;
                 $vd->save();
             }
-            foreach($hoja->creditoFiscalDomicilio as $cfd){
+            foreach ($hoja->creditoFiscalDomicilio as $cfd) {
                 $cfd->esta_cancelado == 1 ? null : $cfd->esta_cancelado = 1;
                 $cfd->save();
             }
@@ -181,7 +182,7 @@ class HojaDeRutaController extends Controller
         ], 201);
     }
 
-    public function construirCondiciones($fechaEntrega,  $estaEntregado)
+    public function construirCondiciones($fechaEntrega, $estaEntregado)
     {
         $condiciones = [];
         if ($fechaEntrega != null) {
@@ -201,5 +202,68 @@ class HojaDeRutaController extends Controller
         DB::table('hojaderuta')->where('id_hr', $id_hr)->delete();
 
         return response()->json(['message' => 'Hoja de ruta y registros eliminados']);
+    }
+
+    public function update(Request $request, HojaDeRuta $hojaDeRuta)
+    {
+        if (isset($hojaDeRuta)) {
+
+            if ($hojaDeRuta->esta_entregado) {
+                return response()->json([
+                    'respuesta' => false,
+                    'mensaje' => 'La Hoja de ruta no se puede modificar, porque ya ha sido entregada.'
+                ],400);
+            }
+
+            if ($this->validar_datos_hojaDeRuta($request->hoja_de_ruta)) {
+                //HojaDeRuta::update($request->hoja_de_ruta);
+                $hojaDeRuta->update($request->hoja_de_ruta);
+
+                $creditos_fiscales_asignados_old_and_new = $hojaDeRuta->creditoFiscalDomicilio()->get();
+                $facturas_asignadas_old_and_new = $hojaDeRuta->ventaDomicilio()->get();
+
+                #eliminar los creditos sobrantes de la lista old and new
+                foreach ($creditos_fiscales_asignados_old_and_new as $credito) {
+                    $credito->delete();
+                }
+
+                foreach($facturas_asignadas_old_and_new as $factura){
+                    $factura->delete();
+                }
+
+                $ventaDomicilio = new VentaDomicilioController();
+                $ventaDomicilio->register_ventaDomicilio($request, $hojaDeRuta->id_hr);
+
+                return response()->json([
+                    'respuesta' => true,
+                    'mensaje' => "Hoja de ruta actualizada correctamente."
+                ]);
+
+            }
+
+        } else {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Hoja de ruta no encontrada.'
+            ], 400);
+        }
+    }
+
+    public function validar_datos_hojaDeRuta($datos)
+    {
+        $validator = Validator::make($datos, [
+            'fecha_entrega' => 'required',
+            'id_empleado' => 'required',
+            'total' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => $validator->errors()->all()
+            ]);
+        } else {
+            return true;
+        }
     }
 }

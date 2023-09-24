@@ -59,12 +59,12 @@ class VentasCFController extends Controller
     }
 
     public function obtenerVentaAndDetalle($id_venta){
-        $ventaCF = Venta::where('domicilio', 0)->with('detalleVenta', 'detalleVenta.producto','detalleVenta.producto.precioUnidadDeMedida','ventaDomicilio')->findOrFail($id_venta);
+        $ventaCF = Venta::with('detalleVenta', 'detalleVenta.producto','detalleVenta.producto.precioUnidadDeMedida','ventaDomicilio')->findOrFail($id_venta);
         return response()->json(['ventaCF' => $ventaCF]);
     }
 
     public function obtenerCreditoAndDetalle($id_creditofiscal){
-        $CFSales = CreditoFiscal::where('domicilio', 0)->with('cliente.municipio','cliente.municipio.departamento','detallecredito.producto', 'detallecredito.producto.precioUnidadDeMedida','creditoFiscalDomicilio')->findOrFail($id_creditofiscal);
+        $CFSales = CreditoFiscal::with('cliente.municipio','cliente.municipio.departamento','detallecredito.producto', 'detallecredito.producto.precioUnidadDeMedida','creditoFiscalDomicilio')->findOrFail($id_creditofiscal);
         return response()->json($CFSales);
     }
 
