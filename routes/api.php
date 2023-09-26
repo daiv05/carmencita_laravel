@@ -255,6 +255,10 @@ Route::controller(HojaAsistenciaController::class)->group(function (){
 
 Route::controller(PlanillaController::class)->group(function (){
     Route::post('planilla','store');
+    Route::get('planillas','index');
+    Route::get('filtroPlanillas','obtenerPlanillasOrdenadasPorFecha');
+    Route::get('listaFechaPlanilla',"obtenerListaFechasPlanillas");
+    Route::get('planilla/{id_planilla}','show');
 });
 Route::put('creditos/updateEstado/{CFSales}', [VentasCFController::class, 'updateEstadoCredito']);
 

@@ -7,13 +7,40 @@ use Nette\Utils\DateTime;
 use App\Models\Planilla;
 use App\Models\Empleado;
 use App\Models\DetallePlanilla;
+use Illuminate\Support\Facades\DB;
 
 class PlanillaController extends Controller
 {
 
     public function index()
     {
-        return Planilla::all()->paginate(5);
+        /*Poner fecha inicio*/ 
+        return Planilla::paginate(5);
+    }
+
+    public function show(Request $request, int $id_planilla){
+        
+    }
+
+    public function obtenerPlanillasOrdenadasPorFecha(Request $request){
+        $fechaFiltro = $request->input("fechaFiltro"," ");
+        if($fechaFiltro == " "){
+            $fechaFiltro = date("Y");
+        }
+        $resultados = Planilla::whereYear("fecha_fin","=",$fechaFiltro)
+        ->orderByDesc("fecha_fin");
+        return $resultados->paginate(5);
+    }
+
+    public function obtenerListaFechasPlanillas(Request $request){
+        /*agregar el flujo de error*/
+        $resultado = Planilla::select(
+            DB::raw("DISTINCT(YEAR(fecha_fin)) as anio"));
+        return response()->json(
+            [
+                "resultado"=>$resultado->get(),
+            ]
+        );
     }
 
     public function store(Request $request)
@@ -103,4 +130,10 @@ class PlanillaController extends Controller
         ], 200);
 
     }
+
+    public function obetenerAniosDisponibles(){
+
+    }
+
+  
 }
