@@ -8,6 +8,13 @@ use Illuminate\Http\Request;
 
 class AbonoController extends Controller
 {
+    public function show(Request $request, Abono $credito){
+        return response()->json([
+            'status'=>true,
+            'credito'=>$credito
+        ]);
+    }
+
     public function store(Request $request)
     {   
         $validator = \Validator::make($request->all(), [
@@ -25,6 +32,7 @@ class AbonoController extends Controller
         $fecha = request('fecha') ?? new \DateTime();
         $monto = request("monto") ?? 0;
         $credito = Credito::where('id', $request->credito)->first();
+
         if(isset($credito)){
             if($credito->pendiente == 0){
                 return response()->json([

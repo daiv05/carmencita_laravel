@@ -17,6 +17,16 @@ class CreditoController extends Controller
         return Credito::all();
     }
 
+    public function show(Request $request, Credito $credito){
+
+        $credito["abonos"] = $credito->abonos()->get();
+        $credito["proveedor"] = $credito->proveedor()->first();
+        return response()->json([
+            'status'=>true,
+            'credito'=>$credito
+        ]);
+    }
+
     public function getCreditos(Request $request)
     {
         $resultadosPorPagina = 10;

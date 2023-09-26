@@ -78,6 +78,7 @@ Route::middleware(['auth:sanctum', 'permission:all'])->group(function () {
     //Rutas para Cliente
     Route::resource('clientes', ClienteController::class);
     Route::post('abono_registrar',[AbonoController::class,'store']);
+    Route::get('credito_proveedor/{credito}',[CreditoController::class,'show']);
     Route::post('lista_creditos_proveedores',[CreditoController::class,'getCreditos']);
 });
 
