@@ -18,6 +18,7 @@ return new class extends Migration
             $table->float('monto_credito');
             $table->string('detalle_credito');
             $table->unsignedBigInteger('id_proveedor');
+            $table->float('pendiente');
             $table->foreign('id_proveedor')->references('id')->on('proveedors')->onDelete('cascade');
             $table->timestamps();
         });

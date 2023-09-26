@@ -38,6 +38,7 @@ use App\Http\Controllers\CreditoController;
 use App\Http\Controllers\PromocionesController;
 use App\Http\Controllers\VentaDomicilioController;
 use Illuminate\Console\View\Components\Info;
+use App\Http\Controllers\AbonoController;
 
 /* ----------------------------------------------*/
 /* ----------------------------------------------*/
@@ -76,6 +77,8 @@ Route::middleware(['auth:sanctum', 'permission:all'])->group(function () {
     Route::resource('cargos', CargoController::class);
     //Rutas para Cliente
     Route::resource('clientes', ClienteController::class);
+    Route::post('abono_registrar',[AbonoController::class,'store']);
+    Route::post('lista_creditos_proveedores',[CreditoController::class,'getCreditos']);
 });
 
 /* --------------------------------------------------*/

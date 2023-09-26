@@ -53,6 +53,8 @@ class DatabaseSeeder extends Seeder
         $this->call(CreditoFiscalDomicilioSeeder::class);
         $this->call(VentaDomicilioSeeder::class);
         $this->call(LoteSeeder::class);
+        $this->call(ProveedorSeeder::class);
+        $this->call(CreditoSeeder::class);
 
     }
 }
