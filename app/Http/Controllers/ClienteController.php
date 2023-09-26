@@ -17,7 +17,7 @@ class ClienteController extends Controller
         return response()->json([
             'respuesta' => true,
             'mensaje' => 'Lista de clientes',
-            'datos' => Cliente::with('municipio')->get(),
+            'datos' => Cliente::with('municipio')->with('municipio.departamento')->get(),
         ], 200);
     }
 
@@ -33,7 +33,7 @@ class ClienteController extends Controller
             'nit_cliente' => 'nullable|string|max:20',
             'nrc_cliente' => 'required|string|max:20',
             'id_municipio' => 'required|integer',
-            'distintivo_cliente' => 'required|string|max:50',
+            'distintivo_cliente' => 'required|string|max:50|unique:cliente',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -59,8 +59,6 @@ class ClienteController extends Controller
                 ], 400);
             }
         }
-
-        
     }
 
     /**
@@ -73,7 +71,7 @@ class ClienteController extends Controller
             return response()->json([
                 'respuesta' => true,
                 'mensaje' => 'Cliente encontrado',
-                'datos' => $cliente->load('municipio'),
+                'datos' => $cliente->with('municipio')->with('municipio.departamento')->get(),
             ], 200);
         } else {
             return response()->json([
@@ -96,9 +94,10 @@ class ClienteController extends Controller
             'dui_cliente' => 'max:10',
             'nit_cliente' => 'max:20',
             'nrc_cliente' => 'string|max:20',
-            'distintivo_cliente' => 'string|max:50',
+            'distintivo_cliente' => 'string|max:50|unique:cliente,distintivo_cliente,' . $cliente->id_cliente . ',id_cliente',
+            'estado_cliente' => 'boolean',
         ];
-        
+
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
@@ -129,19 +128,10 @@ class ClienteController extends Controller
      */
     public function destroy(Cliente $cliente)
     {
-        //
-        $cliente->delete();
-        if (isset($cliente)) {
-            return response()->json([
-                'respuesta' => true,
-                'mensaje' => 'Cliente eliminado correctamente',
-            ]);
-        } else {
-            return response()->json([
-                'respuesta' => false,
-                'mensaje' => 'Error al eliminar el cliente',
-            ]);
-        }
+        return response()->json([
+            'respuesta' => false,
+            'mensaje' => 'No se pueden eliminar clientes',
+        ]);
     }
 
     //Lista de identificadores de clientes.
@@ -159,6 +149,42 @@ class ClienteController extends Controller
                 'respuesta' => false,
                 'mensaje' => 'Error al obtener la lista de clientes',
             ], 400);
+        }
+    }
+
+    public function desactivar_cliente(Request $request)
+    {
+        $rules = [
+            'id_cliente' => 'required|integer|max:50',
+            'estado_cliente' => 'required|boolean',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => $validator->errors()->all(),
+            ], 400);
+        }
+        $cliente = Cliente::find($request->id_cliente);
+        if (isset($cliente)) {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Cliente inexistente',
+            ], 400);
+        } else {
+            if ($cliente->estado_cliente == 1) {
+                $cliente->update(['estado_cliente' => false]);
+                return response()->json([
+                    'respuesta' => true,
+                    'mensaje' => 'Cliente desactivado correctamente',
+                ], 200);
+            } else {
+                $cliente->update(['estado_cliente' => true]);
+                return response()->json([
+                    'respuesta' => true,
+                    'mensaje' => 'Cliente activado correctamente',
+                ], 200);
+            }
         }
     }
 }
