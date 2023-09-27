@@ -236,6 +236,8 @@ Route::middleware(["auth:sanctum","permission:all"])->group(function(){
     Route::get("datos_inventario_valorado",[InformeInventarioController::class,"obtenerDatosGraficoInventarioValorado"]);
     Route::get("filtro_datos_producto_valorado/{valorMinimo?}/{valorMaximo?}",[InformeInventarioController::class,"obtenerDatosFiltradosProductoPorPrecios"]);
     Route::get("ventas_por_producto",[InformeInventarioController::class,"obtenerVentasPorProductos"]);
+
+    /* obtener los datos de los detalles de planillas asociados a una planilla*/
 });
 
 Route::get("/filtro_ventas_totales/{parametros}",[InformeVentasController::class,"obtenerVentasTotalesPorFecha"]);
@@ -259,6 +261,7 @@ Route::controller(PlanillaController::class)->group(function (){
     Route::get('filtroPlanillas','obtenerPlanillasOrdenadasPorFecha');
     Route::get('listaFechaPlanilla',"obtenerListaFechasPlanillas");
     Route::get('planilla/{id_planilla}','show');
+    Route::get("obtener_detalles_planilla/{id:int}","obtenerDetallesPlanilla");
 });
 Route::put('creditos/updateEstado/{CFSales}', [VentasCFController::class, 'updateEstadoCredito']);
 

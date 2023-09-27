@@ -135,5 +135,14 @@ class PlanillaController extends Controller
 
     }
 
+    public function obtenerDetallesPlanilla (Request $request, int $id){
+        $planilla = Planilla::find($id);
+        $planilla->detallesPlanilla;
+        foreach ($planilla->detallesPlanilla as $detallePlanilla){
+            $detallePlanilla->empleado;
+        }
+        return $planilla;
+    }
+
   
 }
