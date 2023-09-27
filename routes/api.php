@@ -34,6 +34,7 @@ use App\Http\Controllers\InformeVentasController;
 use App\Http\Controllers\InformeInventarioController;
 use App\Http\Controllers\InformeProductosPorVencerController;
 use App\Http\Controllers\CreditoController;
+use App\Http\Controllers\AvisoController;
 use Illuminate\Console\View\Components\Info;
 
 /*
@@ -95,6 +96,9 @@ Route::middleware(['auth:sanctum', 'permission:all'])->group(function () {
 
     //Rutas para Cliente
     Route::resource('clientes', ClienteController::class);
+
+    //Rutas para marketing
+    Route::resource("avisos",AvisoController::class);
 });
 
 Route::get('impresion_prueba', [ImpresionController::class, 'generatePDF']);
