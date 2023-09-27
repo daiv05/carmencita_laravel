@@ -33,7 +33,7 @@ class ClienteController extends Controller
             'nit_cliente' => 'nullable|string|max:20',
             'nrc_cliente' => 'required|string|max:20',
             'id_municipio' => 'required|integer',
-            'distintivo_cliente' => 'required|string|max:50|unique:cliente',
+            'distintivo_cliente' => 'required|string|max:50',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -42,6 +42,15 @@ class ClienteController extends Controller
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => $validator->errors()->all(),
+            ], 400);
+        }
+
+        //Validar si existe el cliente con el mismo distintivo
+        $cliente = Cliente::where('distintivo_cliente', $request->distintivo_cliente)->first();
+        if (isset($cliente)) {
+            return response()->json([
+                'respuesta' => false,
+                'distintivo_exist' => true,
             ], 400);
         }
 
@@ -64,14 +73,16 @@ class ClienteController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Cliente $cliente)
+    public function show(Request $request, $id_cliente)
     {
+        $cliente = Cliente::with('municipio')->with('municipio.departamento')->find($id_cliente);
+
         //Validar si existe el cliente
         if (isset($cliente)) {
             return response()->json([
                 'respuesta' => true,
                 'mensaje' => 'Cliente encontrado',
-                'datos' => $cliente->with('municipio')->with('municipio.departamento')->get(),
+                'datos' => $cliente,
             ], 200);
         } else {
             return response()->json([
@@ -94,7 +105,7 @@ class ClienteController extends Controller
             'dui_cliente' => 'max:10',
             'nit_cliente' => 'max:20',
             'nrc_cliente' => 'string|max:20',
-            'distintivo_cliente' => 'string|max:50|unique:cliente,distintivo_cliente,' . $cliente->id_cliente . ',id_cliente',
+            'distintivo_cliente' => 'string|max:50',
             'estado_cliente' => 'boolean',
         ];
 
@@ -104,6 +115,15 @@ class ClienteController extends Controller
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => $validator->errors()->all(),
+            ], 400);
+        }
+
+        //Validar si existe el cliente con el mismo distintivo
+        $clientes_ = Cliente::where('id_cliente', '!=', $cliente->id_cliente)->where('distintivo_cliente', $request->distintivo_cliente)->first();
+        if (isset($clientes_)) {
+            return response()->json([
+                'respuesta' => false,
+                'distintivo_exist' => true,
             ], 400);
         }
 

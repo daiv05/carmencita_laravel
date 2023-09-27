@@ -76,6 +76,7 @@ Route::middleware(['auth:sanctum', 'permission:all'])->group(function () {
     Route::resource('cargos', CargoController::class);
     //Rutas para Cliente
     Route::resource('clientes', ClienteController::class);
+    Route::post('clientes/cambiar_estado', [ClienteController::class, 'desactivar_cliente']);
 });
 
 /* --------------------------------------------------*/
@@ -211,6 +212,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //Ruta para obtener el departamento segun el nombre
     Route::get('departamentos/buscar/{nombre_departamento}', [DepartamentoController::class, 'getDepartamentoPorNombre']);
     Route::get('pacientes', [JornadaLaboralDiariaController::class, 'index']);
+    Route::get('get_municipios', [MunicipioController::class, 'municipios_segun_departamento']);
 });
 
 
