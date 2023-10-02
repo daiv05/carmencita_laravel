@@ -12,9 +12,8 @@ use Illuminate\Support\Facades\DB;
 
 class ImpresionController extends Controller
 {
-    public function generate_pdf_consumidor_final($id_venta)
+    public function generate_pdf_consumidor_final($venta)
     {
-        $venta = Venta::find($id_venta);
         if ($venta == null) {
             return response()->json([
                 'message' => 'No se encontró la venta'
