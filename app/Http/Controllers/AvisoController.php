@@ -5,9 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\Aviso;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\In;
 
 class AvisoController extends  Controller
 {
+
+    public function index (Request $request){
+        if($request->input("estado_aviso"," ")!=" "){
+            if ($request->input("estado_aviso") == false || $request->input("estado_aviso") == true){
+            
+                return Aviso::where("estado_aviso","=",$request->input("estado_aviso"))->paginate(5);
+            }   
+        }
+
+        return Aviso::paginate(5);
+    }
 
     public function show(Request $request, int $idAviso){
         return Aviso::find($idAviso);
