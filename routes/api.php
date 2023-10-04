@@ -67,8 +67,6 @@ Route::middleware(['auth:sanctum', 'permission:all'])->group(function () {
 
     Route::put('empleado_activo/{empleado}', [EmpleadoController::class, 'updateEstado']);
 
-
-
     //Rutas para cargos
     Route::resource('cargos', CargoController::class);
 
@@ -99,6 +97,7 @@ Route::middleware(['auth:sanctum', 'permission:all'])->group(function () {
 
     //Rutas para marketing
     Route::resource("avisos",AvisoController::class);
+    Route::put("modificar_estado_aviso/{aviso}",[AvisoController::class,"modificarEstadoAviso"]);
 });
 
 Route::get('impresion_prueba', [ImpresionController::class, 'generatePDF']);

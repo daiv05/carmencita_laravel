@@ -3,12 +3,34 @@
 namespace App\Http\Controllers;
 
 use App\Models\Aviso;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rules\In;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AvisoController extends  Controller
 {
+
+    public function modificarEstadoAviso(Request $request, Aviso $aviso){
+        $mensaje = "";
+        if($aviso->estado_aviso){
+            $aviso->estado_aviso = false;
+            $aviso->save();
+            $mensaje = "Se desactivo el aviso con éxito";
+        }
+        else{
+            $aviso->estado_aviso = true;
+            $aviso->save();
+            $mensaje = "Se activo el aviso con éxito";
+        }
+        return response()->json(
+            [
+                "mensaje"=>$mensaje,
+                "valor_estado"=>$aviso->estado_aviso,
+                "status"=>true
+            ],200
+        );
+    }
 
     public function index (Request $request){
         if($request->input("estado_aviso"," ")!=" "){
@@ -59,5 +81,22 @@ class AvisoController extends  Controller
         ]
        );
 
+    }
+
+    public function destroy(Request $request, Aviso $aviso){
+        try{
+            $resultado = $aviso->delete();
+            return response()->json([
+                "mensaje"=>"Se elimino el aviso de manera exitosa",
+                "respuesta"=>$resultado,
+            ],200);
+
+        }catch(ModelNotFoundException $e){
+            return response()->json([
+                "errores"=> "El registro que desea eliminar no existe",
+                "mensaje"=>"El registro no esta en la base de datos, o se encuentra desconectada",
+                "respuesta"=>$resultado,
+            ],404);
+        }
     }
 }
