@@ -71,14 +71,18 @@ class HojaDeRutaController extends Controller
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => $validator->errors()->all()
-            ]);
+            ],400);
         }
 
         $hojaDeRuta = HojaDeRuta::create($request->hoja_de_ruta);
 
         if (isset($hojaDeRuta)) {
             $ventaDomicilio = new VentaDomicilioController();
-            return $ventaDomicilio->register_ventaDomicilio($request, $hojaDeRuta->id_hr);
+            $ventaDomicilio->register_ventaDomicilio($request, $hojaDeRuta->id_hr);
+            return response()->json([
+                'respuesta' => true,
+                'mensaje' => 'Hoja de Ruta guardada correctamente.'
+            ]);
         } else {
             return response()->json([
                 'respuesta' => false,
