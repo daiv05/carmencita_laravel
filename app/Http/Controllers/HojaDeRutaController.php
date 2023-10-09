@@ -212,10 +212,17 @@ class HojaDeRutaController extends Controller
                 return response()->json([
                     'respuesta' => false,
                     'mensaje' => 'La Hoja de ruta no se puede modificar, porque ya ha sido entregada.'
-                ],400);
+                ], 400);
             }
-
-            if ($this->validar_datos_hojaDeRuta($request->hoja_de_ruta)) {
+            
+            $myValidator = $this->create_validator_hojaDeRuta($request->hoja_de_ruta);
+            
+            if ($myValidator->fails()) {
+                return response()->json([
+                    'respuesta' => false,
+                    'mensaje' => $myValidator->errors()->all()
+                ],400);
+            } else {
                 //HojaDeRuta::update($request->hoja_de_ruta);
                 $hojaDeRuta->update($request->hoja_de_ruta);
 
@@ -227,7 +234,7 @@ class HojaDeRutaController extends Controller
                     $credito->delete();
                 }
 
-                foreach($facturas_asignadas_old_and_new as $factura){
+                foreach ($facturas_asignadas_old_and_new as $factura) {
                     $factura->delete();
                 }
 
@@ -249,7 +256,7 @@ class HojaDeRutaController extends Controller
         }
     }
 
-    public function validar_datos_hojaDeRuta($datos)
+    public function create_validator_hojaDeRuta($datos)
     {
         $validator = Validator::make($datos, [
             'fecha_entrega' => 'required',
@@ -257,13 +264,6 @@ class HojaDeRutaController extends Controller
             'total' => 'required'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'respuesta' => false,
-                'mensaje' => $validator->errors()->all()
-            ]);
-        } else {
-            return true;
-        }
+        return $validator;
     }
 }
