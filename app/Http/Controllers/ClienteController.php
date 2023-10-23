@@ -157,7 +157,7 @@ class ClienteController extends Controller
     //Lista de identificadores de clientes.
     public function getListaClientesIdentificadores()
     {
-        $clientes = Cliente::select('id_cliente', 'distintivo_cliente')->get();
+        $clientes = Cliente::where('estado_cliente', true)->select('id_cliente', 'distintivo_cliente')->get();
         if (isset($clientes)) {
             return response()->json([
                 'respuesta' => true,
@@ -172,21 +172,10 @@ class ClienteController extends Controller
         }
     }
 
-    public function desactivar_cliente(Request $request)
+    public function desactivar_cliente(Request $request, $id_cliente)
     {
-        $rules = [
-            'id_cliente' => 'required|integer|max:50',
-            'estado_cliente' => 'required|boolean',
-        ];
-        $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-            return response()->json([
-                'respuesta' => false,
-                'mensaje' => $validator->errors()->all(),
-            ], 400);
-        }
-        $cliente = Cliente::find($request->id_cliente);
-        if (isset($cliente)) {
+        $cliente = Cliente::find($id_cliente);
+        if (!isset($cliente)) {
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => 'Cliente inexistente',
