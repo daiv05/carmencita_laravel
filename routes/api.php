@@ -110,12 +110,13 @@ Route::middleware(["auth:sanctum","permission:all|Ventas"])->group(function(){
     //Rutas para productos
     Route::resource('productos', ProductoController::class);
     //Route::put("productos/{producto}",[ProductoController::class,'update']);
-    //Ruta para descargar imagen
-    Route::get("productos/{producto}/foto", function (Producto $producto) {
-        return response()->download(public_path(Storage::url($producto->foto)), $producto->nombre_producto);
-    });
-
 });
+
+ //Ruta para descargar imagen
+ Route::get("productos/{producto}/foto", function (Producto $producto) {
+    return response()->download(public_path(Storage::url($producto->foto)), $producto->nombre_producto);
+});
+
 
 /*aqui poner las rutas para el sub gerente o del modulo perteneciente a recursos humanos */
 Route::middleware(["auth:sanctum","permission:all|Inventario|Ventas"])->group(function(){
