@@ -11,7 +11,11 @@ class Proveedor extends Model
 
     protected $table = "proveedors";
 
-    protected $fillable = ['nombre_proveedor'];
+    protected $fillable = [
+        'nombre_proveedor',
+        'nit_pr',
+        'nrc_pr'
+    ];
 
     public function ceditos(){
         return $this->hasMany(Credito::class, 'id_proveedor');
