@@ -22,8 +22,6 @@ use App\Http\Controllers\DetalleCreditoController;
 use App\Http\Controllers\MunicipioController;
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ImpresionController;
-use App\Models\CreditoFiscal;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\VentasCFController;
@@ -37,7 +35,7 @@ use App\Http\Controllers\InformeProductosPorVencerController;
 use App\Http\Controllers\CreditoController;
 use App\Http\Controllers\PromocionesController;
 use App\Http\Controllers\VentaDomicilioController;
-use Illuminate\Console\View\Components\Info;
+use App\Http\Controllers\ProveedorController;
 
 /* ----------------------------------------------*/
 /* ----------------------------------------------*/
@@ -251,7 +249,8 @@ Route::get('productoProm', [PromocionesController::class, 'getProductos']);
 //para crear una promocion
 Route::apiResource('promociones', PromocionesController::class);
 
-
+Route::apiResource('proveedor', ProveedorController::class);
+Route::get('proveedor/cambiar_estado/{proveedor}', [ProveedorController::class, 'cambiar_estado_proveedor']);
 
 /* ----------------------------------------------*/
 /* ----------------------------------------------*/
