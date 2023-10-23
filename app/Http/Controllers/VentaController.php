@@ -114,16 +114,22 @@ class VentaController extends Controller
         ];
 
         $validator = Validator::make($request->venta, $rules);
-
+        
         if ($validator->fails()) {
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => $validator->errors()->all()
             ], 400);
         }
+        
+        //Para validar que la fecha no se modifique si ya esta asignada a hoja de ruta
+        $datosNuevosVenta = $request->venta;
+        $asignada = VentaDomicilio::where('id_venta',$venta->id_venta)->exists();
+        if($asignada and ($request->venta["fecha_venta"] != $venta->fecha_venta)){
+            $datosNuevosVenta["fecha_venta"] = $venta->fecha_venta;
+        }
 
-        //if ($request->venta->validate($rules)) {
-        $venta->update($request->venta);
+        $venta->update($datosNuevosVenta);
         $detallesActuales = $venta->detalleVenta()->get(); //Obtiene los detalles actuales de la venta (detalles antes del update)
         foreach ($detallesActuales as $detalleActual) {
             $detalle_venta_controller->destroy($detalleActual);
@@ -232,12 +238,11 @@ class VentaController extends Controller
             $validar = $detalle_venta->register_detalle_venta($request, $venta->id_venta);
             if ($validar->getStatusCode() == 201) {
                 $impresion_service = new ImpresionController();
-                $pdf = base64_encode($impresion_service->generatePDF($venta));
+                $estado_impresion = $impresion_service->generate_pdf_consumidor_final($venta);
                 return response()->json([
                     'respuesta' => true,
                     'mensaje' => 'Venta creada correctamente',
-                    'datos' => $venta->id_venta,
-                    'pdf' => $pdf
+                    'datos' => $estado_impresion,
                 ], 201);
             } else {
                 return $validar;

@@ -26,6 +26,10 @@ class DetalleCredito extends Model
         'subtotal_detalle_credito',
     ];
 
+    protected $attributes = [
+        'precio_unitario_venta' => 0,
+    ];
+
     public function producto()
     {
         return $this->belongsTo(Producto::class, 'codigo_barra_producto', 'codigo_barra_producto');
