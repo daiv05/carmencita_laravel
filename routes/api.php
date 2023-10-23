@@ -37,6 +37,7 @@ use App\Http\Controllers\InformeProductosPorVencerController;
 use App\Http\Controllers\CreditoController;
 use App\Http\Controllers\PromocionesController;
 use App\Http\Controllers\VentaDomicilioController;
+use App\Http\Controllers\AvisoController;
 use Illuminate\Console\View\Components\Info;
 
 /* ----------------------------------------------*/
@@ -231,6 +232,8 @@ Route::middleware(["auth:sanctum", "permission:all"])->group(function () {
     Route::get("productos_mas_vendidos/", [InformeInventarioController::class, "obtenerProductosMasVendidosConIngresos"]);
     Route::get("filtro_ventas_totales/", [InformeVentasController::class, "obtenerVentasTotalesPorFecha"]);
     Route::get("/filtro_ventas_totales/{parametros}", [InformeVentasController::class, "obtenerVentasTotalesPorFecha"]);
+    Route::resource("avisos",AvisoController::class);
+    Route::put("modificar_estado_aviso/{aviso}",[AvisoController::class,"modificarEstadoAviso"]);
 });
 
 
