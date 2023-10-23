@@ -87,25 +87,26 @@ class HojaDeRutaController extends Controller
         }
     }
 
-    public function obtenerHojasDeRutasPaginadasFiltro(Request $request){
+    public function obtenerHojasDeRutasPaginadasFiltro(Request $request)
+    {
         /*$hojas = 
         HojaDeRuta::with('ventaDomicilio')->with('creditoFiscalDomicilio')->with('empleado')->paginate(10);*/
         $parametrosConsulta = $request->all();
         $resultados = HojaDeRuta::with('empleado');
         $condiciones = $this->construirCondiciones(
-            isset($parametrosConsulta["fechaEntrega"])?$parametrosConsulta["fechaEntrega"]:null, 
-            isset($parametrosConsulta["estaEntregado"])?$parametrosConsulta["estaEntregado"]:null
+            isset($parametrosConsulta["fechaEntrega"]) ? $parametrosConsulta["fechaEntrega"] : null,
+            isset($parametrosConsulta["estaEntregado"]) ? $parametrosConsulta["estaEntregado"] : null
         );
-        if(count($condiciones) > 0){
+        if (count($condiciones) > 0) {
             $resultados->where(
-                function($query) use ($condiciones){
-                    foreach($condiciones as $condicion){
+                function ($query) use ($condiciones) {
+                    foreach ($condiciones as $condicion) {
                         $query->whereRaw($condicion);
                     }
                 }
             );
         }
-        $resultados->orderBy("fecha_entrega","desc");
+        $resultados->orderBy("fecha_entrega", "desc");
         return $resultados->paginate(10);
         /*$resultados = [];
         $condiciones = $this->construirCondiciones(
@@ -137,20 +138,68 @@ class HojaDeRutaController extends Controller
         $resultados = $resultados->paginate(5);*/
         //->where("hojaderuta.fecha_entrega","=","10290-90-10")
         //->paginate(10); 
-        
+
 
         //return $resultados;
     }
 
-    public function construirCondiciones($fechaEntrega,$estaEntregado){
+    public function marcarEntregada($id){
+        $hoja = HojaDeRuta::find($id);
+        if($hoja == null){
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => "No existe la hoja de ruta",
+            ], 400);
+        }
+        if ($hoja->esta_entregado == 1){
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => "Esta hoja de ruta ya ha sido marcada como entregada",
+            ], 400);
+        }
+        try {
+            $hoja->esta_entregado = true;
+            foreach($hoja->ventaDomicilio as $vd){
+                $vd->esta_cancelada == 1 ? null : $vd->esta_cancelada = 1;
+                $vd->save();
+            }
+            foreach($hoja->creditoFiscalDomicilio as $cfd){
+                $cfd->esta_cancelado == 1 ? null : $cfd->esta_cancelado = 1;
+                $cfd->save();
+            }
+            $hoja->save();
+        } catch (\Throwable $th) {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => "Error al marcar como entregada la hoja de ruta",
+                'error' => $th->getMessage(),
+            ], 400);
+        }
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => "Se marco como entregada la hoja de ruta",
+        ], 201);
+    }
+
+    public function construirCondiciones($fechaEntrega,  $estaEntregado)
+    {
         $condiciones = [];
-        if($fechaEntrega!=null){
+        if ($fechaEntrega != null) {
             $condiciones[] = "fecha_entrega = '$fechaEntrega'";
         }
-        if($estaEntregado!=null){
-            $condiciones[] = "esta_entregado = '$estaEntregado'" ;
+        if ($estaEntregado != null) {
+            $condiciones[] = "esta_entregado = '$estaEntregado'";
         }
 
         return $condiciones;
+    }
+
+    public function deleteHojaRuta($id_hr)
+    {
+        DB::table('ventadomicilio')->where('id_hr', $id_hr)->delete();
+        DB::table('creditofiscaldomicilio')->where('id_hr', $id_hr)->delete();
+        DB::table('hojaderuta')->where('id_hr', $id_hr)->delete();
+
+        return response()->json(['message' => 'Hoja de ruta y registros eliminados']);
     }
 }

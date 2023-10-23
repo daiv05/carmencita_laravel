@@ -40,8 +40,7 @@ class Handler extends ExceptionHandler
                 "tienePermiso"=>false
             ],403);
         });
-
-        }
+    }
 
     public function invalidJson($request, ValidationException $exception)
     {

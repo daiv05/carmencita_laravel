@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('creditofiscaldomicilio', function (Blueprint $table) {
             $table->id('id_cfd');
             $table->timestamps();
-            $table->unsignedBigInteger('id_hr');
+            $table->unsignedBigInteger('id_hr')->nullable();
             $table->unsignedBigInteger('id_creditofiscal');
             $table->boolean('esta_cancelado');
             $table->boolean('esta_emitido');
@@ -32,4 +32,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('credito_fiscal_domicilios');
     }
+
+    
 };

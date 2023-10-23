@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CreditoFiscal;
+use App\Models\CreditoFiscalDomicilio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\DetalleCreditoController;
@@ -119,8 +120,14 @@ class CreditoFiscalController extends Controller
             ], 400);
         }
 
-        //if ($request->validate($rules)) {
-        $creditoFiscal->update($request->credito);
+        //Para validar que la fecha no se modifique si ya esta asignada a hoja de ruta
+        $datosNuevosCredito = $request->credito;
+        $asignada = CreditoFiscalDomicilio::where('id_creditofiscal',$creditoFiscal->id_creditofiscal)->exists();
+        if($asignada and ($request->credito["fecha_credito"] != $creditoFiscal->fecha_credito)){
+            $datosNuevosCredito["fecha_credito"] = $creditoFiscal->fecha_credito;
+        }
+
+        $creditoFiscal->update($datosNuevosCredito);
         $id_credito = $creditoFiscal->id_creditofiscal;
         $detallesActuales = $creditoFiscal->detalleCredito()->get(); //Obtiene los detalles actuales de la venta (detalles antes del update)
         foreach ($detallesActuales as $detalleActual) {
@@ -165,6 +172,15 @@ class CreditoFiscalController extends Controller
                     'mensaje' => $mensaje
                 ], 200);
             }
+
+            $asignado = CreditoFiscalDomicilio::where('id_creditofiscal',$creditoFiscal->id_creditofiscal)->exists();
+            if($asignado){
+                return response()->json([
+                    'respuesta' => false,
+                    'mensaje' => 'El pedido no se puede eliminar porque ya esta asignado a una hoja de ruta'
+                ], 200);
+            }
+
             $detallesActuales = $creditoFiscal->detalleCredito()->get(); //Obtiene los detalles actuales de la venta (detalles antes del update)
 
             foreach ($detallesActuales as $detalleActual) {

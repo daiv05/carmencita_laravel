@@ -82,8 +82,9 @@ class DetalleVentaController extends Controller
             if (isset($detalleVenta)) {
                 error_log('Detalle creado correctamente');
                 // Actualizar stock del producto
-                $producto->cantidad_producto_disponible = $producto->cantidad_producto_disponible - $detalleVenta->cantidad_producto;
-                $producto->update(['cantidad_producto_disponible' => $producto->cantidad_producto_disponible]);
+                //$producto->cantidad_producto_disponible = $producto->cantidad_producto_disponible - $detalleVenta->cantidad_producto;
+                //$producto->update(['cantidad_producto_disponible' => $producto->cantidad_producto_disponible]);
+                $producto->updateExistencias($detalleVenta->cantidad_producto, true);
                 //Log::info('Stock actualizado: '. $request->cantidad_producto);
                 return response()->json([
                     'respuesta' => true,
@@ -174,8 +175,9 @@ class DetalleVentaController extends Controller
             $detalleVenta->delete();
             // Actualizar stock del producto
             $producto = Producto::find($detalleVenta->codigo_barra_producto);
-            $producto->cantidad_producto_disponible = $producto->cantidad_producto_disponible + $detalleVenta->cantidad_producto;
-            $producto->update(['cantidad_producto_disponible' => $producto->cantidad_producto_disponible]);
+            //$producto->cantidad_producto_disponible = $producto->cantidad_producto_disponible + $detalleVenta->cantidad_producto;
+            //$producto->update(['cantidad_producto_disponible' => $producto->cantidad_producto_disponible]);
+            $producto->updateExistencias($detalleVenta->cantidad_producto,false);
             return response()->json([
                 'respuesta' => true,
                 'mensaje' => 'Detalle de venta eliminado correctamente',
@@ -229,7 +231,7 @@ class DetalleVentaController extends Controller
                     'mensaje' => 'No existe el producto',
                 ], 400);
             } else {
-                if ($producto->cantidad_producto_disponible < $request->detalles[$i]['cantidad_producto']) {
+                if ($producto->getExistencias() < $request->detalles[$i]['cantidad_producto']) {
                     error_log('No hay stock suficiente');
                     return response()->json([
                         'respuesta' => false,
@@ -253,8 +255,11 @@ class DetalleVentaController extends Controller
             if (isset($detalleVenta)) {
                 error_log('Detalle creado correctamente');
                 // Actualizar stock del producto
-                $producto->cantidad_producto_disponible = $producto->cantidad_producto_disponible - $detalleVenta->cantidad_producto;
-                $producto->update(['cantidad_producto_disponible' => $producto->cantidad_producto_disponible]);
+                //$producto->cantidad_producto_disponible = $producto->cantidad_producto_disponible - $detalleVenta->cantidad_producto;
+                //$producto->update(['cantidad_producto_disponible' => $producto->cantidad_producto_disponible]);
+                
+                $producto->updateExistencias($detalleVenta->cantidad_producto,true);
+                
                 //Log::info('Stock actualizado: '. $request->cantidad_producto);
             } else {
                 error_log('Error al crear el detalle de venta');

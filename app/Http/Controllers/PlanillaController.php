@@ -18,7 +18,7 @@ class PlanillaController extends Controller
 
     public function store(Request $request)
     {
-
+        $fechaActual = new DateTime();
         //Comprobar si hay empleados activos
         $empleados = Empleado::where('esta_activo', '1')->get();
         if (!isset($empleados)) {
@@ -36,12 +36,21 @@ class PlanillaController extends Controller
         $fecha = new DateTime($fecha);
         $diasMes = cal_days_in_month(CAL_GREGORIAN, $fecha->format('m'), $fecha->format('Y'));
 
+        
+
         if ($fecha->format('d') <= 15) {
             $fechaInicio = date($fecha->format('Y') . '-' . $fecha->format('m') . '-1');
             $fechaFin = date($fecha->format('Y') . '-' . $fecha->format('m') . '-15');
         } else {
             $fechaInicio = date($fecha->format('Y') . '-' . $fecha->format('m') . '-16');
             $fechaFin = date($fecha->format('Y') . '-' . $fecha->format('m') . '-' . $diasMes);
+        }
+
+        if($fechaActual <= $fechaFin){
+            return response()->json([
+                'status' => false,
+                'mensaje'=> 'No se ha generado la planilla para el periodo especificado,  el periodo aun no finalizao o no ha iniciado'
+            ]);
         }
 
         if (Planilla::where('fecha_inicio', $fechaInicio)->exists()) {

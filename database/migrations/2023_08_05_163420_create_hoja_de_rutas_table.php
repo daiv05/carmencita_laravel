@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_empleado');
             $table->date('fecha_entrega');
             $table->decimal('total',8,2);
-            $table->boolean('esta_entregado');
+            $table->boolean('esta_entregado')->default(false);
 
             //foraneas
             $table->foreign('id_empleado')->references('id_empleado')->on('empleado')->onDelete('restrict')->onUpdate('cascade');
