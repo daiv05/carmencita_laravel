@@ -270,3 +270,9 @@ Route::apiResource('promociones', PromocionesController::class);
  Route::get("productos/{producto}/foto", function (Producto $producto) {
     return response()->download(public_path(Storage::url($producto->foto)), $producto->nombre_producto);
 });
+
+
+//Avisos para el blog
+Route::get("avisos_blog", [AvisoController::class, "avisosBlog"]);
+//Ofetas para el blog
+Route::get("ofertas_blog", [PromocionesController::class, "promocionesVigentes"]);

@@ -7,6 +7,8 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Carbon\Carbon;
+
 
 class AvisoController extends  Controller
 {
@@ -98,5 +100,15 @@ class AvisoController extends  Controller
                 "respuesta"=>$resultado,
             ],404);
         }
+    }
+
+    public function avisosBlog(){
+        $fechaActual = Carbon::now()->toDateString();
+
+        $avisos = Aviso::where('estado_aviso', 1)
+        ->where('fecha_finalizacion', '>', $fechaActual)
+        ->get();
+
+        return response()->json($avisos);
     }
 }
