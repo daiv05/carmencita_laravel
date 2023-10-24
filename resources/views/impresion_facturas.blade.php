@@ -12,7 +12,7 @@
             </p>
         </div>
         <div class="margen-left-nombre-cliente">
-            <p class="text-sm inset-y-0 left-0 font-mono">{{ $venta->nombre_cliente_venta }}</p>
+            <p class="text-sm inset-y-0 left-0 font-mono">{{ $venta->nombre_cliente_venta ? $venta->nombre_cliente_venta : '-'  }}</p>
         </div>
 
         <div style="height: 400px; border: 2px; border-color:brown">

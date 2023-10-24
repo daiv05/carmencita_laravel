@@ -8,12 +8,15 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\HojaDeRuta;
+use App\Models\VentaDomicilio;
 use Illuminate\Support\Facades\DB;
 
 class ImpresionController extends Controller
 {
-    public function generate_pdf_consumidor_final($venta)
+    public function generate_pdf_consumidor_final(Venta $venta)
     {
+        error_log('imprimiendo desde detalle hr');
+        error_log($venta);
         if ($venta == null) {
             return response()->json([
                 'message' => 'No se encontró la venta'
@@ -55,11 +58,9 @@ class ImpresionController extends Controller
         return implode(',', $output) . ' ' . implode(',', $output1);
     }
 
-    public function generate_pdf_credito_fiscal($id_credito)
+    public function generate_pdf_credito_fiscal(CreditoFiscal $credito)
     {
-        $credito = CreditoFiscal::find($id_credito);
         $credito->with('detalleCredito')->with('cliente')->with('municipio')->with('departamento');
-        error_log($credito);
         foreach ($credito->detalleCredito as $detalle) {
             $detalle->with('producto');
             $cantidad = $detalle->cantidad_producto_credito;

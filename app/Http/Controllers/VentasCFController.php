@@ -17,28 +17,28 @@ class VentasCFController extends Controller
     //Para traer todas las ventas
     public function index()
     {
-        $ventasCF = Venta::where('domicilio', 0)->get();
+        $ventasCF = Venta::all();
         return response()->json(['ventasCF' => $ventasCF]);
     }
 
     //Para traer todos los creditos fiscal
     public function indexCF()
     {
-        $CFSales = CreditoFiscal::where('domicilio', 0)->with('cliente')->get();
+        $CFSales = CreditoFiscal::with('cliente')->get();
         return response()->json(['CFSales' => $CFSales]);
     }
 
     //Para buscar una venta en especifica
     public function buscarVentaCF(Request $request)
     {
-        $ventasCF = Venta::where('domicilio', 0)->where('id_venta', 'like', '%' . $request->q . '%')
+        $ventasCF = Venta::where('id_venta', 'like', '%' . $request->q . '%')
             ->orWhere('fecha_venta', 'like', '%' . $request->q . '%')->get();
         return response()->json(['ventasCF' => $ventasCF]);
     }
 
     //Para buscar un credito fiscal en especifico
     public function buscarCreditoF(Request $request){
-        $CFSales = CreditoFiscal::where('domicilio', 0)->where('id_creditofiscal', 'like', '%' . $request->q . '%')
+        $CFSales = CreditoFiscal::where('id_creditofiscal', 'like', '%' . $request->q . '%')
             ->orWhere('fecha_credito', 'like', '%' . $request->q . '%')
             ->orWhereHas('cliente', function ($query) use ($request) {
                 $query->where('nrc_cliente', 'like', '%' . $request->q . '%');
@@ -59,12 +59,12 @@ class VentasCFController extends Controller
     }
 
     public function obtenerVentaAndDetalle($id_venta){
-        $ventaCF = Venta::where('domicilio', 0)->with('detalleVenta', 'detalleVenta.producto','detalleVenta.producto.precioUnidadDeMedida','ventaDomicilio')->findOrFail($id_venta);
+        $ventaCF = Venta::with('detalleVenta', 'detalleVenta.producto','detalleVenta.producto.precioUnidadDeMedida','ventaDomicilio')->findOrFail($id_venta);
         return response()->json(['ventaCF' => $ventaCF]);
     }
 
     public function obtenerCreditoAndDetalle($id_creditofiscal){
-        $CFSales = CreditoFiscal::where('domicilio', 0)->with('cliente.municipio','cliente.municipio.departamento','detallecredito.producto', 'detallecredito.producto.precioUnidadDeMedida','creditoFiscalDomicilio')->findOrFail($id_creditofiscal);
+        $CFSales = CreditoFiscal::with('cliente.municipio','cliente.municipio.departamento','detallecredito.producto', 'detallecredito.producto.precioUnidadDeMedida','creditoFiscalDomicilio')->findOrFail($id_creditofiscal);
         return response()->json($CFSales);
     }
 

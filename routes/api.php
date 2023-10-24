@@ -22,8 +22,6 @@ use App\Http\Controllers\DetalleCreditoController;
 use App\Http\Controllers\MunicipioController;
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ImpresionController;
-use App\Models\CreditoFiscal;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\VentasCFController;
@@ -39,7 +37,7 @@ use App\Http\Controllers\PromocionesController;
 use App\Http\Controllers\VentaDomicilioController;
 use App\Http\Controllers\AvisoController;
 
-use Illuminate\Console\View\Components\Info;
+use App\Http\Controllers\ProveedorController;
 
 
 /* ----------------------------------------------*/
@@ -82,6 +80,7 @@ Route::middleware(['auth:sanctum', 'permission:all'])->group(function () {
     Route::resource('cargos', CargoController::class);
     //Rutas para Cliente
     Route::resource('clientes', ClienteController::class);
+    Route::post('clientes/cambiar_estado/{id}', [ClienteController::class, 'desactivar_cliente']);
 });
 
 /* --------------------------------------------------*/
@@ -213,6 +212,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //Ruta para obtener el departamento segun el nombre
     Route::get('departamentos/buscar/{nombre_departamento}', [DepartamentoController::class, 'getDepartamentoPorNombre']);
     Route::get('pacientes', [JornadaLaboralDiariaController::class, 'index']);
+    Route::get('get_municipios', [MunicipioController::class, 'municipios_segun_departamento']);
 });
 
 
@@ -258,7 +258,8 @@ Route::get('productoProm', [PromocionesController::class, 'getProductos']);
 //para crear una promocion
 Route::apiResource('promociones', PromocionesController::class);
 
-
+Route::apiResource('proveedor', ProveedorController::class);
+Route::put('proveedor/cambiar_estado/{proveedor}', [ProveedorController::class, 'cambiar_estado_proveedor']);
 
 /* ----------------------------------------------*/
 /* ----------------------------------------------*/
