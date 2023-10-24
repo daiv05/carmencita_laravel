@@ -38,7 +38,9 @@ use App\Http\Controllers\CreditoController;
 use App\Http\Controllers\PromocionesController;
 use App\Http\Controllers\VentaDomicilioController;
 use App\Http\Controllers\AvisoController;
+
 use Illuminate\Console\View\Components\Info;
+
 
 /* ----------------------------------------------*/
 /* ----------------------------------------------*/
@@ -93,10 +95,6 @@ Route::middleware(["auth:sanctum", "permission:all|Ventas"])->group(function () 
     Route::get('ventasCF', [VentasCFController::class, 'index']);
     //Rutas para productos
     Route::resource('productos', ProductoController::class);
-    //Ruta para descargar imagen
-    Route::get("productos/{producto}/foto", function (Producto $producto) {
-        return response()->download(public_path(Storage::url($producto->foto)), $producto->nombre_producto);
-    });
     //Rutas para DetalleVenta
     Route::resource('detalle_ventas', DetalleVentaController::class);
     //Rutas para Venta
@@ -243,6 +241,11 @@ Route::controller(HojaAsistenciaController::class)->group(function () {
 });
 Route::controller(PlanillaController::class)->group(function () {
     Route::post('planilla', 'store');
+    Route::get('planillas','index');
+    Route::get('filtroPlanillas','obtenerPlanillasOrdenadasPorFecha');
+    Route::get('listaFechaPlanilla',"obtenerListaFechasPlanillas");
+    Route::get('planilla/{id_planilla}','show');
+    Route::get("obtener_detalles_planilla/{id:int}","obtenerDetallesPlanilla");
 });
 //Para obtener los productos que vencen en los proximos 15 dias
 Route::get('productosXVenecer', [InformeProductosPorVencerController::class, 'index']);
@@ -262,4 +265,8 @@ Route::apiResource('promociones', PromocionesController::class);
 /* ------------------NO AUTH---------------------*/
 /* ----------------------------------------------*/
 /* ----------------------------------------------*/
-Route::post("login", [LoginController::class, "authorization"]);
+ Route::post("login", [LoginController::class, "authorization"]);
+ //Ruta para descargar imagen
+ Route::get("productos/{producto}/foto", function (Producto $producto) {
+    return response()->download(public_path(Storage::url($producto->foto)), $producto->nombre_producto);
+});
