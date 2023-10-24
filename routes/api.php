@@ -250,7 +250,7 @@ Route::get('productoProm', [PromocionesController::class, 'getProductos']);
 Route::apiResource('promociones', PromocionesController::class);
 
 Route::apiResource('proveedor', ProveedorController::class);
-Route::get('proveedor/cambiar_estado/{proveedor}', [ProveedorController::class, 'cambiar_estado_proveedor']);
+Route::put('proveedor/cambiar_estado/{proveedor}', [ProveedorController::class, 'cambiar_estado_proveedor']);
 
 /* ----------------------------------------------*/
 /* ----------------------------------------------*/

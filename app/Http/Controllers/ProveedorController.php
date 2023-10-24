@@ -82,34 +82,26 @@ class ProveedorController extends Controller
     }
 
 
-    public function cambiar_estado_proveedor(Request $request)
+    public function cambiar_estado_proveedor(Request $request, $id)
     {
-        $rules = [
-            'id' => 'required|integer|max:50',
-            'estado_pr' => 'required|boolean',
-        ];
-        $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-            return response()->json([
-                'respuesta' => false,
-                'mensaje' => $validator->errors()->all(),
-            ], 400);
-        }
-        $proveedor = Proveedor::find($request->id);
-        if (isset($proveedor)) {
+        $proveedor = Proveedor::find($id);
+        if (!isset($proveedor)) {
             return response()->json([
                 'respuesta' => false,
                 'mensaje' => 'Proveedor inexistente',
             ], 400);
         } else {
-            if ($proveedor->estado_cliente == 1) {
-                $proveedor->update(['estado_pr' => false]);
+            if ($proveedor->estado_pr == 1) {
+                error_log('desactivar');
+                $proveedor->estado_pr = 0;
+                $proveedor->save();
                 return response()->json([
                     'respuesta' => true,
                     'mensaje' => 'Proveedor desactivado correctamente',
                 ], 200);
             } else {
-                $proveedor->update(['estado_pr' => true]);
+                $proveedor->estado_pr = 1;
+                $proveedor->save();
                 return response()->json([
                     'respuesta' => true,
                     'mensaje' => 'Proveedor activado correctamente',

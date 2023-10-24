@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nombre_proveedor');
             $table->string('nit_pr');
             $table->string('nrc_pr');
-            $table->boolean('estado_pr');
+            $table->boolean('estado_pr')->default(true);
             $table->timestamps();
         });
     }
