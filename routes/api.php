@@ -74,7 +74,7 @@ Route::middleware(['auth:sanctum', 'permission:all'])->group(function () {
     Route::resource('cargos', CargoController::class);
     //Rutas para Cliente
     Route::resource('clientes', ClienteController::class);
-    Route::post('clientes/cambiar_estado', [ClienteController::class, 'desactivar_cliente']);
+    Route::post('clientes/cambiar_estado/{id}', [ClienteController::class, 'desactivar_cliente']);
 });
 
 /* --------------------------------------------------*/
