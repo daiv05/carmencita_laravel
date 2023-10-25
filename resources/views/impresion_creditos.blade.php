@@ -12,21 +12,37 @@
                 {{ date('d-m-Y', strtotime($credito->fecha_credito)) }}
             </p>
         </div>
-        <div class="margen-left-nombre-cliente">
-            <p class="text-sm inset-y-0 left-0 font-mono">{{ $credito->cliente->distintivo_cliente }}</p>
-            <p class="text-sm inset-y-0 left-0 font-mono"></p>
-            <p class="text-sm inset-y-0 left-0 font-mono" style="margin-left: 35px;">
-                {{ $credito->cliente->direccion_cliente }}</p>
-            <p class="text-sm inset-y-0 left-0 font-mono" style="margin-left: 35px;">
-                {{ $credito->cliente->municipio->nombre_municipio }} <label
-                    style="margin-left: 200px;">{{ $credito->cliente->municipio->departamento->nombre_departamento }}
-                </label> </p>
-            <p class="text-sm inset-y-0 left-0 font-mono" style="margin-left: 190px;">
-                {{ $credito->cliente->nrc_cliente }} <label
-                    style="margin-left: 50px;">{{ $credito->cliente->dui_cliente }}</label> </p>
-            <p class="text-sm inset-y-0 left-0 font-mono"></p>
-            <p class="text-sm inset-y-0 left-0 font-mono"></p>
-        </div>
+        @if (isset($credito->cliente))
+            <div class="margen-left-nombre-cliente">
+                <p class="text-sm inset-y-0 left-0 font-mono">{{ $credito->cliente->distintivo_cliente }}</p>
+                <p class="text-sm inset-y-0 left-0 font-mono"></p>
+                <p class="text-sm inset-y-0 left-0 font-mono" style="margin-left: 35px;">
+                    {{ $credito->cliente->direccion_cliente }}</p>
+                <p class="text-sm inset-y-0 left-0 font-mono" style="margin-left: 35px;">
+                    {{ $credito->cliente->municipio->nombre_municipio }} <label
+                        style="margin-left: 200px;">{{ $credito->cliente->municipio->departamento->nombre_departamento }}
+                    </label> </p>
+                <p class="text-sm inset-y-0 left-0 font-mono" style="margin-left: 190px;">
+                    {{ $credito->cliente->nrc_cliente }} <label
+                        style="margin-left: 50px;">{{ $credito->cliente->dui_cliente }}</label> </p>
+                <p class="text-sm inset-y-0 left-0 font-mono"></p>
+                <p class="text-sm inset-y-0 left-0 font-mono"></p>
+            </div>
+        @else
+            <div class="margen-left-nombre-cliente">
+                <p class="text-sm inset-y-0 left-0 font-mono">-</p>
+                <p class="text-sm inset-y-0 left-0 font-mono"></p>
+                <p class="text-sm inset-y-0 left-0 font-mono" style="margin-left: 35px;">
+                    -</p>
+                <p class="text-sm inset-y-0 left-0 font-mono" style="margin-left: 35px;">
+                    - <label style="margin-left: 200px;">-
+                    </label> </p>
+                <p class="text-sm inset-y-0 left-0 font-mono" style="margin-left: 190px;">
+                    - <label style="margin-left: 50px;">-</label> </p>
+                <p class="text-sm inset-y-0 left-0 font-mono"></p>
+                <p class="text-sm inset-y-0 left-0 font-mono"></p>
+            </div>
+        @endif
         <div style="height: 300px">
             <table class="table">
                 <thead>
