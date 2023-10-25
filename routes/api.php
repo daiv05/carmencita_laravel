@@ -37,6 +37,7 @@ use App\Http\Controllers\InformeProductosPorVencerController;
 use App\Http\Controllers\CreditoController;
 use App\Http\Controllers\PromocionesController;
 use App\Http\Controllers\VentaDomicilioController;
+use App\Http\Controllers\UserController;
 use Illuminate\Console\View\Components\Info;
 
 /* ----------------------------------------------*/
@@ -76,6 +77,10 @@ Route::middleware(['auth:sanctum', 'permission:all'])->group(function () {
     Route::resource('cargos', CargoController::class);
     //Rutas para Cliente
     Route::resource('clientes', ClienteController::class);
+    //Rutas para Usuarios
+    Route::resource('usuarios', UserController::class);
+    Route::post('usuarios/{user}', [UserController::class, 'update']);
+    //Route::post('usuarios/{user}', [UserController::class, 'destroy']);
 });
 
 /* --------------------------------------------------*/
@@ -191,6 +196,7 @@ Route::middleware(["auth:sanctum", "permission:all|Inventario|Ventas"])->group(f
 /* ------------------------------------------------------------*/
 Route::middleware(["auth:sanctum", "permission:all|Recursos Humanos"])->group(function () {
     Route::get('empleado/{empleado}', [EmpleadoController::class, 'show']);
+    Route::get('asistencia/{id_empleado}', [AsistenciaController::class, 'getAsistenciasEmpleado']);
 });
 
 
@@ -232,7 +238,7 @@ Route::middleware(["auth:sanctum", "permission:all"])->group(function () {
 
 
 //Asistencia y Planillas
-Route::controller(HojaAsistenciaController::class)->group(function () {
+Route::controller(AsistenciaController::class)->group(function () {
     Route::post('hoja_asistencia', 'store');
 });
 Route::controller(PlanillaController::class)->group(function () {
