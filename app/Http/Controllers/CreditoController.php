@@ -43,11 +43,11 @@ class CreditoController extends Controller
 
         if($proveedor == 'all'){
             $pagination = Credito::where('pendiente',$estado,0)
-                                ->with('proveedor')->orderByDesc('fecha_credito')->paginate($resultadosPorPagina);
+                                ->with('proveedor')->orderByDesc('fecha_limite_pago')->paginate($resultadosPorPagina);
         }else{
             $pagination = Credito::where('pendiente',$estado,0)
                                 ->where('id_proveedor',$proveedor)
-                                ->with('proveedor')->orderByDesc('fecha_credito')->paginate($resultadosPorPagina);
+                                ->with('proveedor')->orderByDesc('fecha_credito_pago')->paginate($resultadosPorPagina);
         }
 
         return response()->json([
@@ -95,7 +95,7 @@ class CreditoController extends Controller
                 'status' => false,
                 'message' => $validator->errors()->all(),
                 'Hola' => 'hola',
-            ]);
+            ],400);
         }
 
         $credito = new Credito();
@@ -112,6 +112,7 @@ class CreditoController extends Controller
         $credito->monto_credito = $request->monto_credito;
         $credito->detalle_credito = $request->detalle_credito;
         $credito->id_proveedor = $request->id_proveedor;
+        $credito->pendiente = $request->monto_credito;
         $credito->save();
 
         //$token = $user->createToken('auth_token')->plainTextToken;
@@ -119,8 +120,8 @@ class CreditoController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => $validator->errors()->all(),
+            'message' => ['Credito registrado correctamente',],
             'credito' => $credito
-        ]);
+        ],200);
     }
 }
