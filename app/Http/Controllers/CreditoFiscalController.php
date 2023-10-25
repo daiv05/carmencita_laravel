@@ -233,7 +233,18 @@ class CreditoFiscalController extends Controller
         $credito->save();
         if (isset($credito)) {
             $detalle_credito = new DetalleCreditoController();
-            return $detalle_credito->register_detalle_credito($request, $credito->id_creditofiscal);
+            $validar = $detalle_credito->register_detalle_credito($request, $credito->id_creditofiscal);
+            if ($validar->getStatusCode() == 201) {
+                $impresion_service = new ImpresionController();
+                $estado_impresion = $impresion_service->generate_pdf_credito_fiscal($credito);
+                return response()->json([
+                    'respuesta' => true,
+                    'mensaje' => 'Venta creada correctamente',
+                    'datos' => $estado_impresion,
+                ], 201);
+            } else {
+                return $validar;
+            }
         } else {
             return response()->json([
                 'respuesta' => false,

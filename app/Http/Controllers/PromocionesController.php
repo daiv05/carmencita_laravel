@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Producto;
 use App\Models\Promocion;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 
 class PromocionesController extends Controller
@@ -63,4 +65,20 @@ class PromocionesController extends Controller
             'promocion'=>$promocion
         ]);
     }
+
+    //Obtener todas las promociones vigentes y retono de JSON
+    public function promocionesVigentes(){
+        $fechaActual = Carbon::now()->toDateString();
+
+        $promociones = DB::table('promocions')
+        ->join('producto', 'promocions.codigo_barra_producto', '=', 'producto.codigo_barra_producto')
+        ->select('promocions.*', 'producto.foto')
+        ->where('promocions.fecha_inicio_oferta', '<=', $fechaActual)
+        ->where('promocions.fecha_fin_oferta', '>=', $fechaActual)
+        ->get();
+
+        return response()->json($promociones);
+
+    }
+
 }

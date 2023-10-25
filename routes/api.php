@@ -22,8 +22,6 @@ use App\Http\Controllers\DetalleCreditoController;
 use App\Http\Controllers\MunicipioController;
 use App\Http\Controllers\DepartamentoController;
 use App\Http\Controllers\ImpresionController;
-use App\Models\CreditoFiscal;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\VentasCFController;
@@ -39,6 +37,10 @@ use App\Http\Controllers\PromocionesController;
 use App\Http\Controllers\VentaDomicilioController;
 use Illuminate\Console\View\Components\Info;
 use App\Http\Controllers\AbonoController;
+use App\Http\Controllers\AvisoController;
+
+use App\Http\Controllers\ProveedorController;
+
 
 /* ----------------------------------------------*/
 /* ----------------------------------------------*/
@@ -57,6 +59,9 @@ Route::middleware(['auth:sanctum', 'permission:all'])->group(function () {
     Route::get('empleado/{empleado}', [EmpleadoController::class, 'show']);
     Route::put('empleado_update/{empleado}', [EmpleadoController::class, 'update']);
     Route::put('empleado_activo/{empleado}', [EmpleadoController::class, 'updateEstado']);
+
+
+
     //Rutas para cargos
     Route::resource('cargos', CargoController::class);
     //Ruta para paginacion
@@ -80,6 +85,7 @@ Route::middleware(['auth:sanctum', 'permission:all'])->group(function () {
     Route::post('abono_registrar',[AbonoController::class,'store']);
     Route::get('credito_proveedor/{credito}',[CreditoController::class,'show']);
     Route::post('lista_creditos_proveedores',[CreditoController::class,'getCreditos']);
+    Route::post('clientes/cambiar_estado/{id}', [ClienteController::class, 'desactivar_cliente']);
 });
 
 /* --------------------------------------------------*/
@@ -93,10 +99,6 @@ Route::middleware(["auth:sanctum", "permission:all|Ventas"])->group(function () 
     Route::get('ventasCF', [VentasCFController::class, 'index']);
     //Rutas para productos
     Route::resource('productos', ProductoController::class);
-    //Ruta para descargar imagen
-    Route::get("productos/{producto}/foto", function (Producto $producto) {
-        return response()->download(public_path(Storage::url($producto->foto)), $producto->nombre_producto);
-    });
     //Rutas para DetalleVenta
     Route::resource('detalle_ventas', DetalleVentaController::class);
     //Rutas para Venta
@@ -216,6 +218,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //Ruta para obtener el departamento segun el nombre
     Route::get('departamentos/buscar/{nombre_departamento}', [DepartamentoController::class, 'getDepartamentoPorNombre']);
     Route::get('pacientes', [JornadaLaboralDiariaController::class, 'index']);
+    Route::get('get_municipios', [MunicipioController::class, 'municipios_segun_departamento']);
 });
 
 
@@ -233,6 +236,8 @@ Route::middleware(["auth:sanctum", "permission:all"])->group(function () {
     Route::get("productos_mas_vendidos/", [InformeInventarioController::class, "obtenerProductosMasVendidosConIngresos"]);
     Route::get("filtro_ventas_totales/", [InformeVentasController::class, "obtenerVentasTotalesPorFecha"]);
     Route::get("/filtro_ventas_totales/{parametros}", [InformeVentasController::class, "obtenerVentasTotalesPorFecha"]);
+    Route::resource("avisos",AvisoController::class);
+    Route::put("modificar_estado_aviso/{aviso}",[AvisoController::class,"modificarEstadoAviso"]);
 });
 
 
@@ -242,6 +247,11 @@ Route::controller(HojaAsistenciaController::class)->group(function () {
 });
 Route::controller(PlanillaController::class)->group(function () {
     Route::post('planilla', 'store');
+    Route::get('planillas','index');
+    Route::get('filtroPlanillas','obtenerPlanillasOrdenadasPorFecha');
+    Route::get('listaFechaPlanilla',"obtenerListaFechasPlanillas");
+    Route::get('planilla/{id_planilla}','show');
+    Route::get("obtener_detalles_planilla/{id:int}","obtenerDetallesPlanilla");
 });
 //Para obtener los productos que vencen en los proximos 15 dias
 Route::get('productosXVenecer', [InformeProductosPorVencerController::class, 'index']);
@@ -254,11 +264,22 @@ Route::get('productoProm', [PromocionesController::class, 'getProductos']);
 //para crear una promocion
 Route::apiResource('promociones', PromocionesController::class);
 
-
+Route::apiResource('proveedor', ProveedorController::class);
+Route::put('proveedor/cambiar_estado/{proveedor}', [ProveedorController::class, 'cambiar_estado_proveedor']);
 
 /* ----------------------------------------------*/
 /* ----------------------------------------------*/
 /* ------------------NO AUTH---------------------*/
 /* ----------------------------------------------*/
 /* ----------------------------------------------*/
-Route::post("login", [LoginController::class, "authorization"]);
+ Route::post("login", [LoginController::class, "authorization"]);
+ //Ruta para descargar imagen
+ Route::get("productos/{producto}/foto", function (Producto $producto) {
+    return response()->download(public_path(Storage::url($producto->foto)), $producto->nombre_producto);
+});
+
+
+//Avisos para el blog
+Route::get("avisos_blog", [AvisoController::class, "avisosBlog"]);
+//Ofetas para el blog
+Route::get("ofertas_blog", [PromocionesController::class, "promocionesVigentes"]);

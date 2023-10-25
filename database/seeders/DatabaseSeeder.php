@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CreditoFiscalSeeder::class);
         $this->call(DetalleCreditoSeeder::class);
         $this->call(SexoSeeder::class);
+        $this->call(ProveedorSeeder::class);
 
         $this->call(EstadoFamiliarSeeder::class);
         $this->call(NacionalidadSeeder::class);
