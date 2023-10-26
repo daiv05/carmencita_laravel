@@ -8,6 +8,8 @@ use App\Models\Promocion;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 
 
 class PromocionesController extends Controller
@@ -81,4 +83,31 @@ class PromocionesController extends Controller
 
     }
 
+    //Lista todas las ofertas
+    public function ofertasList()
+    {
+        $promociones = DB::table('promocions')
+        ->join('producto', 'promocions.codigo_barra_producto', '=', 'producto.codigo_barra_producto')
+        ->select('promocions.*', 'producto.nombre_producto')
+        ->paginate(5);
+
+        return response()->json($promociones);
+    }
+
+    public function destroy(Request $request, Promocion $promocion){
+        try{
+            $resultado = $promocion->delete();
+            return response()->json([
+                "mensaje"=>"Se elimino la oferta de manera exitosa",
+                "respuesta"=>$resultado,
+            ],200);
+
+        }catch(ModelNotFoundException $e){
+            return response()->json([
+                "errores"=> "El registro que desea eliminar no existe",
+                "mensaje"=>"El registro no esta en la base de datos, o se encuentra desconectada",
+                "respuesta"=>$resultado,
+            ],404);
+        }
+    }
 }

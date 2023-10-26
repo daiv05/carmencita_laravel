@@ -275,5 +275,9 @@ Route::put('proveedor/cambiar_estado/{proveedor}', [ProveedorController::class, 
 
 //Avisos para el blog
 Route::get("avisos_blog", [AvisoController::class, "avisosBlog"]);
-//Ofetas para el blog
+//Ofetas para el blog vigentes
 Route::get("ofertas_blog", [PromocionesController::class, "promocionesVigentes"]);
+//Todas las ofertas
+Route::get("ofertasList", [PromocionesController::class, "ofertasList"]);
+//Eliminar una oferta
+Route::delete("ofertaDelete/{promocion}", [PromocionesController::class, "destroy"]);
