@@ -19,6 +19,8 @@ return new class extends Migration
             $table->date('fecha_fin_oferta');
             $table->float('precio_oferta');
             $table->string('nombre_oferta');
+            $table->integer('cantidad_producto');
+            $table->float('monto_rebaja')->nullable();
             $table->timestamps();
         });
     }
