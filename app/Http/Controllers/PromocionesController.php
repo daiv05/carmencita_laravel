@@ -37,7 +37,7 @@ class PromocionesController extends Controller
                 'status'=> false,
                 'message'=> $validator->errors()->all(),
                 'Hola' => 'hola',
-            ]);
+            ],400);
         }
 
         $promocion = new Promocion();
@@ -63,9 +63,9 @@ class PromocionesController extends Controller
 
         return response()->json([
             'status'=>true,
-            'message'=>$validator->errors()->all(),
+            'message'=>["Promoción registrada correctamente"],
             'promocion'=>$promocion
-        ]);
+        ],200);
     }
 
     //Obtener todas las promociones vigentes y retono de JSON
