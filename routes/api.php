@@ -37,6 +37,7 @@ use App\Http\Controllers\PromocionesController;
 use App\Http\Controllers\VentaDomicilioController;
 use Illuminate\Console\View\Components\Info;
 use App\Http\Controllers\AbonoController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\AvisoController;
 
 use App\Http\Controllers\ProveedorController;
@@ -85,6 +86,10 @@ Route::middleware(['auth:sanctum', 'permission:all'])->group(function () {
     Route::post('abono_registrar',[AbonoController::class,'store']);
     Route::get('credito_proveedor/{credito}',[CreditoController::class,'show']);
     Route::post('lista_creditos_proveedores',[CreditoController::class,'getCreditos']);
+    //Rutas para Usuarios
+    Route::resource('usuarios', UserController::class);
+    Route::post('usuarios/{user}', [UserController::class, 'update']);
+    //Route::post('usuarios/{user}', [UserController::class, 'destroy']);
     Route::post('clientes/cambiar_estado/{id}', [ClienteController::class, 'desactivar_cliente']);
 });
 
@@ -198,6 +203,7 @@ Route::middleware(["auth:sanctum", "permission:all|Inventario|Ventas"])->group(f
 /* ------------------------------------------------------------*/
 Route::middleware(["auth:sanctum", "permission:all|Recursos Humanos"])->group(function () {
     Route::get('empleado/{empleado}', [EmpleadoController::class, 'show']);
+    Route::get('asistencia/{id_empleado}', [AsistenciaController::class, 'getAsistenciasEmpleado']);
 });
 
 
@@ -242,7 +248,7 @@ Route::middleware(["auth:sanctum", "permission:all"])->group(function () {
 
 
 //Asistencia y Planillas
-Route::controller(HojaAsistenciaController::class)->group(function () {
+Route::controller(AsistenciaController::class)->group(function () {
     Route::post('hoja_asistencia', 'store');
 });
 Route::controller(PlanillaController::class)->group(function () {

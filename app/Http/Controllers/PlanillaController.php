@@ -106,8 +106,8 @@ class PlanillaController extends Controller
             $sueldoDiario = $salarioMensual / 30.00;
             $sueldoBase = $sueldoDiario * $diasLaborados;
 
-            $afp = $sueldoBase * 0.03;
-            $isss = $sueldoBase * 0.0725;
+            $afp = $sueldoBase * 0.0725;
+            $isss = $sueldoBase * 0.03;
             $totalAPagar = $sueldoBase - $afp - $isss;
 
             $detallePlanilla = DetallePlanilla::create([

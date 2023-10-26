@@ -341,16 +341,23 @@ class ProductoController extends Controller
     }
 
     // Paginación de productos
-    public function getPaginacionProductos($cantidad_productos)
+    public function getPaginacionProductos(Request $request,$cantidad_productos)
     {
         // Se obtienen todos los productos
-        $productos = Producto::paginate($cantidad_productos);
+        if($request->sort_by == 0 || $request->sort_by == '0'){
+            $productos = Producto::orderBy('cantidad_producto_disponible', 'asc')->paginate($cantidad_productos);
+        } else if($request->sort_by == 1 || $request->sort_by == '1'){
+            $productos = Producto::orderBy('cantidad_producto_disponible', 'desc')->paginate($cantidad_productos);
+        }else{
+            $productos = Producto::paginate($cantidad_productos);
+        }
+        
         // Se valida que la lista de productos no este vacia
         if (!($productos->isEmpty())) {
             // Se retorna la lista de productos en formato JSON
             return response()->json([
                 'respuesta' => true,
-                'productos' => $productos
+                'productos' => $productos,
             ], 200);
         }
         // Si no se encuentra el producto, se retorna un mensaje de error
