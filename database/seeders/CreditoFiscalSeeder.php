@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\CreditoFiscal;
+use App\Models\DetalleCredito;
+use App\Models\Producto;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -76,7 +79,26 @@ class CreditoFiscalSeeder extends Seeder
         ];
 
         foreach ($creditos as $credito) {
-            \App\Models\CreditoFiscal::create($credito);
+            CreditoFiscal::create($credito);
         }
+
+        $productos = Producto::all();
+        $creditosFiscales = CreditoFiscal::factory()->count(20)->create();
+        foreach($creditosFiscales as $venta){
+            $totalVenta = 0;
+            $detallesVenta = DetalleCredito::factory()->count(3)->for($venta)->for($productos[rand(1,7)])->create();
+            foreach($detallesVenta as $detalle){
+                $producto = Producto::where('codigo_barra_producto',$detalle->codigo_barra_producto)->first();
+                $detalle->subtotal_detalle_credito= $detalle->cantidad_producto_credito* $producto['precio_unitario'];
+                $detalle->update();
+                $totalVenta += $detalle->subtotal_detalle_credito;
+            }
+
+            $venta->total_credito = $totalVenta;
+            $venta->total_iva_credito = $totalVenta - ($totalVenta/1.13);
+            $venta->update();
+
+        }
+
     }
 }

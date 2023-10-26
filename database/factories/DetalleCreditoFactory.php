@@ -17,7 +17,8 @@ class DetalleCreditoFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'cantidad_producto_credito'=>rand(1,12),
+            'subtotal_detalle_credito'=>0
         ];
     }
 }

@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\DetalleVenta;
+use App\Models\Producto;
+use App\Models\Venta;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -170,7 +173,26 @@ class VentaSeeder extends Seeder
         ];
 
         foreach ($ventas as $venta) {
-            \App\Models\Venta::create($venta);
+            Venta::create($venta);
         }
+
+        $productos = Producto::all();
+        $ventas = Venta::factory()->count(20)->create();
+        foreach($ventas as $venta){
+            $totalVenta = 0;
+            $detallesVenta = DetalleVenta::factory()->count(3)->for($venta)->for($productos[rand(1,7)])->create();
+            foreach($detallesVenta as $detalle){
+                $producto = Producto::where('codigo_barra_producto',$detalle->codigo_barra_producto)->first();
+                $detalle->subtotal_detalle_venta = $detalle->cantidad_producto * $producto['precio_unitario'];
+                $detalle->update();
+                $totalVenta += $detalle->subtotal_detalle_venta;
+            }
+
+            $venta->total_venta = $totalVenta;
+            $venta->total_iva = $totalVenta - ($totalVenta/1.13);
+            $venta->update();
+
+        }
+
     }
 }

@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\DetalleVenta>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Proveedor>
  */
-class DetalleVentaFactory extends Factory
+class ProveedorFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,10 +17,7 @@ class DetalleVentaFactory extends Factory
     public function definition(): array
     {
         return [
-            //'id_venta',
-            //'codigo_barra_producto',
-            'cantidad_producto'=>rand(1,12),
-            'subtotal_detalle_venta'=>0,
+            //
         ];
     }
 }

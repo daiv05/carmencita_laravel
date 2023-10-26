@@ -71,7 +71,7 @@ class LoteController extends Controller
         $lote->save();
         
         return response()->json([
-                "status"=>false,
+                "status"=>true,
                 "mensaje"=>"Se guardo el lote con éxito",
                 "lote"=> Lote::findorFail($lote->id_lote)->load("producto"),
             ]);

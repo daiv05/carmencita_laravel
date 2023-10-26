@@ -35,6 +35,8 @@ use App\Http\Controllers\InformeProductosPorVencerController;
 use App\Http\Controllers\CreditoController;
 use App\Http\Controllers\PromocionesController;
 use App\Http\Controllers\VentaDomicilioController;
+use Illuminate\Console\View\Components\Info;
+use App\Http\Controllers\AbonoController;
 use App\Http\Controllers\AvisoController;
 
 use App\Http\Controllers\ProveedorController;
@@ -80,6 +82,9 @@ Route::middleware(['auth:sanctum', 'permission:all'])->group(function () {
     Route::resource('cargos', CargoController::class);
     //Rutas para Cliente
     Route::resource('clientes', ClienteController::class);
+    Route::post('abono_registrar',[AbonoController::class,'store']);
+    Route::get('credito_proveedor/{credito}',[CreditoController::class,'show']);
+    Route::post('lista_creditos_proveedores',[CreditoController::class,'getCreditos']);
     Route::post('clientes/cambiar_estado/{id}', [ClienteController::class, 'desactivar_cliente']);
 });
 
@@ -138,6 +143,7 @@ Route::middleware(["auth:sanctum", "permission:all|Ventas"])->group(function () 
         Route::get('/hoja_de_ruta/{id}', 'show');
         Route::post('/hoja_de_ruta', 'store');
         Route::post('/hoja_de_ruta/marcar_entregada/{id}', 'marcarEntregada');
+        Route::put('hoja_de_ruta/{hojaDeRuta}','update');
     });
     Route::get('/hoja_de_ruta_paginadas', [HojaDeRutaController::class, 'obtenerHojasDeRutasPaginadasFiltro']);
     Route::post('/facturas_domicilio', [VentaController::class, 'getVentasDomicilio']);
