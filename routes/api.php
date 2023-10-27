@@ -232,6 +232,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 /* ---------------------------------------------------------*/
 /* ---------------------------------------------------------*/
 Route::middleware(["auth:sanctum", "permission:adm-gerencia"])->group(function () {
+    
     Route::resource("informe_inventario_valorado", InformeInventarioController::class);
     Route::get("datos_inventario_valorado", [InformeInventarioController::class, "obtenerDatosGraficoInventarioValorado"]);
     Route::get("filtro_datos_producto_valorado/{valorMinimo?}/{valorMaximo?}", [InformeInventarioController::class, "obtenerDatosFiltradosProductoPorPrecios"]);
@@ -251,11 +252,6 @@ Route::controller(AsistenciaController::class)->group(function () {
     Route::post('hoja_asistencia', 'store');
 });
 
-//Para obtene los productos para la promocion
-Route::get('productoProm', [PromocionesController::class, 'getProductos']);
-//para crear una promocion
-Route::apiResource('promociones', PromocionesController::class);
-
 /* ----------------------------------------------*/
 /* ----------------------------------------------*/
 /* ------------------NO AUTH---------------------*/
@@ -266,17 +262,27 @@ Route::apiResource('promociones', PromocionesController::class);
  Route::get("productos/{producto}/foto", function (Producto $producto) {
     return response()->download(public_path(Storage::url($producto->foto)), $producto->nombre_producto);
 });
-
-
 //Avisos para el blog
 Route::get("avisos_blog", [AvisoController::class, "avisosBlog"]);
 //Ofetas para el blog vigentes
 Route::get("ofertas_blog", [PromocionesController::class, "promocionesVigentes"]);
-//Todas las ofertas
-Route::get("ofertasList", [PromocionesController::class, "ofertasList"]);
-//Eliminar una oferta
-Route::delete("ofertaDelete/{promocion}", [PromocionesController::class, "destroy"]);
-//Actualizar una oferta
-Route::put("ofertaUpdate/{promocion}", [PromocionesController::class, "update"]);
-//Para obetner una oferta especifica
-Route::get("oferta/{promocion}", [PromocionesController::class, "show"]);
+
+/* ----------------------------------------------*/
+/* ----------------------------------------------*/
+/* ------------------Rutas a las que se puede acceder con el permiso de marketing---------------------*/
+/* ----------------------------------------------*/
+/* ----------------------------------------------*/
+Route::middleware(["auth:sanctum", "permission:adm-marketing"])->group( function(){
+    //Todas las ofertas
+    Route::get("ofertasList", [PromocionesController::class, "ofertasList"]);
+    //Eliminar una oferta
+    Route::delete("ofertaDelete/{promocion}", [PromocionesController::class, "destroy"]);
+    //Actualizar una oferta
+    Route::put("ofertaUpdate/{promocion}", [PromocionesController::class, "update"]);
+    //Para obetner una oferta especifica
+    Route::get("oferta/{promocion}", [PromocionesController::class, "show"]);
+    //Para obtene los productos para la promocion
+    Route::get('productoProm', [PromocionesController::class, 'getProductos']);
+    //para crear una promocion
+    Route::apiResource('promociones', PromocionesController::class);
+    });
