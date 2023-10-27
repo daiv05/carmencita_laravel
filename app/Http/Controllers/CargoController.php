@@ -31,6 +31,7 @@ class CargoController extends Controller
                 return  response()->json([
                     'respuesta' => true,
                     'mensaje' => 'Cargo creado correctamente',
+                    'cargo'=>$cargo,
                 ]);
             }
             else{
