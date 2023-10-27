@@ -293,3 +293,7 @@ Route::get("ofertas_blog", [PromocionesController::class, "promocionesVigentes"]
 Route::get("ofertasList", [PromocionesController::class, "ofertasList"]);
 //Eliminar una oferta
 Route::delete("ofertaDelete/{promocion}", [PromocionesController::class, "destroy"]);
+//Actualizar una oferta
+Route::put("ofertaUpdate/{promocion}", [PromocionesController::class, "update"]);
+//Para obetner una oferta especifica
+Route::get("oferta/{promocion}", [PromocionesController::class, "show"]);
