@@ -160,7 +160,7 @@ class PromocionesController extends Controller
             
             return response()->json([
                 'status' => true,
-                'message' => $validator->errors()->all(),
+                'message' => ["Oferta actualizada correctamente"],
                 'promocion' => $promocion
             ]);
         } catch (\Exception $e) {
