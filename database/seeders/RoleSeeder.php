@@ -15,45 +15,58 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        $permisosGerente = ["all"];
-        $permisosSubGerente = ["Ventas","Inventario","Recursos Humanos"];
-        $permisosCajero = ["Ventas"];
-        $permisosEmpleado = ["Asistencia"];
+        $listaPermisos = ["adm-ventas","cajero","adm-rh","adm-cred-prov","colaborador","adm-gerencia","adm-marketing"];
+        $permisosGerente = ["adm-ventas","cajero","adm-rh","adm-cred-prov","adm-gerencia","colaborador","adm-marketing"];
+        $permisosSubGerente = ["adm-ventas","cajero","colaborador","adm-marketing"];
+        $permisosColaborador = ["colaborador"];
 
+        $listaRoles = ["Gerente","Sub-Gerente","Colaborador"];
+
+        /*$roleGerente =Role::create(["name"=>"Gerente"]);
         $roleSubGerente = Role::create(["name"=>"Sub-Gerente"]);
-        $roleGerente =Role::create(["name"=>"Gerente"]);
-        $roleCaja = Role::create(["name"=>"Caja"]);
-        $roleEmpleado = Role::create(["name"=>"Empleado"]);
+        $roleColaborador = Role::create(["name"=>"Colaborador"]);*/
+        foreach($listaRoles as $rol){
+            Role::create(["name"=>$rol]);
+        }
         /*Creación de permisos*/
         $permissionVentas = Permission::create(["name"=>"Ventas"]);
-        $permissionRH = Permission::create(["name"=>"Recursos Humanos"]);
-        $permissionInventario = Permission::create(["name"=>"Inventario"]);
-        $permissionSeguridad = Permission::create(["name"=>"Seguridad"]);
-        $permissionMarketing = Permission::create(["name"=>"Marketing"]);
-        $permissionAll = Permission::create(["name"=>"all"]);
-        $permissionAsistencia = Permission::create(["name"=>"Asistencia"]);
+        /*Creación de permisos*/
+        foreach($listaPermisos as $permiso){
+            Permission::create(["name"=>$permiso]);
+        }
 
         foreach ($permisosGerente as $permiso){
-            $roleGerente->givePermissionTo($permiso);
+            Role::findByName("Gerente")->givePermissionTo($permiso);
         }
-        foreach($permisosCajero  as $permiso){
-            $roleCaja->givePermissionTo($permiso);
+        foreach($permisosSubGerente  as $permiso){
+            Role::findByName("Sub-Gerente")->givePermissionTo($permiso);
         }
+        foreach($permisosColaborador as $permiso){
+            Role::findByName("Colaborador")->givePermissionTo($permiso);
+        }
+
+        $user = User::create([
+            "id_empleado"=>1,
+            "name"=>"user",
+            "email"=>"user@gmail.com",
+            "password"=>bcrypt("password")
+        ]);
+        $user->assignRole("Gerente");
+
+        $user = User::create([
+            "id_empleado"=>2,
+            "name"=>"user",
+            "email"=>"user1@gmail.com",
+            "password"=>bcrypt("password")
+        ]);
+        $user->assignRole("Sub-Gerente");
 
         $user = User::create([
             "id_empleado"=>3,
-            "name"=>"juanillo",
-            "email"=>"juanacosta_555@gmail.com",
+            "name"=>"user",
+            "email"=>"user2@gmail.com",
             "password"=>bcrypt("password")
         ]);
-
-        $user->assignRole("Gerente");
-        $user = User::create([
-            "id_empleado"=>4,
-            "name"=>"juanillo100",
-            "email"=>"juanacosta4200@gmail.com",
-            "password"=>bcrypt("password")
-        ]);
-        $user->assignRole("Caja");
+        $user->assignRole("Colaborador");
     }
 }
