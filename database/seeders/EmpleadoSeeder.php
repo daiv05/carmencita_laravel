@@ -39,7 +39,7 @@ class EmpleadoSeeder extends Seeder
                 'id_nacionalidad' => '1',
                 'id_estado_familiar' => '1',
                 'id_sexo' => '1',
-                'id_cargo' => '2',
+                'id_cargo' => '4',
                 'dui_empleado' => '059195855',
                 'fecha_nacimiento' => '1998-09-22',
                 'telefono' => '77787841',
@@ -83,20 +83,21 @@ class EmpleadoSeeder extends Seeder
 
         ];
         $usuarios = [
+            [],[],[],
             [
                 'email' => 'usuario1@gmail.com',
                 'password' => 'clave0001',
             ],
             [
 
-                'email' => 'usuario2@gmail.com',
-                'password' => 'clave0001',
+                'email' => 'usuario4@gmail.com',
+                'password' => 'password',
             ]
         ];
-        $i = 0;
+        $i = 4;
         foreach ($empleados as $empleado) {
             $miEmpleado = Empleado::create($empleado);
-            /*if ($i < 2){
+            if ($i == 4){
                 $user = User::create([
                     'id_empleado' => $miEmpleado->id_empleado,
                     'name' => $miEmpleado->primer_nombre,
@@ -104,7 +105,7 @@ class EmpleadoSeeder extends Seeder
                     'password' => \Hash::make($usuarios[$i]['password'])
                 ]);
             }
-            $i++;*/
+            $i++;
         }
     }
 }
