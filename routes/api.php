@@ -240,7 +240,6 @@ Route::middleware(["auth:sanctum", "permission:adm-gerencia"])->group(function (
     Route::get("productos_mas_vendidos/", [InformeInventarioController::class, "obtenerProductosMasVendidosConIngresos"]);
     Route::get("filtro_ventas_totales/", [InformeVentasController::class, "obtenerVentasTotalesPorFecha"]);
     Route::get("/filtro_ventas_totales/{parametros}", [InformeVentasController::class, "obtenerVentasTotalesPorFecha"]);
-    Route::resource("avisos",AvisoController::class);
     Route::put("modificar_estado_aviso/{aviso}",[AvisoController::class,"modificarEstadoAviso"]);
     //Para obtener los productos que vencen en los proximos 15 dias
     Route::get('productosXVenecer', [InformeProductosPorVencerController::class, 'index']);
@@ -285,4 +284,6 @@ Route::middleware(["auth:sanctum", "permission:adm-marketing"])->group( function
     Route::get('productoProm', [PromocionesController::class, 'getProductos']);
     //para crear una promocion
     Route::apiResource('promociones', PromocionesController::class);
+    //para la gestion de avisos
+    Route::resource("avisos",AvisoController::class);
     });
