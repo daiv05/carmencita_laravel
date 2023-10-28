@@ -74,8 +74,8 @@ class AvisoController extends  Controller
             );
         }
         $datosFormulario = $validator->validated();
-
-        $aviso->fecha_finalizacion = date("Y-m-d", strtotime($datosFormulario["fecha_finalizacion"]));
+        //$fecha_finalizacion = Carbon::createFromFormat("D-M",$datosFormulario["fecha_finalizacion"])->format("d-m-y");
+        $aviso->fecha_finalizacion = $datosFormulario["fecha_finalizacion"];
         $aviso->estado_aviso = $datosFormulario["estado_de_aviso"];
         $aviso->titulo_aviso = $datosFormulario["titulo_aviso"];
         $aviso->cuerpo_aviso = $datosFormulario["cuerpo_aviso"];
@@ -84,7 +84,7 @@ class AvisoController extends  Controller
         return response()->json(
             [
                 "message" => "Se modifico el aviso con exito",
-                "aviso" => $aviso
+                "aviso" => $aviso,
             ]
         );
     }
