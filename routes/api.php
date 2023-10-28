@@ -75,7 +75,6 @@ Route::middleware(['auth:sanctum', 'permission:adm-rh'])->group(function () {
         Route::get('planilla/{id_planilla}','show');
         Route::get("obtener_detalles_planilla/{id:int}","obtenerDetallesPlanilla");
     });
-    Route::get('asistencia', [AsistenciaController::class, 'getAsistenciasEmpleado']);
     //Rutas para Municipio
     Route::resource('municipios', MunicipioController::class);
     //Rutas para Departamento
@@ -222,6 +221,7 @@ Route::middleware(["auth:sanctum", "permission:cajero"])->group(function () {
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', [LoginController::class, 'logout']);
     Route::post('asistencia', [AsistenciaController::class, 'store']);
+    Route::get('asistencia', [AsistenciaController::class, 'getAsistenciasEmpleado']);
 });
 
 
