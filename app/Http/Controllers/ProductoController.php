@@ -276,11 +276,15 @@ class ProductoController extends Controller
     {
         // Buscar el producto por nombre
         $producto = Producto::where('nombre_producto', $nombre_producto)->get();
+        // $producto[0]->ofertas_vigentes = $producto[0]->promocions()
+        //     ->where('fecha_inicio_oferta', '<=', now())
+        //     ->where('fecha_fin_oferta', '>=', now())
+        //     ->get();
         // Se valida que el producto no este vacio
-        if (!($producto->isEmpty())) {
+        if ($producto) {
             return response()->json([
                 'respuesta' => true,
-                'producto' => $producto->load('precioUnidadDeMedida', 'promocion')
+                'producto' => $producto->load('precioUnidadDeMedida'),
             ], 200);
         } else {
             return response()->json([
