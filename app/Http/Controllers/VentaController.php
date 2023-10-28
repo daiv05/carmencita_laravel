@@ -232,6 +232,7 @@ class VentaController extends Controller
 
         $venta = Venta::create($request->venta);
         $venta->domicilio = $request->domicilio;
+        $venta->estado_venta = !$request->domicilio;
         $venta->save();
         if (isset($venta)) {
             $detalle_venta = new DetalleVentaController();

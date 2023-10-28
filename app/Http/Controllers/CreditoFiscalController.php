@@ -230,6 +230,7 @@ class CreditoFiscalController extends Controller
 
         $credito = CreditoFiscal::create($request->credito);
         $credito->domicilio = $request->domicilio;
+        $credito->estado_credito = !$request->domicilio;
         $credito->save();
         if (isset($credito)) {
             $detalle_credito = new DetalleCreditoController();
