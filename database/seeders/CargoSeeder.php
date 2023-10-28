@@ -31,6 +31,12 @@ class CargoSeeder extends Seeder
                 "salario_cargo" => 365.0,
                 "descripcion_cargo" => "Atender a los clientes" 
             ],
+            [
+                "id_jornada_laboral_diaria" => 1, 
+                "nombre_cargo" => "Repartidor",
+                "salario_cargo" => 365.0,
+                "descripcion_cargo" => "Repartir pedidos" 
+            ],
         ];
 
         foreach ($cargos as $cargo) {
