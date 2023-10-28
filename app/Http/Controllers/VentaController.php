@@ -237,12 +237,19 @@ class VentaController extends Controller
             $detalle_venta = new DetalleVentaController();
             $validar = $detalle_venta->register_detalle_venta($request, $venta->id_venta);
             if ($validar->getStatusCode() == 201) {
-                $impresion_service = new ImpresionController();
-                $estado_impresion = $impresion_service->generate_pdf_consumidor_final($venta);
+                if ($venta->domicilio) {
+                    $impresion_service = new ImpresionController();
+                    $impresion_service->generate_pdf_consumidor_final($venta);
+                    return response()->json([
+                        'respuesta' => true,
+                        'mensaje' => 'Venta creada correctamente',
+                        'datos' => $venta,
+                    ], 201);
+                }
                 return response()->json([
                     'respuesta' => true,
                     'mensaje' => 'Venta creada correctamente',
-                    'datos' => $estado_impresion,
+                    'datos' => $venta,
                 ], 201);
             } else {
                 return $validar;
