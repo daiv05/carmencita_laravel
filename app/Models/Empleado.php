@@ -48,4 +48,13 @@ class Empleado extends Model
     public function asistencia(){
         return $this->hasMany(Asistencia::class,'id_empleado');
     }
+
+    public function getRol(){
+        $cargo = $this->cargo()->first();
+        if($cargo->nombre_cargo == "Gerente" || $cargo->nombre_cargo == "Sub-Gerente"){
+            return $cargo->nombre_cargo;
+        } else {
+            return "Colaborador";
+        }
+    }
 }

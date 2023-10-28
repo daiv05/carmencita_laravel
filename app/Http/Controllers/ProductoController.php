@@ -280,7 +280,7 @@ class ProductoController extends Controller
         if (!($producto->isEmpty())) {
             return response()->json([
                 'respuesta' => true,
-                'producto' => $producto->load('precioUnidadDeMedida')
+                'producto' => $producto->load('precioUnidadDeMedida', 'promocion')
             ], 200);
         } else {
             return response()->json([

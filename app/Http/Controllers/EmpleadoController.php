@@ -89,8 +89,7 @@ class EmpleadoController extends Controller
             return response()->json([
                 'status'=> false,
                 'message'=> $validator->errors()->all(),
-                'Hola' => 'hola',
-            ]);
+            ],400);
         }
 
         /*$empleado = new Empleado($request->input());
@@ -131,13 +130,17 @@ class EmpleadoController extends Controller
             'password' => Hash::make($request->password)
         ]);
 
+        if(isset($user)){
+            $user->assignRole($miEmpleado->getRol());
+        }
+
         //$token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
             'status'=>true,
             'message'=>["Empleado registrado correctamente",],
             'empleado'=>$empleado,
             'user'=>$user->email
-        ]);
+        ],200);
     }
 
     /**
