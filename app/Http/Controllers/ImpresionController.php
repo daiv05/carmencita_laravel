@@ -34,7 +34,9 @@ class ImpresionController extends Controller
                 break;
             }
             if ($cantidad < $precio_cercano->cantidad_producto) {
-                $detalle->producto->precio_unitario = $precio_cercano->precio_unidad_medida_producto;
+                $detalle->producto->precio_unitario = $detalle->producto->precio_unitario;
+                error_log('unitario actual');
+                error_log($detalle->producto->precio_unitario);
                 break;
             } else {
                 foreach ($precios as $precio_ordenado) {
@@ -72,7 +74,7 @@ class ImpresionController extends Controller
             // Obtener el primero
             $precio_cercano = $precios->first();
             if ($cantidad < $precio_cercano->cantidad_producto) {
-                $detalle->producto->precio_unitario = $precio_cercano->precio_unidad_medida_producto;
+                $detalle->producto->precio_unitario = $detalle->producto->precio_unitario;
                 break;
             } else {
                 foreach ($precios as $precio_ordenado) {

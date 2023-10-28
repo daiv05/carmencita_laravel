@@ -24,6 +24,7 @@ class DetalleCredito extends Model
         'id_creditofiscal',
         'cantidad_producto_credito',
         'subtotal_detalle_credito',
+        'descuentos'
     ];
 
     protected $attributes = [

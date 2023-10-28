@@ -61,8 +61,14 @@
                         <tr>
                             <td class="text-left text-sm font-mono td-num">{{ $detalles->cantidad_producto_credito }}
                             </td>
-                            <td class="text-left text-sm font-mono td-descripcion">
-                                {{ $detalles->producto->nombre_producto }}</td>
+                            @if ($detalles->descuentos == 0)
+                                <td class="text-left text-sm font-mono td-descripcion">
+                                    {{ $detalles->producto->nombre_producto }}</td>
+                            @else
+                                <td class="text-left text-sm font-mono td-descripcion">
+                                    {{ $detalles->producto->nombre_producto . '          (-$' . number_format($detalles->descuentos, 2) . ' desc)' }}
+                                </td>
+                            @endif
                             <td class="text-left text-sm font-mono td-precio">$
                                 {{ number_format($detalles->producto->precio_unitario, 4) }}</td>
                             <td class="text-left text-sm font-mono td-precio"></td>

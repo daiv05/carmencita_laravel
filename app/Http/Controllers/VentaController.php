@@ -237,7 +237,7 @@ class VentaController extends Controller
             $detalle_venta = new DetalleVentaController();
             $validar = $detalle_venta->register_detalle_venta($request, $venta->id_venta);
             if ($validar->getStatusCode() == 201) {
-                if ($venta->domicilio) {
+                if (!$venta->domicilio) {
                     $impresion_service = new ImpresionController();
                     $impresion_service->generate_pdf_consumidor_final($venta);
                     return response()->json([
