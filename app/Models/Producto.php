@@ -31,6 +31,17 @@ class Producto extends Model
         'foto'
     ];
 
+    protected $appends = [
+        'ofertas_vigentes'
+    ];
+
+    public function getOfertasVigentesAttribute()
+    {
+        $fechaActual = new DateTime();
+        $ofertas = $this->promocions()->where('fecha_inicio_oferta', '<=', $fechaActual)->where('fecha_fin_oferta', '>=', $fechaActual)->get();
+        return $ofertas;
+    }
+
 
     public function detalleCredito()
     {
@@ -150,7 +161,7 @@ class Producto extends Model
             ->paginate(10);
      }
 
-     public function promocion(){
+     public function promocions(){
         return $this->hasMany(Promocion::class, 'codigo_barra_producto');
      }
     }

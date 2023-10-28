@@ -36,6 +36,7 @@ class DetalleVentaController extends Controller
             'codigo_barra_producto' => 'required|string|max:15',
             'cantidad_producto' => 'required|integer',
             'subtotal_detalle_venta' => 'required|decimal:0,2',
+            'descuentos' => 'nullable|decimal:0,2',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -201,6 +202,7 @@ class DetalleVentaController extends Controller
             'codigo_barra_producto' => 'required|string|max:15',
             'cantidad_producto' => 'required|integer',
             'subtotal_detalle_venta' => 'required|decimal:0,2',
+            'descuentos' => 'nullable|decimal:0,2',
         ];
 
         for ($i = 0; $i < count($request->detalles); $i++) {
@@ -246,6 +248,7 @@ class DetalleVentaController extends Controller
                 'codigo_barra_producto' => $request->detalles[$i]['codigo_barra_producto'],
                 'cantidad_producto' => $request->detalles[$i]['cantidad_producto'],
                 'subtotal_detalle_venta' => $request->detalles[$i]['subtotal_detalle_venta'],
+                'descuentos' => $request->detalles[$i]['descuentos'],
             ]);
             $detalleVenta->save();
 

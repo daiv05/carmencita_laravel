@@ -125,7 +125,8 @@ class DetalleCreditoController extends Controller
             'codigo_barra_producto' => 'string|max:13',
             'id_creditofiscal' => 'integer',
             'cantidad_producto_credito' => 'integer',
-            'subtotal_detalle_credito' => 'decimal:0,2'
+            'subtotal_detalle_credito' => 'decimal:0,2',
+            'descuentos' => 'decimal:0,2',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -185,7 +186,8 @@ class DetalleCreditoController extends Controller
             'codigo_barra_producto' => 'required|string|max:13',
             'id_creditofiscal' => 'required|integer',
             'cantidad_producto_credito' => 'required|integer',
-            'subtotal_detalle_credito' => 'required|decimal:0,2'
+            'subtotal_detalle_credito' => 'required|decimal:0,2',
+            'descuentos' => 'decimal:0,2',
         ];
 
         for ($i = 0; $i < count($request->detalles); $i++) {
@@ -231,6 +233,7 @@ class DetalleCreditoController extends Controller
                 'codigo_barra_producto' => $request->detalles[$i]['codigo_barra_producto'],
                 'cantidad_producto_credito' => $request->detalles[$i]['cantidad_producto_credito'],
                 'subtotal_detalle_credito' => $request->detalles[$i]['subtotal_detalle_credito'],
+                'descuentos' => $request->detalles[$i]['descuentos'],
             ]);
             $detalle->save();
 
