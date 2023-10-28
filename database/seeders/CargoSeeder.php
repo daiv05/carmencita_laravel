@@ -15,13 +15,13 @@ class CargoSeeder extends Seeder
         $cargos = [
             [
                 "id_jornada_laboral_diaria" => 1, 
-                "nombre_cargo" => "Cajero",
-                "salario_cargo" => 400.0,
-                "descripcion_cargo" => "Realizar cobros en el local",
+                "nombre_cargo" => "Gerente",
+                "salario_cargo" => 700.00,
+                "descripcion_cargo" => "Administrar y gestionar el local",
             ],
             [
                 "id_jornada_laboral_diaria" => 1, 
-                "nombre_cargo" => "Repartidor",
+                "nombre_cargo" => "Sub-Gerente",
                 "salario_cargo" => 400.0,
                 "descripcion_cargo" => "Repartir pedidos" 
             ],

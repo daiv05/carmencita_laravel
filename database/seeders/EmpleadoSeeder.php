@@ -96,7 +96,7 @@ class EmpleadoSeeder extends Seeder
         $i = 0;
         foreach ($empleados as $empleado) {
             $miEmpleado = Empleado::create($empleado);
-            if ($i < 2){
+            /*if ($i < 2){
                 $user = User::create([
                     'id_empleado' => $miEmpleado->id_empleado,
                     'name' => $miEmpleado->primer_nombre,
@@ -104,8 +104,7 @@ class EmpleadoSeeder extends Seeder
                     'password' => \Hash::make($usuarios[$i]['password'])
                 ]);
             }
-            $i++;
-
+            $i++;*/
         }
     }
 }

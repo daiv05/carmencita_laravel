@@ -155,12 +155,13 @@ class PromocionesController extends Controller
             $promocion->fecha_fin_oferta = $request->fecha_fin_oferta;
             $promocion->precio_oferta = $request->precio_oferta;
             $promocion->nombre_oferta = $request->nombre_oferta;
-            
+            $promocion->cantidad_producto = $request->cantidad_producto;
+            $promocion->monto_rebaja = $request->monto_rebaja;
             $promocion->update();
             
             return response()->json([
                 'status' => true,
-                'message' => $validator->errors()->all(),
+                'message' => ["Oferta actualizada correctamente"],
                 'promocion' => $promocion
             ]);
         } catch (\Exception $e) {

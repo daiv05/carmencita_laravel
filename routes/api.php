@@ -50,7 +50,7 @@ use App\Http\Controllers\ProveedorController;
 /* ----------------------------------------------*/
 /* ----------------------------------------------*/
 
-Route::middleware(['auth:sanctum', 'permission:all'])->group(function () {
+Route::middleware(['auth:sanctum', 'permission:adm-rh'])->group(function () {
     Route::get("empleados", [EmpleadoController::class, 'listaEmpleados']);
     Route::get('pacientes', [JornadaLaboralDiariaController::class, 'index']);
     Route::get('sexos', [SexoController::class, 'index']);
@@ -60,39 +60,71 @@ Route::middleware(['auth:sanctum', 'permission:all'])->group(function () {
     Route::get('empleado/{empleado}', [EmpleadoController::class, 'show']);
     Route::put('empleado_update/{empleado}', [EmpleadoController::class, 'update']);
     Route::put('empleado_activo/{empleado}', [EmpleadoController::class, 'updateEstado']);
-
-
-
-    //Rutas para cargos
-    Route::resource('cargos', CargoController::class);
-    //Ruta para paginacion
-    Route::get('productos/paginacion/{cantidad_productos}', [ProductoController::class, 'getPaginacionProductos']);
-    //Ruta para actualizar estado de producto
-    Route::put('productos/updateEstado/{producto}', [ProductoController::class, 'updateEstado']);
-    //Rutas para unidades de medida
-    Route::resource('unidades_de_medida', UnidadDeMedidaController::class);
-    //Rutas para precios de unidades de medida
-    Route::resource('precios_unidades_de_medida', PrecioUnidadDeMedidaController::class);
-    Route::post('precios_lista_unidades_de_medida', [PrecioUnidadDeMedidaController::class, "storeList"]);
-    Route::get('precios_lista_unidades_de_medida');
-    Route::get('precio_lista_unidades/{codigo_de_barra}', [PrecioUnidadDeMedidaController::class, "obtenerListaPreciosPorCodigoDeBarra"]);
-    Route::put('precio_lista_unidades/{codigo_de_barra}', [PrecioUnidadDeMedidaController::class, "updateList"]);
-    //Rutas para jornadas laborales diarias
-    Route::resource('jornadas_laborales_diarias', JornadaLaboralDiariaController::class);
-    //Rutas para cargos
-    Route::resource('cargos', CargoController::class);
-    //Rutas para Cliente
-    Route::resource('clientes', ClienteController::class);
-    Route::post('abono_registrar',[AbonoController::class,'store']);
-    Route::get('credito_proveedor/{credito}',[CreditoController::class,'show']);
-    Route::post('lista_creditos_proveedores',[CreditoController::class,'getCreditos']);
     //Rutas para Usuarios
     Route::resource('usuarios', UserController::class);
     Route::post('usuarios/{user}', [UserController::class, 'update']);
-    //Route::post('usuarios/{user}', [UserController::class, 'destroy']);
-    Route::post('clientes/cambiar_estado/{id}', [ClienteController::class, 'desactivar_cliente']);
+    //Rutas para cargos
+    Route::resource('cargos', CargoController::class);
+    Route::get('empleado/{empleado}', [EmpleadoController::class, 'show']);
+    Route::get('asistencia/{id_empleado}', [AsistenciaController::class, 'getAsistenciasEmpleado']);
+    Route::controller(PlanillaController::class)->group(function () {
+        Route::post('planilla', 'store');
+        Route::get('planillas','index');
+        Route::get('filtroPlanillas','obtenerPlanillasOrdenadasPorFecha');
+        Route::get('listaFechaPlanilla',"obtenerListaFechasPlanillas");
+        Route::get('planilla/{id_planilla}','show');
+        Route::get("obtener_detalles_planilla/{id:int}","obtenerDetallesPlanilla");
+    });
+    Route::get('asistencia', [AsistenciaController::class, 'getAsistenciasEmpleado']);
+    //Rutas para Municipio
+    Route::resource('municipios', MunicipioController::class);
+    //Rutas para Departamento
+    Route::resource('departamentos', DepartamentoController::class);
+    //Ruta para obtener el departamento segun el nombre
+    Route::get('departamentos/buscar/{nombre_departamento}', [DepartamentoController::class, 'getDepartamentoPorNombre']);
+    Route::get('pacientes', [JornadaLaboralDiariaController::class, 'index']);
+    Route::get('get_municipios', [MunicipioController::class, 'municipios_segun_departamento']);
 });
 
+/* --------------------------------------------------*/
+/* --------------------------------------------------*/
+/* ------------------VENTAS E INVENTARIO---------------------*/
+/* Rutas par las funciones de ventas e inventario*/
+/* --------------------------------------------------*/
+/* --------------------------------------------------*/
+Route::middleware(["auth:sanctum","permission:adm-ventas"])->group(function(){
+ //Ruta para paginacion
+ Route::get('productos/paginacion/{cantidad_productos}', [ProductoController::class, 'getPaginacionProductos']);
+ //Ruta para actualizar estado de producto
+ Route::put('productos/updateEstado/{producto}', [ProductoController::class, 'updateEstado']);
+ //Rutas para unidades de medida
+ Route::resource('unidades_de_medida', UnidadDeMedidaController::class);
+ //Rutas para precios de unidades de medida
+ Route::resource('precios_unidades_de_medida', PrecioUnidadDeMedidaController::class);
+ Route::post('precios_lista_unidades_de_medida', [PrecioUnidadDeMedidaController::class, "storeList"]);
+ Route::get('precios_lista_unidades_de_medida');
+ Route::get('precio_lista_unidades/{codigo_de_barra}', [PrecioUnidadDeMedidaController::class, "obtenerListaPreciosPorCodigoDeBarra"]);
+ Route::put('precio_lista_unidades/{codigo_de_barra}', [PrecioUnidadDeMedidaController::class, "updateList"]);
+ //Rutas para jornadas laborales diarias
+ Route::resource('jornadas_laborales_diarias', JornadaLaboralDiariaController::class);
+ //Rutas para Cliente
+ Route::resource('clientes', ClienteController::class);
+ Route::post('abono_registrar',[AbonoController::class,'store']);
+ Route::get('credito_proveedor/{credito}',[CreditoController::class,'show']);
+ Route::post('lista_creditos_proveedores',[CreditoController::class,'getCreditos']);
+ //Route::post('usuarios/{user}', [UserController::class, 'destroy']);
+ Route::post('clientes/cambiar_estado/{id}', [ClienteController::class, 'desactivar_cliente']);
+   /*Endpoint para gestion de existencias.*/
+   Route::resource("gestion_existencias", LoteController::class);
+   /*Control de filtro de fechas para reportes de inventario */
+   Route::get("/fechas_filtro", [FechaController::class, "obtenerFechasParaFiltro"]);
+   //Para creditos proveedores
+    Route::apiResource('creditosProveedores', CreditoController::class);
+    //para obtene los proveedores
+    Route::get('proveedores', [CreditoController::class, 'getProveedores']);
+    Route::apiResource('proveedor', ProveedorController::class);
+    Route::put('proveedor/cambiar_estado/{proveedor}', [ProveedorController::class, 'cambiar_estado_proveedor']);
+});
 /* --------------------------------------------------*/
 /* --------------------------------------------------*/
 /* ------------------FACTURACION---------------------*/
@@ -100,7 +132,7 @@ Route::middleware(['auth:sanctum', 'permission:all'])->group(function () {
 /* --------------------------------------------------*/
 /* --------------------------------------------------*/
 
-Route::middleware(["auth:sanctum", "permission:all|Ventas"])->group(function () {
+Route::middleware(["auth:sanctum", "permission:cajero"])->group(function () {
     Route::get('ventasCF', [VentasCFController::class, 'index']);
     //Rutas para productos
     Route::resource('productos', ProductoController::class);
@@ -181,32 +213,6 @@ Route::middleware(["auth:sanctum", "permission:all|Ventas"])->group(function () 
 });
 
 
-/* ------------------------------------------------------*/
-/* ------------------------------------------------------*/
-/* ---------------------INVENTARIO-----------------------*/
-/* Rutas a las que puede acceder Inventario y superiores */
-/* ------------------------------------------------------*/
-/* ------------------------------------------------------*/
-Route::middleware(["auth:sanctum", "permission:all|Inventario|Ventas"])->group(function () {
-    /*Endpoint para gestion de existencias.*/
-    Route::resource("gestion_existencias", LoteController::class);
-    /*Control de filtro de fechas para reportes de inventario */
-    Route::get("/fechas_filtro", [FechaController::class, "obtenerFechasParaFiltro"]);
-});
-
-
-/* ------------------------------------------------------------*/
-/* ------------------------------------------------------------*/
-/* --------------------------RR.HH-----------------------------*/
-/* Rutas a las que puede acceder Recursos Humanos y superiores */
-/* ------------------------------------------------------------*/
-/* ------------------------------------------------------------*/
-Route::middleware(["auth:sanctum", "permission:all|Recursos Humanos"])->group(function () {
-    Route::get('empleado/{empleado}', [EmpleadoController::class, 'show']);
-    Route::get('asistencia/{id_empleado}', [AsistenciaController::class, 'getAsistenciasEmpleado']);
-});
-
-
 /* ---------------------------------------------------------------*/
 /* ---------------------------------------------------------------*/
 /* --------------------------EMPLEADOS----------------------------*/
@@ -216,15 +222,6 @@ Route::middleware(["auth:sanctum", "permission:all|Recursos Humanos"])->group(fu
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', [LoginController::class, 'logout']);
     Route::post('asistencia', [AsistenciaController::class, 'store']);
-    Route::get('asistencia', [AsistenciaController::class, 'getAsistenciasEmpleado']);
-    //Rutas para Municipio
-    Route::resource('municipios', MunicipioController::class);
-    //Rutas para Departamento
-    Route::resource('departamentos', DepartamentoController::class);
-    //Ruta para obtener el departamento segun el nombre
-    Route::get('departamentos/buscar/{nombre_departamento}', [DepartamentoController::class, 'getDepartamentoPorNombre']);
-    Route::get('pacientes', [JornadaLaboralDiariaController::class, 'index']);
-    Route::get('get_municipios', [MunicipioController::class, 'municipios_segun_departamento']);
 });
 
 
@@ -234,7 +231,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 /* -----Rutas a las que solo pueda acceder el gerente------ */
 /* ---------------------------------------------------------*/
 /* ---------------------------------------------------------*/
-Route::middleware(["auth:sanctum", "permission:all"])->group(function () {
+Route::middleware(["auth:sanctum", "permission:adm-gerencia"])->group(function () {
+    
     Route::resource("informe_inventario_valorado", InformeInventarioController::class);
     Route::get("datos_inventario_valorado", [InformeInventarioController::class, "obtenerDatosGraficoInventarioValorado"]);
     Route::get("filtro_datos_producto_valorado/{valorMinimo?}/{valorMaximo?}", [InformeInventarioController::class, "obtenerDatosFiltradosProductoPorPrecios"]);
@@ -244,6 +242,8 @@ Route::middleware(["auth:sanctum", "permission:all"])->group(function () {
     Route::get("/filtro_ventas_totales/{parametros}", [InformeVentasController::class, "obtenerVentasTotalesPorFecha"]);
     Route::resource("avisos",AvisoController::class);
     Route::put("modificar_estado_aviso/{aviso}",[AvisoController::class,"modificarEstadoAviso"]);
+    //Para obtener los productos que vencen en los proximos 15 dias
+    Route::get('productosXVenecer', [InformeProductosPorVencerController::class, 'index']);
 });
 
 
@@ -251,27 +251,6 @@ Route::middleware(["auth:sanctum", "permission:all"])->group(function () {
 Route::controller(AsistenciaController::class)->group(function () {
     Route::post('hoja_asistencia', 'store');
 });
-Route::controller(PlanillaController::class)->group(function () {
-    Route::post('planilla', 'store');
-    Route::get('planillas','index');
-    Route::get('filtroPlanillas','obtenerPlanillasOrdenadasPorFecha');
-    Route::get('listaFechaPlanilla',"obtenerListaFechasPlanillas");
-    Route::get('planilla/{id_planilla}','show');
-    Route::get("obtener_detalles_planilla/{id:int}","obtenerDetallesPlanilla");
-});
-//Para obtener los productos que vencen en los proximos 15 dias
-Route::get('productosXVenecer', [InformeProductosPorVencerController::class, 'index']);
-//Para creditos proveedores
-Route::apiResource('creditosProveedores', CreditoController::class);
-//para obtene los proveedores
-Route::get('proveedores', [CreditoController::class, 'getProveedores']);
-//Para obtene los productos para la promocion
-Route::get('productoProm', [PromocionesController::class, 'getProductos']);
-//para crear una promocion
-Route::apiResource('promociones', PromocionesController::class);
-
-Route::apiResource('proveedor', ProveedorController::class);
-Route::put('proveedor/cambiar_estado/{proveedor}', [ProveedorController::class, 'cambiar_estado_proveedor']);
 
 /* ----------------------------------------------*/
 /* ----------------------------------------------*/
@@ -283,17 +262,27 @@ Route::put('proveedor/cambiar_estado/{proveedor}', [ProveedorController::class, 
  Route::get("productos/{producto}/foto", function (Producto $producto) {
     return response()->download(public_path(Storage::url($producto->foto)), $producto->nombre_producto);
 });
-
-
 //Avisos para el blog
 Route::get("avisos_blog", [AvisoController::class, "avisosBlog"]);
 //Ofetas para el blog vigentes
 Route::get("ofertas_blog", [PromocionesController::class, "promocionesVigentes"]);
-//Todas las ofertas
-Route::get("ofertasList", [PromocionesController::class, "ofertasList"]);
-//Eliminar una oferta
-Route::delete("ofertaDelete/{promocion}", [PromocionesController::class, "destroy"]);
-//Actualizar una oferta
-Route::put("ofertaUpdate/{promocion}", [PromocionesController::class, "update"]);
-//Para obetner una oferta especifica
-Route::get("oferta/{promocion}", [PromocionesController::class, "show"]);
+
+/* ----------------------------------------------*/
+/* ----------------------------------------------*/
+/* ------------------Rutas a las que se puede acceder con el permiso de marketing---------------------*/
+/* ----------------------------------------------*/
+/* ----------------------------------------------*/
+Route::middleware(["auth:sanctum", "permission:adm-marketing"])->group( function(){
+    //Todas las ofertas
+    Route::get("ofertasList", [PromocionesController::class, "ofertasList"]);
+    //Eliminar una oferta
+    Route::delete("ofertaDelete/{promocion}", [PromocionesController::class, "destroy"]);
+    //Actualizar una oferta
+    Route::put("ofertaUpdate/{promocion}", [PromocionesController::class, "update"]);
+    //Para obetner una oferta especifica
+    Route::get("oferta/{promocion}", [PromocionesController::class, "show"]);
+    //Para obtene los productos para la promocion
+    Route::get('productoProm', [PromocionesController::class, 'getProductos']);
+    //para crear una promocion
+    Route::apiResource('promociones', PromocionesController::class);
+    });
