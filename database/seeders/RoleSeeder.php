@@ -63,7 +63,7 @@ class RoleSeeder extends Seeder
 
         $user = User::create([
             "id_empleado"=>3,
-            "name"=>"Javier",
+            "name"=>"Juan",
             "email"=>"user2@gmail.com",
             "password"=>bcrypt("password")
         ]);
