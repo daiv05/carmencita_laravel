@@ -33,13 +33,13 @@ class EmpleadoSeeder extends Seeder
                 'profesion_oficio' => 'Contador'
             ],
             [
-                'primer_nombre' => 'Carlos',
-                'segundo_nombre' => 'Francisco',
+                'primer_nombre' => 'María',
+                'segundo_nombre' => 'José',
                 'primer_apellido' => 'Miranda',
                 'id_nacionalidad' => '1',
                 'id_estado_familiar' => '1',
                 'id_sexo' => '1',
-                'id_cargo' => '4',
+                'id_cargo' => '2',
                 'dui_empleado' => '059195855',
                 'fecha_nacimiento' => '1998-09-22',
                 'telefono' => '77787841',
@@ -49,7 +49,7 @@ class EmpleadoSeeder extends Seeder
                 'profesion_oficio' => 'Contador'
             ],
             [
-                'primer_nombre' => 'Juanillo',
+                'primer_nombre' => 'Juan',
                 'segundo_nombre' => '',
                 'primer_apellido' => 'Guillen',
                 'id_nacionalidad' => '1',
@@ -71,7 +71,7 @@ class EmpleadoSeeder extends Seeder
                 'id_nacionalidad' => '1',
                 'id_estado_familiar' => '1',
                 'id_sexo' => '1',
-                'id_cargo' => '2',
+                'id_cargo' => '4',
                 'dui_empleado' => '059195867',
                 'fecha_nacimiento' => '1998-09-22',
                 'telefono' => '77787849',
