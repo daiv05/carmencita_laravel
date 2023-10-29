@@ -33,7 +33,15 @@ class Handler extends ExceptionHandler
             ], 404);
             //
         });
+        $this->renderable(function(\Spatie\Permission\Exceptions\UnauthorizedException $e, $request){
+            return response()->json([
+                "mensaje"=>"No tienes permiso para ver el contenido de esta página",
+                "status"=>false,
+                "tienePermiso"=>false
+            ],403);
+        });
     }
+
     public function invalidJson($request, ValidationException $exception)
     {
         return response()->json([

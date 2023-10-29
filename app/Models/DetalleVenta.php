@@ -24,6 +24,11 @@ class DetalleVenta extends Model
         'codigo_barra_producto',
         'cantidad_producto',
         'subtotal_detalle_venta',
+        'descuentos',
+    ];
+
+    protected $attributes = [
+        'precio_unitario_venta' => 0,
     ];
 
     public function producto()

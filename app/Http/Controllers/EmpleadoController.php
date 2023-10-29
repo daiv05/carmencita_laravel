@@ -89,8 +89,7 @@ class EmpleadoController extends Controller
             return response()->json([
                 'status'=> false,
                 'message'=> $validator->errors()->all(),
-                'Hola' => 'hola',
-            ]);
+            ],400);
         }
 
         /*$empleado = new Empleado($request->input());
@@ -131,15 +130,17 @@ class EmpleadoController extends Controller
             'password' => Hash::make($request->password)
         ]);
 
+        if(isset($user)){
+            $user->assignRole($miEmpleado->getRol());
+        }
+
         //$token = $user->createToken('auth_token')->plainTextToken;
-
-
         return response()->json([
             'status'=>true,
-            'message'=>$validator->errors()->all(),
+            'message'=>["Empleado registrado correctamente",],
             'empleado'=>$empleado,
             'user'=>$user->email
-        ]);
+        ],200);
     }
 
     /**
@@ -148,7 +149,7 @@ class EmpleadoController extends Controller
     public function show(Empleado $empleado)
     {
         //
-        return $empleado;
+        return $empleado::with('cargo')->where('id_empleado',$empleado->id_empleado)->first();
     }
 
     /**
@@ -170,7 +171,7 @@ class EmpleadoController extends Controller
                 'primer_apellido' => 'required|string|max:32',
                 'id_nacionalidad' => 'required',
                 'id_sexo' => 'required',
-                'id_cargo' => 'required',
+                'id_cargo' => 'required|numeric',
                 'dui_empleado' => [
                     'required',
                     Rule::unique('empleado')->ignore($empleado, 'id_empleado')
@@ -187,8 +188,7 @@ class EmpleadoController extends Controller
                 return response()->json([
                     'status'=> false,
                     'message'=> $validator->errors()->all(),
-                    'Hola' => 'hola',
-                ]);
+                ],400);
             }
 
             $empleado->primer_nombre = $request->primer_nombre;//,
@@ -210,7 +210,7 @@ class EmpleadoController extends Controller
             $empleado->residencia= $request->residencia;
             $empleado->id_nacionalidad= $request->id_nacionalidad;
             $empleado->dui_empleado= $request->dui_empleado;
-            $empleado->id_cargo= $request->id_cargo;
+            $empleado->id_cargo= intval($request->id_cargo);
             $empleado->telefono= $request->telefono;
             //$empleado->esta_activo= true;
             $empleado->update();
@@ -220,9 +220,9 @@ class EmpleadoController extends Controller
             ],200);*/
             return response()->json([
                 'status'=>true,
-                'message'=>$validator->errors()->all(),
+                'message'=>["Empleado actualizado correctamente"],
                 'empleado'=>$empleado
-            ]);
+            ],200);
 
 
         }catch(\Exception $e){

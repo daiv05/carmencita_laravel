@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,12 @@ class CreditoFiscalFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'id_cliente'=>rand(1,2),
+            'fecha_credito'=>Carbon::create(2023,rand(10,12),10),
+            'total_credito'=>0,
+            'total_iva_credito'=>0,
+            'estado_credito'=>false,
+            'domicilio'=>true
         ];
     }
 }

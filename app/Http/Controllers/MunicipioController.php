@@ -103,4 +103,23 @@ class MunicipioController extends Controller
             ], 400);
         }
     }
+
+    public function municipios_segun_departamento(Request $request){
+        error_log('departamento');
+        $department = $request->query('departamento', null);
+        error_log($department);
+        if (isset($department)) {
+            $municipios = Municipio::where('id_departamento', $department)->get();
+            return response()->json([
+                'respuesta' => true,
+                'mensaje' => 'Municipios encontrados',
+                'datos' => $municipios,
+            ], 200);
+        } else {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Municipios no encontrados',
+            ], 400);
+        }
+    }
 }

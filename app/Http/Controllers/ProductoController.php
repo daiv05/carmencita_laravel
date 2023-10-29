@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ActualizarProductoRequest;
 use App\Models\Producto;
 use Error;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 
 
 class ProductoController extends Controller
@@ -34,9 +37,11 @@ class ProductoController extends Controller
 
         // Se definen las reglas de validación para los campos del formulario
         $rules = [
-            'codigo_barra_producto' => 'required|unique:producto|string|max:13', // El código de barras debe ser único
+            'codigo_barra_producto' => 'required|unique:producto|string|max:13',
+            // El código de barras debe ser único
             'nombre_producto' => 'required|string|max:50',
             'cantidad_producto_disponible' => 'required|integer',
+            'cantidad_producto_fisico' => 'required|integer',
             'precio_unitario' => 'required|decimal:0,2',
             'esta_disponible' => 'required|boolean',
             'foto' => 'image'
@@ -57,6 +62,7 @@ class ProductoController extends Controller
             $producto->codigo_barra_producto = $request->codigo_barra_producto;
             $producto->nombre_producto = $request->nombre_producto;
             $producto->cantidad_producto_disponible = $request->cantidad_producto_disponible;
+            $producto->cantidad_producto_fisico = $request->cantidad_producto_fisico;
             $producto->precio_unitario = $request->precio_unitario;
             $producto->esta_disponible = $request->esta_disponible;
             //$producto = Producto::create($request->all());
@@ -165,9 +171,11 @@ class ProductoController extends Controller
                 'string',
                 'max:13',
                 Rule::unique('producto')->ignore($producto, 'codigo_barra_producto'),
-            ], // El código de barras debe ser único
+            ],
+            // El código de barras debe ser único
             'nombre_producto' => 'required|string|max:50',
             'cantidad_producto_disponible' => 'required|integer',
+            'cantidad_producto_fisico' => 'required|integer',
             'precio_unitario' => 'required|decimal:0,2',
             'esta_disponible' => 'required|boolean',
             'foto' => 'image'
@@ -184,6 +192,7 @@ class ProductoController extends Controller
             $producto->codigo_barra_producto = $request->codigo_barra_producto;
             $producto->nombre_producto = $request->nombre_producto;
             $producto->cantidad_producto_disponible = $request->cantidad_producto_disponible;
+            $producto->cantidad_producto_fisico = $request->cantidad_producto_fisico;
             $producto->precio_unitario = $request->precio_unitario;
             $producto->esta_disponible = $request->esta_disponible;
 
@@ -267,11 +276,15 @@ class ProductoController extends Controller
     {
         // Buscar el producto por nombre
         $producto = Producto::where('nombre_producto', $nombre_producto)->get();
+        // $producto[0]->ofertas_vigentes = $producto[0]->promocions()
+        //     ->where('fecha_inicio_oferta', '<=', now())
+        //     ->where('fecha_fin_oferta', '>=', now())
+        //     ->get();
         // Se valida que el producto no este vacio
-        if (!($producto->isEmpty())) {
+        if ($producto) {
             return response()->json([
                 'respuesta' => true,
-                'producto' => $producto->load('precioUnidadDeMedida')
+                'producto' => $producto->load('precioUnidadDeMedida'),
             ], 200);
         } else {
             return response()->json([
@@ -332,16 +345,23 @@ class ProductoController extends Controller
     }
 
     // Paginación de productos
-    public function getPaginacionProductos($cantidad_productos)
+    public function getPaginacionProductos(Request $request,$cantidad_productos)
     {
         // Se obtienen todos los productos
-        $productos = Producto::paginate($cantidad_productos);
+        if($request->sort_by == 0 || $request->sort_by == '0'){
+            $productos = Producto::orderBy('cantidad_producto_disponible', 'asc')->paginate($cantidad_productos);
+        } else if($request->sort_by == 1 || $request->sort_by == '1'){
+            $productos = Producto::orderBy('cantidad_producto_disponible', 'desc')->paginate($cantidad_productos);
+        }else{
+            $productos = Producto::paginate($cantidad_productos);
+        }
+        
         // Se valida que la lista de productos no este vacia
         if (!($productos->isEmpty())) {
             // Se retorna la lista de productos en formato JSON
             return response()->json([
                 'respuesta' => true,
-                'productos' => $productos
+                'productos' => $productos,
             ], 200);
         }
         // Si no se encuentra el producto, se retorna un mensaje de error
@@ -352,4 +372,5 @@ class ProductoController extends Controller
             ], 400);
         }
     }
+
 }

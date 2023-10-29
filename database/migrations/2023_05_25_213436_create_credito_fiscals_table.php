@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id('id_creditofiscal');
             $table->bigInteger('id_cliente')->unsigned();
             $table->date('fecha_credito');
-            $table->decimal('total_credito', 8, 2);
-            $table->decimal('total_iva_credito', 8, 2);
+            $table->decimal('total_credito', 8, 4);
+            $table->decimal('total_iva_credito', 8, 4);
             $table->boolean('estado_credito')->default(true);
+            $table->boolean('domicilio')->default(false);
 
             $table->foreign('id_cliente')
                 ->references('id_cliente')

@@ -76,8 +76,11 @@ class DetalleCreditoController extends Controller
             $detalleCredito = DetalleCredito::create($request->all());
             if (isset($detalleCredito)) {
                 // Actualizar stock del producto
-                $producto->cantidad_producto_disponible = $producto->cantidad_producto_disponible - $request->cantidad_producto;
-                $producto->update(['cantidad_producto_disponible' => $producto->cantidad_producto_disponible]);
+                //$producto->cantidad_producto_disponible = $producto->cantidad_producto_disponible - $request->cantidad_producto;
+                //$producto->update(['cantidad_producto_disponible' => $producto->cantidad_producto_disponible]);
+                
+                $producto->updateExistencias($detalleCredito->cantidad_producto_credito,true);
+                
                 return response()->json([
                     'respuesta' => true,
                     'mensaje' => 'Detalle de credito fiscal creado correctamente'
@@ -122,7 +125,8 @@ class DetalleCreditoController extends Controller
             'codigo_barra_producto' => 'string|max:13',
             'id_creditofiscal' => 'integer',
             'cantidad_producto_credito' => 'integer',
-            'subtotal_detalle_credito' => 'decimal:0,2'
+            'subtotal_detalle_credito' => 'decimal:0,2',
+            'descuentos' => 'decimal:0,2',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -160,8 +164,9 @@ class DetalleCreditoController extends Controller
             $detalleCredito->delete();
             // Actualizar stock del producto
             $producto = Producto::find($detalleCredito->codigo_barra_producto);
-            $producto->cantidad_producto_disponible = $producto->cantidad_producto_disponible + $detalleCredito->cantidad_producto;
-            $producto->update(['cantidad_producto_disponible' => $producto->cantidad_producto_disponible]);
+            //$producto->cantidad_producto_disponible = $producto->cantidad_producto_disponible + $detalleCredito->cantidad_producto;
+            //$producto->update(['cantidad_producto_disponible' => $producto->cantidad_producto_disponible]);
+            $producto->updateExistencias($detalleCredito->cantidad_producto_credito,false);
             return response()->json([
                 'respuesta' => true,
                 'mensaje' => 'Detalle de credito fiscal eliminado correctamente'
@@ -181,7 +186,8 @@ class DetalleCreditoController extends Controller
             'codigo_barra_producto' => 'required|string|max:13',
             'id_creditofiscal' => 'required|integer',
             'cantidad_producto_credito' => 'required|integer',
-            'subtotal_detalle_credito' => 'required|decimal:0,2'
+            'subtotal_detalle_credito' => 'required|decimal:0,2',
+            'descuentos' => 'decimal:0,2',
         ];
 
         for ($i = 0; $i < count($request->detalles); $i++) {
@@ -212,7 +218,7 @@ class DetalleCreditoController extends Controller
                     'mensaje' => 'No existe el producto',
                 ], 400);
             } else {
-                if ($producto->cantidad_producto_disponible < $request->detalles[$i]['cantidad_producto_credito']) {
+                if ($producto->getExistencias() < $request->detalles[$i]['cantidad_producto_credito']) {
                     error_log('No hay stock suficiente');
                     return response()->json([
                         'respuesta' => false,
@@ -227,6 +233,7 @@ class DetalleCreditoController extends Controller
                 'codigo_barra_producto' => $request->detalles[$i]['codigo_barra_producto'],
                 'cantidad_producto_credito' => $request->detalles[$i]['cantidad_producto_credito'],
                 'subtotal_detalle_credito' => $request->detalles[$i]['subtotal_detalle_credito'],
+                'descuentos' => $request->detalles[$i]['descuentos'],
             ]);
             $detalle->save();
 
@@ -236,8 +243,9 @@ class DetalleCreditoController extends Controller
             if (isset($detalle)) {
                 error_log('Detalle creado correctamente');
                 // Actualizar stock del producto
-                $producto->cantidad_producto_disponible = $producto->cantidad_producto_disponible - $detalle->cantidad_producto_credito;
-                $producto->update(['cantidad_producto_disponible' => $producto->cantidad_producto_disponible]);
+                //$producto->cantidad_producto_disponible = $producto->cantidad_producto_disponible - $detalle->cantidad_producto_credito;
+                //$producto->update(['cantidad_producto_disponible' => $producto->cantidad_producto_disponible]);
+                $producto->updateExistencias($detalle->cantidad_producto_credito,true);
                 //Log::info('Stock actualizado: '. $request->cantidad_producto);
             } else {
                 error_log('Error al crear el detalle de credito');

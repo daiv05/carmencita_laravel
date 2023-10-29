@@ -27,7 +27,8 @@ class Cliente extends Model
         'nit_cliente',
         'nrc_cliente',
         'id_municipio',
-        'distintivo_cliente'
+        'distintivo_cliente',
+        'estado_cliente'
     ];
 
     public function creditoFiscal()

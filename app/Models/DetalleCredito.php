@@ -24,6 +24,11 @@ class DetalleCredito extends Model
         'id_creditofiscal',
         'cantidad_producto_credito',
         'subtotal_detalle_credito',
+        'descuentos'
+    ];
+
+    protected $attributes = [
+        'precio_unitario_venta' => 0,
     ];
 
     public function producto()

@@ -23,7 +23,7 @@ class Empleado extends ResourceCollection
                     "segundo_nombre" => $empleado->segundo_nombre,
                     "primer_apellido" => $empleado->primer_apellido,
                     "segundo_apellido" => $empleado->segundo_apellido,
-                    "username" => $empleado->User->name,
+                    "username" => $empleado->User?$empleado->User->name:" ",//esto daba error para listar empleados cuando no tenian errores pero puede existir un empleado sin usuario?
                     "cargo" => $empleado->Cargo->nombre_cargo,
                 ];
             }),
