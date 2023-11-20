@@ -47,7 +47,7 @@ class CreditoController extends Controller
         }else{
             $pagination = Credito::where('pendiente',$estado,0)
                                 ->where('id_proveedor',$proveedor)
-                                ->with('proveedor')->orderByDesc('fecha_credito_pago')->paginate($resultadosPorPagina);
+                                ->with('proveedor')->orderByDesc('fecha_limite_pago')->paginate($resultadosPorPagina);
         }
 
         return response()->json([

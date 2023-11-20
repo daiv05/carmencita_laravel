@@ -245,6 +245,7 @@ class VentaController extends Controller
                         'respuesta' => true,
                         'mensaje' => 'Venta creada correctamente',
                         'datos' => $venta,
+                        "hoy" => $impresion_service->generate_pdf_consumidor_final($venta)
                     ], 201);
                 }
                 return response()->json([
@@ -297,7 +298,7 @@ class VentaController extends Controller
         $creditosNoAsignados = " and creditofiscal.id_creditofiscal not in (SELECT id_creditofiscal from creditofiscaldomicilio)";
         $creditosFecha = " fecha_credito=:fecha_credito";
         $creditosAsignados = " and creditofiscal.id_creditofiscal in (SELECT id_creditofiscal from creditofiscaldomicilio)";
-        $orderby = ' order by fecha desc';
+        $orderby = ' order by id';
         $queryFinal = "";
 
         if (!isset($request->tipo)) {
