@@ -249,14 +249,12 @@ class ImpresionController extends Controller
         $ruta_pdf = 'resumen_hoja_' . $hoja_de_ruta->id_hr . '.pdf';
         $pdf->save($ruta_pdf);
 
-        $command1 = ' ';//'PDFXEdit /importp "C:\setting_3060.dat" ';
+        $command1 = 'PDFXEdit /importp "C:\setting_3060.dat" ';
         exec($command1, $output, $return_var);
-        $command2 = '/PDFx-Editor/PDFXEdit.exe /print:default=no;showui=no;printer="Brother DCP-T720DW Printer" ' . public_path($ruta_pdf);
+        $command2 = 'PDFXEdit /print:default=no;showui=no;printer="Canon G3060 series" ' . public_path($ruta_pdf);
         exec($command2, $output1, $return_var1);
         
         return implode(',', $output) . ' ' . implode(',', $output1);
-
-        //return "ok";
     }
 
 }
