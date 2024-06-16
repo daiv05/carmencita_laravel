@@ -57,5 +57,10 @@ class DatabaseSeeder extends Seeder
         $this->call(ProveedorSeeder::class);
         $this->call(CreditoSeeder::class);
 
+        $this->call(EstadoSeeder::class);
+        $this->call(AusenciaSeeder::class);
+        $this->call(JustificacionAusenciaSeeder::class);
+        $this->call(IncapacidadSeeder::class);
+
     }
 }
