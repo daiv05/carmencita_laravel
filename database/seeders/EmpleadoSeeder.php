@@ -20,6 +20,7 @@ class EmpleadoSeeder extends Seeder
                 'primer_nombre' => 'Luis',
                 'segundo_nombre' => 'Francisco',
                 'primer_apellido' => 'Rivas',
+                'segundo_apellido' => 'Moz',
                 'id_nacionalidad' => '1',
                 'id_estado_familiar' => '1',
                 'id_sexo' => '1',
@@ -33,79 +34,75 @@ class EmpleadoSeeder extends Seeder
                 'profesion_oficio' => 'Contador'
             ],
             [
-                'primer_nombre' => 'María',
-                'segundo_nombre' => 'José',
-                'primer_apellido' => 'Miranda',
+                'primer_nombre' => 'Teobaldo',
+                'segundo_nombre' => 'Antonio',
+                'primer_apellido' => 'Azahar',
+                'segundo_apellido' => 'Roldán',
                 'id_nacionalidad' => '1',
                 'id_estado_familiar' => '1',
                 'id_sexo' => '1',
                 'id_cargo' => '2',
-                'dui_empleado' => '059195855',
+                'dui_empleado' => '059135866',
+                'fecha_nacimiento' => '1998-09-22',
+                'telefono' => '77787849',
+                'esta_activo' => '1',
+                'domicilio' => 'San Salvador',
+                'residencia' => 'San Salvador',
+                'profesion_oficio' => 'Empleado'
+            ],
+            [
+                'primer_nombre' => 'Leonardo',
+                'segundo_nombre' => 'Efigenio',
+                'primer_apellido' => 'Landaverde',
+                'id_nacionalidad' => '1',
+                'id_estado_familiar' => '1',
+                'id_sexo' => '1',
+                'id_cargo' => '3',
+                'dui_empleado' => '059195546',
+                'fecha_nacimiento' => '1998-09-22',
+                'telefono' => '77787849',
+                'esta_activo' => '1',
+                'domicilio' => 'San Salvador',
+                'residencia' => 'San Salvador',
+                'profesion_oficio' => 'Empleado'
+            ],
+            [
+                'primer_nombre' => 'Gabriela',
+                'segundo_nombre' => 'Stefani',
+                'primer_apellido' => 'Miranda',
+                'segundo_apellido' => 'Mejía',
+                'id_nacionalidad' => '1',
+                'id_estado_familiar' => '1',
+                'id_sexo' => '1',
+                'id_cargo' => '4',
+                'dui_empleado' => '059198766',
+                'fecha_nacimiento' => '1998-09-22',
+                'telefono' => '77787849',
+                'esta_activo' => '1',
+                'domicilio' => 'San Salvador',
+                'residencia' => 'San Salvador',
+                'profesion_oficio' => 'Empleado'
+            ],
+            [
+                'primer_nombre' => 'David',
+                'segundo_nombre' => 'Alejandro',
+                'primer_apellido' => 'Deras',
+                'segundo_apellido' => 'Cerros',
+                'id_nacionalidad' => '1',
+                'id_estado_familiar' => '1',
+                'id_sexo' => '1',
+                'id_cargo' => '4',
+                'dui_empleado' => '003595855',
                 'fecha_nacimiento' => '1998-09-22',
                 'telefono' => '77787841',
                 'esta_activo' => '1',
                 'domicilio' => 'San Salvador',
                 'residencia' => 'San Salvador',
                 'profesion_oficio' => 'Contador'
-            ],
-            [
-                'primer_nombre' => 'Juan',
-                'segundo_nombre' => '',
-                'primer_apellido' => 'Guillen',
-                'id_nacionalidad' => '1',
-                'id_estado_familiar' => '1',
-                'id_sexo' => '1',
-                'id_cargo' => '3',
-                'dui_empleado' => '059195866',
-                'fecha_nacimiento' => '1998-09-22',
-                'telefono' => '77787849',
-                'esta_activo' => '1',
-                'domicilio' => 'San Salvador',
-                'residencia' => 'San Salvador',
-                'profesion_oficio' => 'Empleado'
-            ],
-            [
-                'primer_nombre' => 'Juanillo100',
-                'segundo_nombre' => '',
-                'primer_apellido' => 'Guillen',
-                'id_nacionalidad' => '1',
-                'id_estado_familiar' => '1',
-                'id_sexo' => '1',
-                'id_cargo' => '4',
-                'dui_empleado' => '059195867',
-                'fecha_nacimiento' => '1998-09-22',
-                'telefono' => '77787849',
-                'esta_activo' => '1',
-                'domicilio' => 'San Salvador',
-                'residencia' => 'San Salvador',
-                'profesion_oficio' => 'Empleado'
-            ]
-
-        ];
-        $usuarios = [
-            [],[],[],
-            [
-                'email' => 'usuario1@gmail.com',
-                'password' => 'clave0001',
-            ],
-            [
-
-                'email' => 'usuario4@gmail.com',
-                'password' => 'password',
             ]
         ];
-        $i = 4;
         foreach ($empleados as $empleado) {
-            $miEmpleado = Empleado::create($empleado);
-            if ($i == 4){
-                $user = User::create([
-                    'id_empleado' => $miEmpleado->id_empleado,
-                    'name' => $miEmpleado->primer_nombre,
-                    'email' => $usuarios[$i]['email'],
-                    'password' => \Hash::make($usuarios[$i]['password'])
-                ]);
-            }
-            $i++;
+           Empleado::create($empleado);
         }
     }
 }
