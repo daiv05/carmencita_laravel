@@ -67,6 +67,7 @@ Route::middleware(['auth:sanctum', 'permission:adm-rh'])->group(function () {
     Route::resource('cargos', CargoController::class);
     Route::get('empleado/{empleado}', [EmpleadoController::class, 'show']);
     Route::get('asistencia/{id_empleado}', [AsistenciaController::class, 'getAsistenciasEmpleado']);
+
     Route::controller(PlanillaController::class)->group(function () {
         Route::post('planilla', 'store');
         Route::get('planillas','index');
@@ -74,6 +75,7 @@ Route::middleware(['auth:sanctum', 'permission:adm-rh'])->group(function () {
         Route::get('listaFechaPlanilla',"obtenerListaFechasPlanillas");
         Route::get('planilla/{id_planilla}','show');
         Route::get("obtener_detalles_planilla/{id:int}","obtenerDetallesPlanilla");
+        Route::post('updatePlanilla/{id}', 'update');
     });
     //Rutas para Municipio
     Route::resource('municipios', MunicipioController::class);
