@@ -39,9 +39,10 @@ use Illuminate\Console\View\Components\Info;
 use App\Http\Controllers\AbonoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AvisoController;
-
 use App\Http\Controllers\ProveedorController;
-
+use App\Http\Controllers\AusenciaController;
+use App\Http\Controllers\JustificacionAusenciaController;
+use App\Models\JustificacionAusencia;
 
 /* ----------------------------------------------*/
 /* ----------------------------------------------*/
@@ -222,6 +223,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', [LoginController::class, 'logout']);
     Route::post('asistencia', [AsistenciaController::class, 'store']);
     Route::get('asistencia', [AsistenciaController::class, 'getAsistenciasEmpleado']);
+    Route::get('ausencias', [AusenciaController::class, 'index']);
+    Route::get('ausencias/empleado', [AusenciaController::class, 'ausenciasPorEmpleado']);
+    Route::post('ausencias/justificar', [JustificacionAusenciaController::class, 'store']);
+    Route::post('ausencias/justificar/{id}', [JustificacionAusenciaController::class, 'update']);
+    Route::post('ausencias/comprobante', [JustificacionAusenciaController::class, 'getArchivosComprobantes']);
+    Route::post('ausencias/justificaciones/listado-gestion', [JustificacionAusenciaController::class, 'index']);
+    Route::post('ausencias/justificaciones/cambiar-estado', [JustificacionAusenciaController::class, 'actualizarEstado']);
+    Route::delete('ausencias/justificaciones/{id}', [JustificacionAusenciaController::class, 'destroy']);
 });
 
 

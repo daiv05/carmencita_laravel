@@ -9,6 +9,7 @@ use Nette\Utils\DateTime;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class AsistenciaController extends Controller
 {
@@ -27,9 +28,8 @@ class AsistenciaController extends Controller
                 'status' => false,
                 'mensaje' => 'No se han encontrado asistencias'
             ], 400);
-
         } catch (\Exception $e) {
-            \Log::error('Error: ' . $e->getMessage());
+            Log::error('Error: ' . $e->getMessage());
             return response()->json(['error' => 'Ocurrió un error'], 500);
         }
     }
@@ -38,11 +38,11 @@ class AsistenciaController extends Controller
     {
         try {
             $usuario = Auth::user();
-            if(!isset($usuario)){
+            if (!isset($usuario)) {
                 return response()->json([
                     'status' => false,
                     'mensaje' => 'No se ha encontrado al empleado'
-                ],400);
+                ], 400);
             }
 
             $fechaActual = date('Y-m-d');
@@ -71,50 +71,46 @@ class AsistenciaController extends Controller
                 'status' => false,
                 'mensaje' => 'Error al registrar la asistencia'
             ], 400);
-
         } catch (\Exception $e) {
-            \Log::error('Error: ' . $e->getMessage());
+            Log::error('Error: ' . $e->getMessage());
             return response()->json(['error' => 'Ocurrió un error'], 500);
         }
-
     }
 
-    public function getAsistenciasEmpleado(Request $request, Empleado $id_empleado = null)
+    public function getAsistenciasEmpleado(Request $request, $id_empleado = null)
     {
-        //Obtiene las asistencias del mes actual
-        //$fechaActual = date('Y-m-d');
-        
-        if ($id_empleado == null){
-            $fechaActual = new DateTime();
-            $diasMes = cal_days_in_month(CAL_GREGORIAN, $fechaActual->format('m'), $fechaActual->format('Y'));
-            $fechaInicio = new DateTime($fechaActual->format('Y') . '-' . $fechaActual->format('m') . '-01');
-            $fechaFin = new DateTime($fechaActual->format('Y') . '-' . $fechaActual->format('m') . '-' . $diasMes);
-            
-            $usuario = Auth::user()->id_empleado;//check();
+        if ($id_empleado == null) {
+            $usuario = Auth::user()->id_empleado;
             $empleado = Empleado::where('id_empleado', $usuario)->first();
-            $empleado::with('cargo')->where('id_empleado',$empleado->id_empleado)->first();
+            $empleado::with('cargo')->where('id_empleado', $empleado->id_empleado)->first();
             $empleado_compacto = [
-                'nombre'=> $empleado->primer_nombre,
+                'nombre' => $empleado->primer_nombre,
                 'apellido' => $empleado->primer_apellido,
                 'cargo' => $empleado->cargo->nombre_cargo
             ];
 
             if (isset($empleado)) {
-                $asistencias = Asistencia::where('id_empleado', $empleado->id_empleado)->where('fecha', '>=', $fechaInicio)->where('fecha', '<=', $fechaFin)->get();
+                if ($request->query('fechaInicio') != null and $request->query('fechaFin') != null) {
+                    $asistencias = Asistencia::where('id_empleado', $empleado->id_empleado)->where('fecha', '>=', $request->query('fechaInicio'))->where('fecha', '<=', $request->query('fechaFin'))->get();
+                } else {
+                    $asistencias = Asistencia::where('id_empleado', $empleado->id_empleado)->get();
+                }
             }
-        }
-        else
-        {
-            $empleado = Empleado::where('id_empleado', $id_empleado->id_empleado)->first();
-            $empleado::with('cargo')->where('id_empleado',$empleado->id_empleado)->first();
+        } else {
+            $empleado = Empleado::where('id_empleado', $id_empleado)->first();
+            $empleado::with('cargo')->where('id_empleado', $empleado->id_empleado)->first();
             $empleado_compacto = [
-                'nombre'=> $empleado->primer_nombre,
+                'nombre' => $empleado->primer_nombre,
                 'apellido' => $empleado->primer_apellido,
                 'cargo' => $empleado->cargo->nombre_cargo
             ];
 
             if (isset($empleado)) {
-                $asistencias = Asistencia::where('id_empleado', $empleado->id_empleado)->get();
+                if ($request->query('fechaInicio') != null and $request->query('fechaFin') != null) {
+                    $asistencias = Asistencia::where('id_empleado', $empleado->id_empleado)->where('fecha', '>=', $request->query('fechaInicio'))->where('fecha', '<=', $request->query('fechaFin'))->get();
+                } else {
+                    $asistencias = Asistencia::where('id_empleado', $empleado->id_empleado)->get();
+                }
             }
         }
 
@@ -122,10 +118,7 @@ class AsistenciaController extends Controller
             return response()->json([
                 'status' => true,
                 'empleado' => $empleado_compacto,
-                'asistencias' => $asistencias,
-                /*'fechaInicio' => $fechaInicio,
-                'fechaFin' => $fechaFin,
-                'usuario' => $usuario*/
+                'asistencias' => $asistencias
             ], 200);
         }
         return response()->json([
@@ -133,11 +126,9 @@ class AsistenciaController extends Controller
             'mensaje' => 'Ha ocurrido un error',
             'empleado' => $usuario
         ], 400);
-
     }
 
     public function update()
     {
-
     }
 }
