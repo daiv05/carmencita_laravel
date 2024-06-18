@@ -76,6 +76,7 @@ Route::middleware(['auth:sanctum', 'permission:adm-rh'])->group(function () {
         Route::get('planilla/{id_planilla}','show');
         Route::get("obtener_detalles_planilla/{id:int}","obtenerDetallesPlanilla");
         Route::post('updatePlanilla/{id}', 'update');
+        Route::get('get_boleta_pago/{detallePlanilla}', "show_detalle_planilla");
     });
     //Rutas para Municipio
     Route::resource('municipios', MunicipioController::class);

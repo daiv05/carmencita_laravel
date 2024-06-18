@@ -9,6 +9,7 @@ use App\Models\Empleado;
 use App\Models\DetallePlanilla;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Carbon\Carbon;
 
 class PlanillaController extends Controller
 {
@@ -240,10 +241,33 @@ class PlanillaController extends Controller
         $planilla = Planilla::find($id);
         $planilla->detallesPlanilla;
         foreach ($planilla->detallesPlanilla as $detallePlanilla) {
-            $detallePlanilla->empleado;
-            \Log::info($detallePlanilla->empleado);
+
+            $empleado = Empleado::find($detallePlanilla->id_empleado);
+
+            $fechaIngreso = $detallePlanilla->empleado->fecha_ingreso;
+            if ($fechaIngreso) {
+                $fechaIngreso = Carbon::parse($fechaIngreso);
+                $fechaActual = Carbon::now();
+
+                $diaDelMes = $fechaIngreso->day;
+                $mesIngreso = $fechaIngreso->month;
+                $mesActual = $fechaActual->month;
+                $diferenciaAnios = $fechaActual->diffInYears($fechaIngreso);
+
+                // Comprobar si la fecha de ingreso está entre el 1 y el 15 del mes actual
+                $aplicarVacacion = $mesIngreso == $mesActual;
+
+                // Comprobar si la diferencia entre la fecha actual y la fecha de ingreso es mayor o igual a un año
+                $masDeUnAno = $diferenciaAnios >= 1;
+
+                if ($aplicarVacacion && $masDeUnAno && $empleado->vacacion_pagada !== $fechaActual->year) {
+                    $detallePlanilla['vacaciones'] = true;
+                } else {
+                    $detallePlanilla['vacaciones'] = false;
+                }
+            }
         }
-        
+
 
 
         return $planilla;
@@ -255,27 +279,55 @@ class PlanillaController extends Controller
         $detalle_planillas = $request->detalle_planillas;
 
         \Log::info($detalle_planillas);
-        try {
 
+        if ($request->emitir)
+            try {
+                DB::beginTransaction();
+                $planilla = Planilla::where('id', $request->planilla)->first();
+                $planilla->date_emision_boleta = Carbon::now();
+                $planilla->save();
+
+                DB::commit();
+
+                return response()->json([
+                    'status' => 'ok',
+                    'message' => 'Planilla emitida correctamente'
+                ], 200);
+            } catch (\Exception $e) {
+
+                DB::rollBack();
+                \Log::info('Error: ' . $e->getMessage() . ' - Line: ' . $e->getLine());
+
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Ocurrio un error inesperado'
+                ], 400);
+
+            }
+
+
+        try {
 
             DB::beginTransaction();
             foreach ($detalle_planillas as $detalle_planilla) {
                 $detalle_planilla_bd = DetallePlanilla::find($detalle_planilla['detalle_planilla']);
 
                 if (isset($detalle_planilla_bd) and $detalle_planilla_bd->dias_laborados > 0) {
-
+                    $empleado = Empleado::find($detalle_planilla_bd->id_empleado);
                     $detalle_planilla_bd->monto_bonos = $detalle_planilla['monto_bonos'];
 
                     //update monto_gravado
                     if ($detalle_planilla['monto_vacaciones'] > 0) {
                         $detalle_planilla_bd->monto_vacaciones = (($detalle_planilla_bd->base / $detalle_planilla_bd->dias_laborados) * 15) * 0.3;
-                        \Log::info($detalle_planilla_bd->monto_vacaciones);
+                        //\Log::info($detalle_planilla_bd->monto_vacaciones);
                         $detalle_planilla_bd->monto_gravable_cotizable = $detalle_planilla_bd->base + $detalle_planilla_bd->monto_vacaiones;
+                        $empleado->vacacion_pagada = Carbon::now()->format('Y');
+                        $empleado->save();
                     }
                     \Log::info($detalle_planilla_bd->monto_vacaciones);
                     \Log::info($detalle_planilla_bd->monto_bonos);
                     \Log::info($detalle_planilla_bd->base);
-                    $detalle_planilla_bd->monto_gravable_cotizable = $detalle_planilla_bd->base + $detalle_planilla_bd->monto_vacaciones +$detalle_planilla_bd->monto_bonos;
+                    $detalle_planilla_bd->monto_gravable_cotizable = $detalle_planilla_bd->base + $detalle_planilla_bd->monto_vacaciones + $detalle_planilla_bd->monto_bonos;
 
                     //update seguro y afp
                     $detalle_planilla_bd->monto_afp = $detalle_planilla_bd->monto_gravable_cotizable * 0.0725;
@@ -309,7 +361,7 @@ class PlanillaController extends Controller
         } catch (\Exception $e) {
 
             DB::rollBack();
-            \Log::info('Error: '.$e->getMessage().' - Line: '.$e->getLine());
+            \Log::info('Error: ' . $e->getMessage() . ' - Line: ' . $e->getLine());
 
             return response()->json([
                 'status' => 'error',
@@ -317,6 +369,28 @@ class PlanillaController extends Controller
             ], 400);
 
         }
+    }
+
+    public function show_detalle_planilla(DetallePlanilla $detallePlanilla)
+    {   
+        $meses = [
+            'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+        ];
+        
+        $empleado = $detallePlanilla->empleado;
+        $empleado->cargo;
+        $planilla = Planilla::find($detallePlanilla->id_planilla);
+        $fecha_inicio = Carbon::parse($planilla->fecha_inicio);
+        $fecha_fin = Carbon::parse($planilla->fecha_fin);
+
+        $periodo_pago = 'Del '.$fecha_inicio->day.' al '. $fecha_fin->day.' de '.$meses[$fecha_inicio->month +1].' de '.$fecha_fin->year;
+
+        return response()->json([
+            'status' => 'ok',
+            'detalle_planilla' => $detallePlanilla,
+            'empleado' => $empleado,
+            'periodo' => $periodo_pago
+        ]);
     }
 
 }
