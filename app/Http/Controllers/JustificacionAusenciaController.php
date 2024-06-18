@@ -185,7 +185,7 @@ class JustificacionAusenciaController extends Controller
     {
         $rules = [
             'id_estado' => 'required|exists:estados,id',
-            'id' => 'required|exists:justificaciones_ausencias,id'
+            'id' => 'required|exists:justificacion_ausencias,id'
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
