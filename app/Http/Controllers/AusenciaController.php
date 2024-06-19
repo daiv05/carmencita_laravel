@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Ausencia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class AusenciaController extends Controller
@@ -21,6 +22,12 @@ class AusenciaController extends Controller
     public function ausenciasPorEmpleado(Request $request)
     {
         $id_empleado = Auth::user()->id_empleado;
+        if ($request->query('id_empleado') != null) {
+            error_log('id_empleado: ' . $request->query('id_empleado'));
+            $id_empleado = $request->query('id_empleado');
+        } else {
+            error_log('ssssss: ' . $id_empleado);
+        }
         if ($request->query('fechaInicio') && $request->query('fechaFin')) {
             $ausencias = Ausencia::where('id_empleado', $id_empleado)
                 ->whereBetween('fecha_ausencia', [$request->query('fechaInicio'), $request->query('fechaFin')])

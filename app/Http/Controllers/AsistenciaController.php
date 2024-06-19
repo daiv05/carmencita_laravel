@@ -77,9 +77,9 @@ class AsistenciaController extends Controller
         }
     }
 
-    public function getAsistenciasEmpleado(Request $request, $id_empleado = null)
+    public function getAsistenciasEmpleado(Request $request)
     {
-        if ($id_empleado == null) {
+        if ($request->query('id_empleado') == null) {
             $usuario = Auth::user()->id_empleado;
             $empleado = Empleado::where('id_empleado', $usuario)->first();
             $empleado::with('cargo')->where('id_empleado', $empleado->id_empleado)->first();
@@ -97,8 +97,7 @@ class AsistenciaController extends Controller
                 }
             }
         } else {
-            $empleado = Empleado::where('id_empleado', $id_empleado)->first();
-            $empleado::with('cargo')->where('id_empleado', $empleado->id_empleado)->first();
+            $empleado = Empleado::where('id_empleado', $request->query('id_empleado'))->with('cargo')->first();
             $empleado_compacto = [
                 'nombre' => $empleado->primer_nombre,
                 'apellido' => $empleado->primer_apellido,
