@@ -10,6 +10,8 @@ use App\Models\DetallePlanilla;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Dompdf\Dompdf;
 
 class PlanillaController extends Controller
 {
@@ -106,6 +108,10 @@ class PlanillaController extends Controller
                 ], 200);
             }
 
+            //comprobar si se aplicara aguinaldo
+            $fecha_fin_planilla = Carbon::parse($planilla->fecha_fin);
+            $aplicar_aguinaldo = $fecha_fin_planilla->month == 12 and $fecha_fin_planilla->day ==15;
+
             foreach ($empleados as $empleado) {
                 //Creamos el detallePlanilla para cada empleado
                 $diasLaborados = $empleado->asistencia()->where('fecha', '>=', $fechaInicio)->where('fecha', '<=', $fechaFin)->count();
@@ -123,7 +129,11 @@ class PlanillaController extends Controller
                 $bono = 0; //Revisar despues como hacer esto
 
                 //calculo de aguinaldo
-                $monto_aguinaldo = 0;//$this->calcularAguinaldo($empleado);
+                if ($aplicar_aguinaldo) {
+                    $monto_aguinaldo = $this->calcularAguinaldo($empleado);
+                } else {
+                    $monto_aguinaldo = 0;//
+                }
 
                 //1.Calcular monto gravable
                 $monto_gravable_cotizable = $sueldoBase + $monto_vacaciones + $monto_aguinaldo + $bono;
@@ -200,9 +210,7 @@ class PlanillaController extends Controller
             \Log::error('Error: ' . $e->getMessage() . '- Line: ' . $e->getLine());
             return response()->json([
                 'status' => true,
-                'mensaje' => 'Error inesperado',
-                'planilla' => $planilla,
-                'detalles' => $detalles,
+                'mensaje' => 'Error inesperado'
             ], 400);
         }
 
@@ -213,6 +221,7 @@ class PlanillaController extends Controller
         $aniosLaborados = $empleado->aniosLaborados();
         $salarioDiario = $empleado->cargo->salario_cargo / 30;
         $aguinaldo = $this->get_aguinaldo_days($aniosLaborados) * $salarioDiario;
+        \Log::info('Aguinaldo: '.$aguinaldo);
         return $aguinaldo;
     }
 
@@ -372,18 +381,29 @@ class PlanillaController extends Controller
     }
 
     public function show_detalle_planilla(DetallePlanilla $detallePlanilla)
-    {   
+    {
         $meses = [
-            'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+            'enero',
+            'febrero',
+            'marzo',
+            'abril',
+            'mayo',
+            'junio',
+            'julio',
+            'agosto',
+            'septiembre',
+            'octubre',
+            'noviembre',
+            'diciembre'
         ];
-        
+
         $empleado = $detallePlanilla->empleado;
         $empleado->cargo;
         $planilla = Planilla::find($detallePlanilla->id_planilla);
         $fecha_inicio = Carbon::parse($planilla->fecha_inicio);
         $fecha_fin = Carbon::parse($planilla->fecha_fin);
 
-        $periodo_pago = 'Del '.$fecha_inicio->day.' al '. $fecha_fin->day.' de '.$meses[$fecha_inicio->month +1].' de '.$fecha_fin->year;
+        $periodo_pago = 'Del ' . $fecha_inicio->day . ' al ' . $fecha_fin->day . ' de ' . $meses[$fecha_inicio->month + 1] . ' de ' . $fecha_fin->year;
 
         return response()->json([
             'status' => 'ok',
@@ -392,5 +412,93 @@ class PlanillaController extends Controller
             'periodo' => $periodo_pago
         ]);
     }
+
+
+    public function download_pdf(int $id)
+    {
+        $planilla = Planilla::find($id);
+        $planilla->detallesPlanilla;
+
+        foreach ($planilla->detallesPlanilla as $detallePlanilla) {
+            $empleado = Empleado::find($detallePlanilla->id_empleado);
+            $detallePlanilla->empleado = $empleado;
+        }
+
+        $pdf = Pdf::loadView('planillas.detalle_planilla', [
+            'planilla' => $planilla
+        ])->setPaper('letter', 'landscape');
+
+        return $pdf->download('detalle_planilla.pdf');
+    }
+
+    public function download_pdf_boleta(DetallePlanilla $detallePlanilla)
+    {
+        $meses = [
+            'enero',
+            'febrero',
+            'marzo',
+            'abril',
+            'mayo',
+            'junio',
+            'julio',
+            'agosto',
+            'septiembre',
+            'octubre',
+            'noviembre',
+            'diciembre'
+        ];
+
+        $empleado = $detallePlanilla->empleado;
+        $empleado->cargo;
+        $planilla = Planilla::find($detallePlanilla->id_planilla);
+        $fecha_inicio = Carbon::parse($planilla->fecha_inicio);
+        $fecha_fin = Carbon::parse($planilla->fecha_fin);
+
+        $periodo_pago = 'Del ' . $fecha_inicio->day . ' al ' . $fecha_fin->day . ' de ' . $meses[$fecha_inicio->month - 1] . ' de ' . $fecha_fin->year;
+
+        $pdf = Pdf::loadView('planillas.boleta_pago', [
+            'detallePlanilla' => $detallePlanilla,
+            'empleado' => $empleado,
+            'periodo_pago' => $periodo_pago
+        ])->setPaper('letter');
+
+        return $pdf->download('boleta_pago.pdf');
+    }
+
+    public function download_pdf_old(DetallePlanilla $detallePlanilla)
+    {
+        $meses = [
+            'enero',
+            'febrero',
+            'marzo',
+            'abril',
+            'mayo',
+            'junio',
+            'julio',
+            'agosto',
+            'septiembre',
+            'octubre',
+            'noviembre',
+            'diciembre'
+        ];
+
+        $empleado = $detallePlanilla->empleado;
+        $empleado->cargo;
+        $planilla = Planilla::find($detallePlanilla->id_planilla);
+        $fecha_inicio = Carbon::parse($planilla->fecha_inicio);
+        $fecha_fin = Carbon::parse($planilla->fecha_fin);
+
+        $periodo_pago = 'Del ' . $fecha_inicio->day . ' al ' . $fecha_fin->day . ' de ' . $meses[$fecha_inicio->month + 1] . ' de ' . $fecha_fin->year;
+
+        $html = view('planillas.boleta_pago', compact('detallePlanilla', 'empleado', 'periodo_pago'))->render();
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('letter');
+        $dompdf->render();
+        return $dompdf->stream('boleta_pago.pdf', ['Attachment' => false]);
+    }
+
+
 
 }

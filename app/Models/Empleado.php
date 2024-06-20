@@ -74,6 +74,7 @@ class Empleado extends Model
         // Calculate the difference in years
         $diferencia = $fechaActual->diff($fechaIngreso);
         $aniosLaborados = $diferencia->y;
+        \Log::info('anios laborados: ' .$aniosLaborados);
         return $aniosLaborados;
     }
 }
