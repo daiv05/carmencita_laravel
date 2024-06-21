@@ -40,7 +40,7 @@ class IncapacidadesController extends Controller
         }
     }
 
-    public function indexGerente()//Gerente
+    public function indexGerente(Request $request)//Gerente
     {
         try {
             $incapacidad = Incapacidad::all();
@@ -117,9 +117,9 @@ class IncapacidadesController extends Controller
                     ], 400);
                 }
             }
-            $date=Cabon::now();
+            $date=Carbon::now();
             $incapacidad = Incapacidad::create([
-                'id_empleado' => $request->id_ausencia,
+                'id_empleado' => $id_empleado,
                 'fecha_solicitud' => $date,
                 'fecha_inicio' =>$request->fecha_inicio,
                 'fecha_fin' => $request->fecha_fin,
@@ -226,7 +226,7 @@ class IncapacidadesController extends Controller
     {
         $rules = [
             'id_estado' => 'required|exists:estados,id',
-            'id' => 'required|exists:incapacidad,id'
+            'id' => 'required|exists:incapacidades,id'
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
