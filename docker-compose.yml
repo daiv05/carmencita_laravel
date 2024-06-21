@@ -1,0 +1,33 @@
+version: '3.1'
+name: laravel
+services:
+  web:
+    container_name: web
+    build:
+      context: docker
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
+    tty: true
+    stdin_open: true
+
+  db:
+    container_name: db
+    image: mariadb:lts
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    volumes:
+      - laravel_db:/var/lib/mysql
+    environment:
+      MARIADB_DATABASE: carmencita_back
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: 1
+      MARIADB_USER: root
+      MARIADB_PASSWORD:
+
+volumes:
+  laravel_db:

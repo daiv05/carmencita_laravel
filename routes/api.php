@@ -43,6 +43,7 @@ use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\AusenciaController;
 use App\Http\Controllers\JustificacionAusenciaController;
 use App\Models\JustificacionAusencia;
+use App\Http\Controllers\IncapacidadesController;
 
 /* ----------------------------------------------*/
 /* ----------------------------------------------*/
@@ -84,6 +85,9 @@ Route::middleware(['auth:sanctum', 'permission:adm-rh'])->group(function () {
     Route::get('departamentos/buscar/{nombre_departamento}', [DepartamentoController::class, 'getDepartamentoPorNombre']);
     Route::get('pacientes', [JornadaLaboralDiariaController::class, 'index']);
     Route::get('get_municipios', [MunicipioController::class, 'municipios_segun_departamento']);
+    //Rutas de incapacidades
+    Route::get('incapacidades/gerente',[IncapacidadesController::class,'indexGerente']);//Lista de incapacidades de todos los empleados
+    Route::post('incapacidades/estado',[IncapacidadesController::class,'actualizarEstado']);
 });
 
 /* --------------------------------------------------*/
@@ -166,7 +170,7 @@ Route::middleware(["auth:sanctum", "permission:cajero"])->group(function () {
     Route::post('creditos/registrar', [CreditoFiscalController::class, 'register_credito_detalle']);
     //Para obtener los creditos fiscales
     Route::get('creditos', [VentasCFController::class, 'indexCF']);
-    //Para buscar un credito fiscal especifico	
+    //Para buscar un credito fiscal especifico
     Route::post('creditos/buscar', [VentasCFController::class, 'buscarCreditoF']);
     //Ruta para obtene un credito fiscal especifico y sus detalles
     Route::get('creditos_detalle/{id_credito}', [VentasCFController::class, 'obtenerCreditoAndDetalle']);
@@ -231,6 +235,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('ausencias/justificaciones/listado-gestion', [JustificacionAusenciaController::class, 'index']);
     Route::post('ausencias/justificaciones/cambiar-estado', [JustificacionAusenciaController::class, 'actualizarEstado']);
     Route::delete('ausencias/justificaciones/{id}', [JustificacionAusenciaController::class, 'destroy']);
+    //Rutas de incapacidades
+    Route::get('incapacidades/listado',[IncapacidadesController::class,'index']);
+    Route::get('incapacidades/{id}',[IncapacidadesController::class,'show']);
+    Route::post('incapacidades',[IncapacidadesController::class,'store']);
+    Route::put('incapacidades/{id}',[IncapacidadesController::class,'update']);
+    Route::delete('incapacidades/{id}',[IncapacidadesController::class,'destroy']);
+    Route::post('incapacidades/comprobante',[IncapacidadesController::class,'getArchivoComprobante']);
 });
 
 
@@ -241,7 +252,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 /* ---------------------------------------------------------*/
 /* ---------------------------------------------------------*/
 Route::middleware(["auth:sanctum", "permission:adm-gerencia"])->group(function () {
-    
+
     Route::resource("informe_inventario_valorado", InformeInventarioController::class);
     Route::get("datos_inventario_valorado", [InformeInventarioController::class, "obtenerDatosGraficoInventarioValorado"]);
     Route::get("filtro_datos_producto_valorado/{valorMinimo?}/{valorMaximo?}", [InformeInventarioController::class, "obtenerDatosFiltradosProductoPorPrecios"]);
