@@ -12,7 +12,7 @@ use Carbon\Carbon;
 
 class IncapacidadesController extends Controller
 {
-    public function  index(Request $request)//Empleados
+    public function  index(Request $request) //Empleados
     {
         try {
             $incapacidad = null;
@@ -40,22 +40,49 @@ class IncapacidadesController extends Controller
         }
     }
 
-    public function indexGerente(Request $request)//Gerente
+    public function indexGerente(Request $request) //Gerente
     {
         try {
-            $incapacidad = Incapacidad::all();
-            $listadoFiltrado = [];
-            array_push($listadoFiltrado, $incapacidad);
-
-            // Paginar array
-            $currentPage = $request->page;
-            $perPage = 10;
+            // Obtener el parámetro fechaAusencia del request
+            $fechaAusencia = $request->fechaAusencia;
+    
+            // Filtrar las incapacidades por fecha_solicitud si se proporcionó fechaAusencia
+            $query = Incapacidad::with(['empleado', 'estado']);
+            if ($fechaAusencia) {
+                $query->whereDate('fecha_solicitud', $fechaAusencia);
+            }
+            $incapacidades = $query->get();
+    
+            $listadoFiltrado = $incapacidades->map(function ($incapacidad) {
+                return [
+                    'id' => $incapacidad->id,
+                    'fecha_inicio' => $incapacidad->fecha_inicio,
+                    'fecha_fin' => $incapacidad->fecha_fin,
+                    'fecha_solicitud' => $incapacidad->fecha_solicitud,
+                    'comprobante' => $incapacidad->comprobante,
+                    'detalle' => $incapacidad->detalle,
+                    'created_at' => $incapacidad->created_at,
+                    'updated_at' => $incapacidad->updated_at,
+                    'empleado' => [
+                        'id_empleado' => $incapacidad->empleado->id_empleado,
+                        'nombre_completo' => $incapacidad->empleado->primer_nombre . ' ' . $incapacidad->empleado->primer_apellido,
+                    ],
+                    'estado' => [
+                        'id' => $incapacidad->estado->id,
+                        'nombre' => $incapacidad->estado->nombre,
+                    ],
+                ];
+            })->toArray();
+    
+            // Paginar el array transformado
+            $currentPage = $request->page ?: 1;
+            $perPage = 8;
             $offset = ($currentPage - 1) * $perPage;
             $listadoPaginado = array_slice($listadoFiltrado, $offset, $perPage);
+    
             return response()->json([
                 'data' => $listadoPaginado,
                 'totalPages' => ceil(count($listadoFiltrado) / $perPage),
-                'errors' => []
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -69,9 +96,9 @@ class IncapacidadesController extends Controller
     {
         $incapacidad = Incapacidad::find($id);
 
-        if($incapacidad == null){
-            return response()->json(['No se encontro la incapadidad solicitada.'],404);
-        }else{
+        if ($incapacidad == null) {
+            return response()->json(['No se encontro la incapadidad solicitada.'], 404);
+        } else {
             return response()->json($incapacidad);
         }
     }
@@ -117,11 +144,11 @@ class IncapacidadesController extends Controller
                     ], 400);
                 }
             }
-            $date=Carbon::now();
+            $date = Carbon::now();
             $incapacidad = Incapacidad::create([
                 'id_empleado' => $id_empleado,
                 'fecha_solicitud' => $date,
-                'fecha_inicio' =>$request->fecha_inicio,
+                'fecha_inicio' => $request->fecha_inicio,
                 'fecha_fin' => $request->fecha_fin,
                 'id_estado' => 1,
                 'comprobante' => $request->comprobante,
@@ -205,13 +232,13 @@ class IncapacidadesController extends Controller
     public function destroy(String $id)
     {
         try {
-           $incapacidad = Incapacidad::find($id);
+            $incapacidad = Incapacidad::find($id);
             if ($incapacidad->comprobante !== null) {
                 Storage::delete($incapacidad->comprobante);
             }
-           $incapacidad->delete();
+            $incapacidad->delete();
             return response()->json([
-                'data' =>$incapacidad,
+                'data' => $incapacidad,
                 'errors' => []
             ], 200);
         } catch (\Exception $e) {
@@ -222,11 +249,11 @@ class IncapacidadesController extends Controller
         }
     }
 
-    public function actualizarEstado(Request $request)//Gerente
+    public function actualizarEstado(Request $request) //Gerente
     {
         $rules = [
             'id_estado' => 'required|exists:estados,id',
-            'id' => 'required|exists:incapacidadesgit ,id'
+            'id' => 'required|exists:incapacidades,id'
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
@@ -238,7 +265,7 @@ class IncapacidadesController extends Controller
         try {
             $incapacidad = Incapacidad::find($request->id);
             //Validar
-            if($incapacidad->id_estado == 1){
+            if ($incapacidad->id_estado == 1) {
 
                 $incapacidad->update([
                     'id_estado' => $request->id_estado
@@ -247,8 +274,8 @@ class IncapacidadesController extends Controller
                     'data' => $incapacidad,
                     'errors' => []
                 ], 201);
-            }else{
-                return response()->json(['Error, no se puede cambiar el estado'],400);
+            } else {
+                return response()->json(['Error, no se puede cambiar el estado'], 400);
             }
         } catch (\Exception $e) {
             return response()->json([
@@ -263,6 +290,4 @@ class IncapacidadesController extends Controller
         error_log($request->comprobante);
         return response()->download(storage_path('app/' . $request->comprobante));
     }
-
-
 }
