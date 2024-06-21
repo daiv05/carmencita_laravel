@@ -226,7 +226,7 @@ class IncapacidadesController extends Controller
     {
         $rules = [
             'id_estado' => 'required|exists:estados,id',
-            'id' => 'required|exists:incapacidades,id'
+            'id' => 'required|exists:incapacidadesgit ,id'
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
