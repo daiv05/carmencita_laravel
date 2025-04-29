@@ -47,24 +47,41 @@ class RoleSeeder extends Seeder
 
         $user = User::create([
             "id_empleado"=>1,
-            "name"=>"Joaquín",
-            "email"=>"user@gmail.com",
+            "name"=>"Morgott",
+            "email"=>"luis@gmail.com",
             "password"=>bcrypt("password")
         ]);
         $user->assignRole("Gerente");
 
         $user = User::create([
             "id_empleado"=>2,
-            "name"=>"María",
-            "email"=>"user1@gmail.com",
+            "name"=>"Margit",
+            "email"=>"teobaldo@gmail.com",
             "password"=>bcrypt("password")
         ]);
         $user->assignRole("Sub-Gerente");
 
         $user = User::create([
             "id_empleado"=>3,
-            "name"=>"Juan",
-            "email"=>"user2@gmail.com",
+            "name"=>"MaleniaBladeOfMiquella",
+            "email"=>"leonardo@gmail.com",
+            "password"=>bcrypt("password")
+        ]);
+        $user->assignRole("Colaborador");
+
+
+        $user = User::create([
+            "id_empleado"=>4,
+            "name"=>"Miquella",
+            "email"=>"gabriela@gmail.com",
+            "password"=>bcrypt("password")
+        ]);
+        $user->assignRole("Colaborador");
+
+        $user = User::create([
+            "id_empleado"=>5,
+            "name"=>"Tarnished",
+            "email"=>"david@gmail.com",
             "password"=>bcrypt("password")
         ]);
         $user->assignRole("Colaborador");
