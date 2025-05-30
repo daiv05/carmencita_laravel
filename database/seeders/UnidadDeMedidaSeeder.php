@@ -16,20 +16,38 @@ class UnidadDeMedidaSeeder extends Seeder
     {
 
         $unidad_de_medida = [
+            // Para venta al detalle
             [
-                'nombre_unidad_de_medida' => 'Tira'
+                'nombre_unidad_de_medida' => 'Unidad'
+            ],
+            [
+                'nombre_unidad_de_medida' => 'Par'
+            ],
+
+            // Para venta al por mayor
+            [
+                'nombre_unidad_de_medida' => 'Docena'
+            ],
+            [
+                'nombre_unidad_de_medida' => 'Media Docena'
+            ],
+            [
+                'nombre_unidad_de_medida' => 'Paquete'
             ],
             [
                 'nombre_unidad_de_medida' => 'Caja'
             ],
             [
-                'nombre_unidad_de_medida' => 'Bolsa'
-            ]
+                'nombre_unidad_de_medida' => 'Bulto'
+            ],
+            [
+                'nombre_unidad_de_medida' => 'Saco'
+            ],
         ];
+
 
         foreach ($unidad_de_medida as $unidad) {
             UnidadDeMedida::create($unidad);
         }
-
     }
 }
