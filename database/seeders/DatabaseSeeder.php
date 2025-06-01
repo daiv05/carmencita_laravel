@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        
+
         // PARA LLAMAR A LOS SEEDERS, EN ORDEN DEPENDIENTE DE LAS FOREIGN KEYS
 
         $this->call(UnidadDeMedidaSeeder::class);
@@ -43,7 +43,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(EstadoFamiliarSeeder::class);
         $this->call(NacionalidadSeeder::class);
-        
+
         $this->call(JornadaLaboralDiariaSeeder::class);
         $this->call(CargoSeeder::class);
         $this->call(EmpleadoSeeder::class);

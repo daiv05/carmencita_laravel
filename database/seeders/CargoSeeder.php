@@ -21,7 +21,8 @@ class CargoSeeder extends Seeder
             ],
             [
                 "id_jornada_laboral_diaria" => 1, 
-                "nombre_cargo" => "Sub-Gerente",
+                "nombre_cargo" => "Cajero",
+                //"nombre_cargo" => "Sub-Gerente",
                 "salario_cargo" => 400.0,
                 "descripcion_cargo" => "Repartir pedidos" 
             ],
