@@ -12,71 +12,44 @@ class ProveedorSeeder extends Seeder
      */
     public function run(): void
     {
-        $prov = [
+       $prov = [
             [
-                'nombre_proveedor' => 'Proveedor 1',
-                'nit_pr' => '1234-123456-123-1',
+                'nombre_proveedor' => 'Carmen Camisas s.a de cv',
+                'nit_pr' => '1856-153556-153-3',
                 'nrc_pr' => '123456-1',
                 'estado_pr' => 1,
             ],
             [
-                'nombre_proveedor' => 'Proveedor 2',
-                'nit_pr' => '1234-123456-123-2',
-                'nrc_pr' => '123456-2',
+                'nombre_proveedor' => 'Pedro fashion',
+                'nit_pr' => '5489-785623-456-7',
+                'nrc_pr' => '753159-2',
                 'estado_pr' => 1,
             ],
             [
-                'nombre_proveedor' => 'Proveedor 3',
-                'nit_pr' => '1234-123456-123-3',
-                'nrc_pr' => '123456-3',
+                'nombre_proveedor' => 'Rosario boutique',
+                'nit_pr' => '457812-456123-785-3',
+                'nrc_pr' => '852741-3',
                 'estado_pr' => 1,
             ],
             [
-                'nombre_proveedor' => 'Proveedor 4',
-                'nit_pr' => '1234-123456-123-4',
+                'nombre_proveedor' => 'New Ale',
+                'nit_pr' => '456123-789456-159-4',
                 'nrc_pr' => '123456-4',
                 'estado_pr' => 1,
             ],
             [
-                'nombre_proveedor' => 'Proveedor 5',
-                'nit_pr' => '1234-123456-123-5',
-                'nrc_pr' => '123456-5',
-                'estado_pr' => 1,
-            ],
-            [
-                'nombre_proveedor' => 'Proveedor 6',
-                'nit_pr' => '1234-123456-123-6',
-                'nrc_pr' => '123456-6',
-                'estado_pr' => 1,
-            ],
-            [
-                'nombre_proveedor' => 'Proveedor 7',
-                'nit_pr' => '1234-123456-123-7',
-                'nrc_pr' => '123456-7',
-                'estado_pr' => 1,
-            ],
-            [
-                'nombre_proveedor' => 'Proveedor 8',
-                'nit_pr' => '1234-123456-123-8',
-                'nrc_pr' => '123456-8',
-                'estado_pr' => 1,
-            ],
-            [
-                'nombre_proveedor' => 'Proveedor 9',
-                'nit_pr' => '1234-123456-123-9',
-                'nrc_pr' => '123456-9',
-                'estado_pr' => 1,
-            ],
-            [
-                'nombre_proveedor' => 'Proveedor 10',
-                'nit_pr' => '1234-123456-123-10',
-                'nrc_pr' => '123456-10',
+                'nombre_proveedor' => 'Estilo S.A DE C.V',
+                'nit_pr' => '458745-123789-456-5',
+                'nrc_pr' => '423785-5',
                 'estado_pr' => 1,
             ]
         ];
 
         foreach ($prov as $p) {
-            \App\Models\Proveedor::create($p);
+            \App\Models\Proveedor::firstOrCreate(
+                ['nit_pr' => $p['nit_pr']], // condición para no repetir
+                $p
+            );
         }
     }
 }
