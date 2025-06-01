@@ -34,10 +34,10 @@ class DatabaseSeeder extends Seeder
         $this->call(ClienteSeeder::class);
         $this->call(ProductoSeeder::class);
         $this->call(PrecioUnidadDeMedidaSeeder::class);
-        // $this->call(VentaSeeder::class);
-        // $this->call(DetalleVentaSeeder::class);
-        // $this->call(CreditoFiscalSeeder::class);
-        // $this->call(DetalleCreditoSeeder::class);
+        $this->call(VentaSeeder::class);
+        $this->call(DetalleVentaSeeder::class);
+        $this->call(CreditoFiscalSeeder::class);
+        $this->call(DetalleCreditoSeeder::class);
         $this->call(SexoSeeder::class);
         $this->call(ProveedorSeeder::class);
 
