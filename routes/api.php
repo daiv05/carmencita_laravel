@@ -52,7 +52,7 @@ use App\Http\Controllers\IncapacidadesController;
 /* ----------------------------------------------*/
 /* ----------------------------------------------*/
 
-Route::middleware(['auth:sanctum', 'permission:adm-rh'])->group(function () {
+Route::middleware(['auth:sanctum', 'permission:adm-rh|cajero'])->group(function () {
     Route::get("empleados", [EmpleadoController::class, 'listaEmpleados']);
     Route::get('pacientes', [JornadaLaboralDiariaController::class, 'index']);
     Route::get('sexos', [SexoController::class, 'index']);
@@ -102,7 +102,7 @@ Route::middleware(['auth:sanctum', 'permission:adm-rh'])->group(function () {
 /* Rutas par las funciones de ventas e inventario*/
 /* --------------------------------------------------*/
 /* --------------------------------------------------*/
-Route::middleware(["auth:sanctum","permission:adm-ventas"])->group(function(){
+Route::middleware(["auth:sanctum","permission:adm-ventas|cajero"])->group(function(){
  //Ruta para paginacion
  Route::get('productos/paginacion/{cantidad_productos}', [ProductoController::class, 'getPaginacionProductos']);
  //Ruta para actualizar estado de producto
