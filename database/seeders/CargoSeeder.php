@@ -21,23 +21,23 @@ class CargoSeeder extends Seeder
             ],
             [
                 "id_jornada_laboral_diaria" => 1, 
-                "nombre_cargo" => "Cajero",
+                "nombre_cargo" => "Bodega",
                 //"nombre_cargo" => "Sub-Gerente",
                 "salario_cargo" => 400.0,
-                "descripcion_cargo" => "Repartir pedidos" 
+                "descripcion_cargo" => "Atender a los clientes y realizar ventas"
             ],
             [
-                "id_jornada_laboral_diaria" => 1, 
-                "nombre_cargo" => "Despachador",
+                "id_jornada_laboral_diaria" => 1,
+                "nombre_cargo" => "Vendedor",
                 "salario_cargo" => 365.0,
                 "descripcion_cargo" => "Atender a los clientes" 
             ],
             [
-                "id_jornada_laboral_diaria" => 1, 
-                "nombre_cargo" => "Repartidor",
+                "id_jornada_laboral_diaria" => 1,
+                "nombre_cargo" => "Contador",
                 "salario_cargo" => 365.0,
-                "descripcion_cargo" => "Repartir pedidos" 
-            ],
+                "descripcion_cargo" => "Atender a los clientes" 
+            ]
         ];
 
         foreach ($cargos as $cargo) {

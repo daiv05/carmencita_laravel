@@ -17,13 +17,13 @@ class RoleSeeder extends Seeder
     {
         $listaPermisos = ["adm-ventas","cajero","adm-rh","adm-cred-prov","colaborador","adm-gerencia","adm-marketing"];
         $permisosGerente = ["adm-ventas","cajero","adm-rh","adm-cred-prov","adm-gerencia","colaborador","adm-marketing"];
-        $permisosSubGerente = ["adm-ventas","cajero","colaborador","adm-marketing"];
-        $permisosColaborador = ["colaborador"];
+        $permisosInventario = ["adm-ventas","cajero","colaborador","adm-marketing"];
+        $permisosVendedor = ["cajero", "colaborador"];
 
-        $listaRoles = ["Gerente","Sub-Gerente","Colaborador"];
+        $listaRoles = ["Gerente","Vendedor","Bodega"];
 
         /*$roleGerente =Role::create(["name"=>"Gerente"]);
-        $roleSubGerente = Role::create(["name"=>"Sub-Gerente"]);
+        $roleCajero = Role::create(["name"=>"Sub-Gerente"]);
         $roleColaborador = Role::create(["name"=>"Colaborador"]);*/
         foreach($listaRoles as $rol){
             Role::create(["name"=>$rol]);
@@ -38,11 +38,11 @@ class RoleSeeder extends Seeder
         foreach ($permisosGerente as $permiso){
             Role::findByName("Gerente")->givePermissionTo($permiso);
         }
-        foreach($permisosSubGerente  as $permiso){
-            Role::findByName("Sub-Gerente")->givePermissionTo($permiso);
+        foreach($permisosInventario  as $permiso){
+            Role::findByName("Bodega")->givePermissionTo($permiso);
         }
-        foreach($permisosColaborador as $permiso){
-            Role::findByName("Colaborador")->givePermissionTo($permiso);
+        foreach($permisosVendedor as $permiso){
+            Role::findByName("Vendedor")->givePermissionTo($permiso);
         }
 
         $user = User::create([
@@ -55,11 +55,11 @@ class RoleSeeder extends Seeder
 
         $user = User::create([
             "id_empleado"=>2,
-            "name"=>"Cajero",
-            "email"=>"cajero@gmail.com",
+            "name"=>"Jefe de Bodega",
+            "email"=>"bodega@gmail.com",
             "password"=>bcrypt("password")
         ]);
-        $user->assignRole("Sub-Gerente");
+        $user->assignRole("Bodega");
 
         $user = User::create([
             "id_empleado"=>3,
@@ -67,7 +67,7 @@ class RoleSeeder extends Seeder
             "email"=>"PG21005@gmail.com",
             "password"=>bcrypt("password")
         ]);
-        $user->assignRole("Colaborador");
+        $user->assignRole("Vendedor");
 
 
         $user = User::create([
@@ -76,7 +76,7 @@ class RoleSeeder extends Seeder
             "email"=>"RR20104@gmail.com",
             "password"=>bcrypt("password")
         ]);
-        $user->assignRole("Colaborador");
+        $user->assignRole("Vendedor");
 
         $user = User::create([
             "id_empleado"=>5,
@@ -84,7 +84,7 @@ class RoleSeeder extends Seeder
             "email"=>"DC19019@gmail.com",
             "password"=>bcrypt("password")
         ]);
-        $user->assignRole("Colaborador");
+        $user->assignRole("Vendedor");
 
         $user = User::create([
             "id_empleado"=>6,
@@ -92,7 +92,7 @@ class RoleSeeder extends Seeder
             "email"=>"VN21007@gmail.com",
             "password"=>bcrypt("password")
         ]);
-        $user->assignRole("Colaborador");
+        $user->assignRole("Vendedor");
 
 
         /*
